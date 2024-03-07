@@ -1,0 +1,11 @@
+name: PrimalLib-Test-Plugin
+version: '1.0'
+main: org.machinemc.primallib.test.TestPlugin
+description: Paper Test Plugin
+api-version: '1.20'
+
+# PrimalLib's bootstrapper
+bootstrapper: org.machinemc.primallib.internal.PrimalLibBootstrap
+
+# Plugin's own bootstrapper
+delegate-bootstrapper: org.machinemc.primallib.test.Bootstrap

@@ -1,0 +1,46 @@
+package org.machinemc.primallib.v1_20_4;
+
+import io.papermc.paper.plugin.bootstrap.PluginProviderContext;
+import org.bukkit.Bukkit;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.machinemc.primallib.internal.PacketListener;
+import org.machinemc.primallib.internal.VersionBootstrap;
+import org.machinemc.primallib.util.AutoRegisteringService;
+import org.machinemc.primallib.v1_20_4.impl.advancement.AdvancementServiceImpl;
+import org.machinemc.primallib.v1_20_4.impl.util.MagicNumberServiceImpl;
+import org.machinemc.primallib.v1_20_4.listeners.bukkit.PlayerLoginListener;
+import org.machinemc.primallib.v1_20_4.listeners.packet.clientbound.RegistryDataPacketListener;
+import org.machinemc.primallib.v1_20_4.listeners.packet.clientbound.UpdateAdvancementsPacketListener;
+import org.machinemc.primallib.v1_20_4.listeners.packet.clientbound.UpdateTagsPacketListener;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@SuppressWarnings("UnstableApiUsage")
+public class VersionBootstrap_v1_20_4 implements VersionBootstrap {
+
+    @Override
+    public void bootstrap(JavaPlugin plugin, PluginProviderContext context) {
+
+        // Services
+        List<AutoRegisteringService<?>> services = new ArrayList<>();
+        services.add(new AdvancementServiceImpl().register());
+        services.add(new MagicNumberServiceImpl().register());
+
+        services.stream()
+                .filter(service -> service instanceof Listener)
+                .forEach(service -> Bukkit.getPluginManager().registerEvents((Listener) service, plugin));
+
+        // Packet Listeners
+        List<PacketListener<?>> listeners = new ArrayList<>();
+        listeners.add(new RegistryDataPacketListener());
+        listeners.add(new UpdateAdvancementsPacketListener());
+        listeners.add(new UpdateTagsPacketListener());
+
+        // Bukkit Listeners
+        Bukkit.getPluginManager().registerEvents(new PlayerLoginListener(listeners), plugin); // registers packet listeners
+
+    }
+
+}

@@ -1,0 +1,22 @@
+# Project exclude paths
+/.gradle/
+/api/build/
+/api/build/classes/java/main/
+/build-logic/.gradle/
+/build-logic/build/
+/build-logic/build/classes/kotlin/main/
+/core/build/
+/core/build/classes/java/main/
+/generator/build/
+/generator/build/classes/java/main/
+/generator/build/classes/java/test/
+# Project exclude paths
+/implementation/commons/build/
+/implementation/commons/build/classes/java/main/
+/implementation/shared/build/
+/implementation/shared/build/classes/java/main/
+/implementation/v1_20_4/.gradle/
+/implementation/v1_20_4/build/
+/implementation/v1_20_4/build/classes/java/main/
+/test-plugin/build/
+/test-plugin/build/classes/java/main/
