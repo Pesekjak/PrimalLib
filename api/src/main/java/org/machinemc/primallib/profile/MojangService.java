@@ -1,4 +1,4 @@
-package org.machinemc.primallib.auth;
+package org.machinemc.primallib.profile;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

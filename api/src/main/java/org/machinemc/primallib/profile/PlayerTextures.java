@@ -1,4 +1,4 @@
-package org.machinemc.primallib.auth;
+package org.machinemc.primallib.profile;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
@@ -110,6 +110,15 @@ public record PlayerTextures(String value,
     public void apply(org.bukkit.profile.PlayerTextures bukkit) {
         bukkit.setSkin(skinURL, skinModel);
         bukkit.setCape(capeURL);
+    }
+
+    /**
+     * Returns the player textures as game profile property.
+     *
+     * @return property for these textures
+     */
+    public GameProfile.Property asProperty() {
+        return new GameProfile.Property("textures", value, signature);
     }
 
 }

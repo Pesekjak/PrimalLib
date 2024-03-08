@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
+import lombok.With;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.*;
 import org.bukkit.NamespacedKey;
@@ -136,15 +137,11 @@ public class Registry {
      * @param key name of the entry
      * @param element NBT element of the entry.
      */
-    public record Entry(Key key, CompoundBinaryTag element) {
+    public record Entry(Key key, @With CompoundBinaryTag element) {
 
         public Entry {
             Preconditions.checkNotNull(key, "Key can not be null");
             Preconditions.checkNotNull(element, "Element tag can not be null");
-        }
-
-        public Entry withElement(CompoundBinaryTag element) {
-            return new Entry(key, element);
         }
 
     }

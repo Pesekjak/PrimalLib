@@ -1,8 +1,9 @@
-package org.machinemc.primallib.auth;
+package org.machinemc.primallib.profile;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import lombok.With;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.charset.StandardCharsets;
@@ -20,6 +21,18 @@ import java.util.UUID;
  */
 @With
 public record GameProfile(UUID uuid, String name, List<Property> properties) {
+
+    /**
+     * Returns new game profile from UUID, name and textures.
+     *
+     * @param uuid uuid
+     * @param name name
+     * @param textures textures of the game profile
+     * @return game profile
+     */
+    public static GameProfile withTextures(UUID uuid, String name, PlayerTextures textures) {
+        return new GameProfile(uuid, name, List.of(textures.asProperty()));
+    }
 
     /**
      * Creates a new Mojang game profile.
@@ -41,6 +54,7 @@ public record GameProfile(UUID uuid, String name, List<Property> properties) {
      * @param properties the properties to add
      * @return new GameProfile
      */
+    @Contract(pure = true)
     public GameProfile addProperties(Iterable<Property> properties) {
         List<Property> newProperties = ImmutableList.<Property>builder()
                 .addAll(this.properties)
@@ -55,9 +69,22 @@ public record GameProfile(UUID uuid, String name, List<Property> properties) {
      * @param property the property to add
      * @return new GameProfile
      */
+    @Contract(pure = true)
     public GameProfile addProperty(Property property) {
         return addProperties(Collections.singleton(property));
     }
+
+    /**
+     * Returns copy of this game profile without properties with given name.
+     *
+     * @param name name of the properties to remove
+     * @return copy of this game profile
+     */
+    @Contract(pure = true)
+    public GameProfile removeProperty(String name) {
+        return withProperties(properties.stream().filter(property -> !property.name.equals(name)).toList());
+    }
+
 
     /**
      * Creates offline mode GameProfile from a player's nickname the same way Notchian server does.
