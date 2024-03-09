@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.Contract;
+import org.machinemc.primallib.profile.PlayerTextures;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -62,6 +63,19 @@ public final class ItemStackExtensions {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
+    }
+
+    /**
+     * Changes head texture of this item stack to a new one.
+     * <p>
+     * If different item stack than player head is provided, nothing happens.
+     *
+     * @param itemStack item stack
+     * @param playerTextures new head texture
+     * @return provided item stack with the new texture
+     */
+    public static ItemStack setHeadTexture(ItemStack itemStack, PlayerTextures playerTextures) {
+        return setHeadTexture(itemStack, playerTextures.value());
     }
 
     /**

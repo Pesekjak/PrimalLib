@@ -8,11 +8,10 @@ import org.machinemc.primallib.internal.PacketListener;
 import org.machinemc.primallib.internal.VersionBootstrap;
 import org.machinemc.primallib.util.AutoRegisteringService;
 import org.machinemc.primallib.v1_20_4.impl.advancement.AdvancementServiceImpl;
+import org.machinemc.primallib.v1_20_4.impl.profile.PlayerInfoServiceImpl;
 import org.machinemc.primallib.v1_20_4.impl.util.MagicNumberServiceImpl;
 import org.machinemc.primallib.v1_20_4.listeners.bukkit.PlayerLoginListener;
-import org.machinemc.primallib.v1_20_4.listeners.packet.clientbound.RegistryDataPacketListener;
-import org.machinemc.primallib.v1_20_4.listeners.packet.clientbound.UpdateAdvancementsPacketListener;
-import org.machinemc.primallib.v1_20_4.listeners.packet.clientbound.UpdateTagsPacketListener;
+import org.machinemc.primallib.v1_20_4.listeners.packet.clientbound.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +25,7 @@ public class VersionBootstrap_v1_20_4 implements VersionBootstrap {
         // Services
         List<AutoRegisteringService<?>> services = new ArrayList<>();
         services.add(new AdvancementServiceImpl().register());
+        services.add(new PlayerInfoServiceImpl().register());
         services.add(new MagicNumberServiceImpl().register());
 
         services.stream()
@@ -34,6 +34,8 @@ public class VersionBootstrap_v1_20_4 implements VersionBootstrap {
 
         // Packet Listeners
         List<PacketListener<?>> listeners = new ArrayList<>();
+        listeners.add(new PlayerInfoRemovePacketListener());
+        listeners.add(new PlayerInfoUpdatePacketListener());
         listeners.add(new RegistryDataPacketListener());
         listeners.add(new UpdateAdvancementsPacketListener());
         listeners.add(new UpdateTagsPacketListener());

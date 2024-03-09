@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.With;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -20,7 +21,7 @@ import java.util.UUID;
  * @see MojangService
  */
 @With
-public record GameProfile(UUID uuid, String name, List<Property> properties) {
+public record GameProfile(UUID uuid, String name, @Unmodifiable List<Property> properties) {
 
     /**
      * Returns new game profile from UUID, name and textures.
@@ -46,6 +47,10 @@ public record GameProfile(UUID uuid, String name, List<Property> properties) {
         Preconditions.checkNotNull(name, "Name can not be null");
         Preconditions.checkNotNull(properties, "Properties can not be null");
         properties = ImmutableList.copyOf(properties);
+    }
+
+    public GameProfile(UUID uuid, String name) {
+        this(uuid, name, Collections.emptyList());
     }
 
     /**

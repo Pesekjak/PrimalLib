@@ -1,5 +1,9 @@
 ![banner](.github/assets/logo.png)
 
+[![license](https://img.shields.io/github/license/pesekjak/primallib?style=for-the-badge&color=657185)](LICENCE)
+![release](https://img.shields.io/github/v/release/pesekjak/primallib?style=for-the-badge&color=edb228)
+![versions](https://img.shields.io/badge/supports-%201.20.4-8A2BE2?style=for-the-badge&color=0f9418)
+
 **PrimalLib** is a library designed specifically for
 _Paper_ (not Spigot) plugins, offering a range of additional
 features that are not included in the standard API,

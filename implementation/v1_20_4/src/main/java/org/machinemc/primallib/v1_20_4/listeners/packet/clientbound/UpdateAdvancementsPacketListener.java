@@ -1,8 +1,6 @@
 package org.machinemc.primallib.v1_20_4.listeners.packet.clientbound;
 
-import io.netty.buffer.Unpooled;
 import net.kyori.adventure.key.Key;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.entity.Player;
@@ -22,7 +20,6 @@ public class UpdateAdvancementsPacketListener implements PacketListener<Clientbo
 
     @Override
     public void onPacket(PacketEvent<ClientboundUpdateAdvancementsPacket> event) {
-
         AdvancementServiceImpl advancementService = (AdvancementServiceImpl) AdvancementService.get();
 
         Player player = event.getPlayer();

@@ -1,6 +1,8 @@
 package org.machinemc.primallib.v1_20_4.util;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import io.netty.buffer.Unpooled;
 import io.papermc.paper.advancement.AdvancementDisplay;
 import io.papermc.paper.adventure.PaperAdventure;
@@ -12,7 +14,10 @@ import net.minecraft.advancements.*;
 import net.minecraft.core.particles.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.RemoteChatSession;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.ProfilePublicKey;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.*;
@@ -33,9 +38,10 @@ import org.joml.Vector3f;
 import org.machinemc.primallib.advancement.Advancement;
 import org.machinemc.primallib.advancement.AdvancementCriteria;
 import org.machinemc.primallib.particle.ConfiguredParticle;
+import org.machinemc.primallib.profile.ChatSession;
+import org.machinemc.primallib.profile.GameProfile;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.time.Instant;
 import java.util.*;
 
@@ -140,6 +146,18 @@ public final class Converters {
         }
     }
 
+    @SuppressWarnings("UnstableApiUsage")
+    public static GameMode fromMinecraft(GameType gameType) {
+        if (gameType == null) return null;
+        return GameMode.getByValue(gameType.getId());
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static GameType toMinecraft(GameMode gameMode) {
+        if (gameMode == null) return null;
+        return GameType.byId(gameMode.getValue());
+    }
+
     public static ConfiguredParticle fromMinecraft(ParticleOptions particleOptions) {
         if (particleOptions == null) return null;
         return fromMinecraft(particleOptions, null);
@@ -187,6 +205,7 @@ public final class Converters {
     }
 
     public static Advancement fromMinecraft(AdvancementHolder holder) {
+        if (holder == null) return null;
         DisplayInfo displayInfo = holder.value().display().orElse(null);
 
         Key key = fromMinecraft(holder.id());
@@ -199,6 +218,7 @@ public final class Converters {
     }
 
     public static AdvancementHolder toMinecraft(Advancement advancement) {
+        if (advancement == null) return null;
         ResourceLocation resourceLocation = toMinecraft(advancement.key());
 
         Optional<ResourceLocation> parent = advancement.parent() != null ? Optional.of(toMinecraft(advancement.parent().key())) : Optional.empty();
@@ -225,10 +245,12 @@ public final class Converters {
     }
 
     public static AdvancementDisplay fromMinecraft(DisplayInfo displayInfo) {
+        if (displayInfo == null) return null;
         return displayInfo.paper;
     }
 
     public static DisplayInfo toMinecraft(AdvancementDisplay advancementDisplay, float x, float y) {
+        if (advancementDisplay == null) return null;
         NamespacedKey background = advancementDisplay.backgroundPath();
         DisplayInfo displayInfo = new DisplayInfo(
                 toMinecraft(advancementDisplay.icon()),
@@ -249,6 +271,7 @@ public final class Converters {
     }
 
     public static org.machinemc.primallib.advancement.AdvancementProgress fromMinecraft(AdvancementProgress progress) {
+        if (progress == null) return null;
         var completed = ImmutableList.copyOf(progress.getCompletedCriteria());
         var required = new ArrayList<>(completed);
         required.addAll(ImmutableList.copyOf(progress.getRemainingCriteria()));
@@ -268,6 +291,7 @@ public final class Converters {
     }
 
     public static AdvancementProgress toMinecraft(org.machinemc.primallib.advancement.AdvancementProgress progress) {
+        if (progress == null) return null;
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
 
         Map<String, CriterionProgress> criteriaProgresses = new HashMap<>();
@@ -280,6 +304,38 @@ public final class Converters {
         );
 
         return AdvancementProgress.fromNetwork(buf);
+    }
+
+    public static GameProfile fromMinecraft(com.mojang.authlib.GameProfile gameProfile) {
+        if (gameProfile == null) return null;
+        UUID uuid = gameProfile.getId();
+        String name = gameProfile.getName();
+        List<GameProfile.Property> properties = gameProfile.getProperties().entries().stream()
+                .map(Map.Entry::getValue)
+                .map(entry -> new GameProfile.Property(entry.name(), entry.value(), entry.signature()))
+                .toList();
+        return new GameProfile(uuid, name, properties);
+    }
+
+    public static com.mojang.authlib.GameProfile toMinecraft(GameProfile gameProfile) {
+        if (gameProfile == null) return null;
+        var minecraftProfile = new com.mojang.authlib.GameProfile(gameProfile.uuid(), gameProfile.name());
+        PropertyMap propertyMap = minecraftProfile.getProperties();
+        gameProfile.properties().stream()
+                .map(property -> new Property(property.name(), property.value(), property.signature()))
+                .forEach(property -> propertyMap.put(property.name(), property));
+        return minecraftProfile;
+    }
+
+    public static ChatSession fromMinecraft(RemoteChatSession.Data chatSession) {
+        if (chatSession == null) return null;
+        ProfilePublicKey.Data publicKeyData = chatSession.profilePublicKey();
+        return new ChatSession(chatSession.sessionId(), publicKeyData.expiresAt(), publicKeyData.key(), publicKeyData.keySignature());
+    }
+
+    public static RemoteChatSession.Data toMinecraft(ChatSession chatSession) {
+        if (chatSession == null) return null;
+        return new RemoteChatSession.Data(chatSession.id(), new ProfilePublicKey.Data(chatSession.expiresAt(), chatSession.key(), chatSession.signature()));
     }
 
 }

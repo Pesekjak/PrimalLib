@@ -10,7 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.machinemc.primallib.internal.PacketChannelHandler;
 import org.machinemc.primallib.internal.PacketListener;
-import org.machinemc.primallib.util.OwnerPlugin;
 import org.machinemc.primallib.v1_20_4.internal.PacketChannelHandlerImpl;
 
 import java.net.InetAddress;
@@ -40,7 +39,6 @@ public class PlayerLoginListener implements Listener {
 
         var handler = new PacketChannelHandlerImpl(player);
         playerConnection.channel.pipeline().addBefore("packet_handler", PacketChannelHandler.NAME, handler);
-        OwnerPlugin.get().getLogger().info("Successfully injected PrimalLib handler");
 
         packetListeners.forEach(handler::registerListener);
     }
