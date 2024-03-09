@@ -1,6 +1,6 @@
 ![banner](.github/assets/logo.png)
 
-[![license](https://img.shields.io/github/license/pesekjak/primallib?style=for-the-badge&color=657185)](LICENCE)
+[![license](https://img.shields.io/github/license/pesekjak/primallib?style=for-the-badge&color=657185)](LICENSE)
 ![release](https://img.shields.io/github/v/release/pesekjak/primallib?style=for-the-badge&color=edb228)
 ![versions](https://img.shields.io/badge/supports-%201.20.4-8A2BE2?style=for-the-badge&color=0f9418)
 
