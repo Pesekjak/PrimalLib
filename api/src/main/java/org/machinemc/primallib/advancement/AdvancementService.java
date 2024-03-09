@@ -65,6 +65,26 @@ public abstract class AdvancementService extends AutoRegisteringService<Advancem
     }
 
     /**
+     * Sends advancement changes to the player.
+     * <p>
+     * If advancements are being reset, the awarded progress will not cause
+     * the display of toasts for completed advancements.
+     * <p>
+     * This is usually used for sending initial advancements.
+     *
+     * @param player player to send the changes to
+     * @param reset whether to reset the advancements
+     * @param toAdd advancements to add
+     * @param toRemove advancements to remove
+     * @param progressMap new progress to send
+     */
+    public abstract void sendAdvancements(Player player,
+                                          boolean reset,
+                                          Collection<Advancement> toAdd,
+                                          Collection<Key> toRemove,
+                                          Map<Key, AdvancementProgress> progressMap);
+
+    /**
      * Sends advancements to the player.
      * <p>
      * This affects only the visuals of the advancement screen for the player.
@@ -84,7 +104,9 @@ public abstract class AdvancementService extends AutoRegisteringService<Advancem
      * @param player player to send the advancements for
      * @param advancements advancements
      */
-    public abstract void sendAdvancements(Player player, Collection<Advancement> advancements);
+    public void sendAdvancements(Player player, Collection<Advancement> advancements) {
+        sendAdvancements(player, false, advancements, Collections.emptyList(), Collections.emptyMap());
+    }
 
     /**
      * Removes advancements from player.
@@ -124,7 +146,9 @@ public abstract class AdvancementService extends AutoRegisteringService<Advancem
      * @param player player to remove the advancements from
      * @param names keys of the advancements
      */
-    public abstract void removeAdvancements(Player player, Collection<Key> names);
+    public void removeAdvancements(Player player, Collection<Key> names) {
+        sendAdvancements(player, false, Collections.emptyList(), names, Collections.emptyMap());
+    }
 
     /**
      * Returns all advancements currently visible by the player.
@@ -180,9 +204,25 @@ public abstract class AdvancementService extends AutoRegisteringService<Advancem
      * Updates progress of player's advancements.
      *
      * @param player player to update the progress for
-     * @param progress map of advancement keys and their new progress
+     * @param progressMap map of advancement keys and their new progress
      */
-    public abstract void sendProgress(Player player, Map<Key, AdvancementProgress> progress);
+    public void sendProgress(Player player, Map<Key, AdvancementProgress> progressMap) {
+        sendAdvancements(player, false, Collections.emptyList(), Collections.emptyList(), progressMap);
+    }
+
+    /**
+     * Resends all player's progress. When using this method all progress is reset
+     * and is replaced with new one provided in a map.
+     * <p>
+     * Compare to {@link #sendProgress(Player, Map)}, this method does not display the
+     * toast displays of completed advancements.
+     *
+     * @param player player
+     * @param progressMap new progress
+     */
+    public void resendProgress(Player player, Map<Key, AdvancementProgress> progressMap) {
+        sendAdvancements(player, true, getAdvancements(player), Collections.emptyList(), progressMap);
+    }
 
     @Override
     public Class<AdvancementService> getRegistrationClass() {

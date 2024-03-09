@@ -41,23 +41,14 @@ public class AdvancementServiceImpl extends AdvancementService implements Listen
     }
 
     @Override
-    public void sendAdvancements(Player player, Collection<Advancement> advancements) {
+    public void sendAdvancements(Player player, boolean reset, Collection<Advancement> toAdd, Collection<Key> toRemove, Map<Key, AdvancementProgress> progressMap) {
+        Map<ResourceLocation, net.minecraft.advancements.AdvancementProgress> map = new HashMap<>();
+        progressMap.forEach((key, progress) -> map.put(Converters.toMinecraft(key), Converters.toMinecraft(progress)));
         var packet = new ClientboundUpdateAdvancementsPacket(
-                true,
-                advancements.stream().map(Converters::toMinecraft).toList(),
-                Collections.emptySet(),
-                Collections.emptyMap()
-        );
-        PacketChannelHandlerImpl.sendPacket(player, packet, false);
-    }
-
-    @Override
-    public void removeAdvancements(Player player, Collection<Key> names) {
-        var packet = new ClientboundUpdateAdvancementsPacket(
-                false,
-                Collections.emptySet(),
-                names.stream().map(Converters::toMinecraft).collect(Collectors.toSet()),
-                Collections.emptyMap()
+                reset,
+                toAdd.stream().map(Converters::toMinecraft).toList(),
+                toRemove.stream().map(Converters::toMinecraft).collect(Collectors.toSet()),
+                map
         );
         PacketChannelHandlerImpl.sendPacket(player, packet, false);
     }
@@ -72,19 +63,6 @@ public class AdvancementServiceImpl extends AdvancementService implements Listen
     public Optional<Advancement> getAdvancement(Player player, Key key) {
         if (!cachedAdvancements.containsKey(player)) return Optional.empty();
         return Optional.ofNullable(cachedAdvancements.get(player).get(Converters.toMinecraft(key))).map(Converters::fromMinecraft);
-    }
-
-    @Override
-    public void sendProgress(Player player, Map<Key, AdvancementProgress> progressMap) {
-        Map<ResourceLocation, net.minecraft.advancements.AdvancementProgress> map = new HashMap<>();
-        progressMap.forEach((key, progress) -> map.put(Converters.toMinecraft(key), Converters.toMinecraft(progress)));
-        var packet = new ClientboundUpdateAdvancementsPacket(
-                false,
-                Collections.emptySet(),
-                Collections.emptySet(),
-                map
-        );
-        PacketChannelHandlerImpl.sendPacket(player, packet, false);
     }
 
 }
