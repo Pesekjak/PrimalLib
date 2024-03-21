@@ -16,6 +16,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.BiFunction;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Contains extensions for {@link org.bukkit.inventory.ItemStack} class.
@@ -38,7 +40,10 @@ public final class ItemStackExtensions {
      */
     @Contract(pure = true)
     public static CompoundBinaryTag getNBT(ItemStack itemStack) throws IOException {
-        return BinaryTagIO.reader().read(new ByteArrayInputStream(itemStack.serializeAsBytes()));
+        GZIPInputStream gzipIS = new GZIPInputStream(new ByteArrayInputStream(itemStack.serializeAsBytes()));
+        CompoundBinaryTag tag = BinaryTagIO.reader().read(gzipIS);
+        gzipIS.close();
+        return tag;
     }
 
     /**
@@ -50,7 +55,9 @@ public final class ItemStackExtensions {
     @Contract(pure = true)
     public static ItemStack createItem(CompoundBinaryTag nbt) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        BinaryTagIO.writer().write(nbt, os);
+        GZIPOutputStream gzipOS = new GZIPOutputStream(os);
+        BinaryTagIO.writer().write(nbt, gzipOS);
+        gzipOS.close();
         return ItemStack.deserializeBytes(os.toByteArray());
     }
 
