@@ -1,8 +1,12 @@
 package org.machinemc.primallib.profile;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import lombok.With;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -22,6 +26,30 @@ import java.util.UUID;
  */
 @With
 public record GameProfile(UUID uuid, String name, @Unmodifiable List<Property> properties) {
+
+    /**
+     * Returns copy of game profile from given Paper player profile.
+     *
+     * @param playerProfile player profile
+     * @return game profile
+     */
+    public static GameProfile fromPaper(PlayerProfile playerProfile) {
+        return new GameProfile(
+                playerProfile.getId(),
+                playerProfile.getName(),
+                playerProfile.getProperties().stream().map(Property::fromPaper).toList()
+        );
+    }
+
+    /**
+     * Returns copy of game profile from player.
+     *
+     * @param player player
+     * @return game profile of the player
+     */
+    public static GameProfile fromPlayer(Player player) {
+        return fromPaper(player.getPlayerProfile());
+    }
 
     /**
      * Returns new game profile from UUID, name and textures.
@@ -90,6 +118,17 @@ public record GameProfile(UUID uuid, String name, @Unmodifiable List<Property> p
         return withProperties(properties.stream().filter(property -> !property.name.equals(name)).toList());
     }
 
+    /**
+     * Returns copy of this game profile as Paper player profile.
+     *
+     * @return player profile
+     */
+    public PlayerProfile asPaper() {
+        PlayerProfile profile = (PlayerProfile) Bukkit.createProfileExact(uuid, name).clone();
+        profile.clearProperties();
+        profile.setProperties(properties.stream().map(Property::asPaper).toList());
+        return profile;
+    }
 
     /**
      * Creates offline mode GameProfile from a player's nickname the same way Notchian server does.
@@ -112,6 +151,16 @@ public record GameProfile(UUID uuid, String name, @Unmodifiable List<Property> p
      */
     public record Property(String name, String value, @Nullable String signature) {
 
+        /**
+         * Creates property from Paper property.
+         *
+         * @param property property
+         * @return copy of given property
+         */
+        public static Property fromPaper(ProfileProperty property) {
+            return new Property(property.getName(), property.getValue(), property.getSignature());
+        }
+
         public Property(String name, String value) {
             this(name, value, null);
         }
@@ -119,6 +168,15 @@ public record GameProfile(UUID uuid, String name, @Unmodifiable List<Property> p
         public Property {
             Preconditions.checkNotNull(name, "Name of the property can not be null");
             Preconditions.checkNotNull(value, "Value of the property can not be null");
+        }
+
+        /**
+         * Returns copy of this property as Paper property.
+         *
+         * @return property
+         */
+        public ProfileProperty asPaper() {
+            return new ProfileProperty(name, value, signature);
         }
 
     }

@@ -1,22 +1,19 @@
 package org.machinemc.primallib.inventory;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.google.gson.JsonParser;
 import net.kyori.adventure.nbt.BinaryTagIO;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.Contract;
+import org.machinemc.primallib.profile.GameProfile;
 import org.machinemc.primallib.profile.PlayerTextures;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.util.Base64;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.BiFunction;
 
@@ -40,29 +37,21 @@ public final class ItemStackExtensions {
      * @return NBT of the item stack
      */
     @Contract(pure = true)
-    public static CompoundBinaryTag getNBT(ItemStack itemStack) {
-        try {
-            return BinaryTagIO.reader().read(new ByteArrayInputStream(itemStack.serializeAsBytes()));
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
+    public static CompoundBinaryTag getNBT(ItemStack itemStack) throws IOException {
+        return BinaryTagIO.reader().read(new ByteArrayInputStream(itemStack.serializeAsBytes()));
     }
 
     /**
      * Creates Item stack from its NBT.
      *
-     * @param NBT NBT of the item.
+     * @param nbt NBT of the item.
      * @return item stack from given NBT
      */
     @Contract(pure = true)
-    public static ItemStack createItem(CompoundBinaryTag NBT) {
-        try {
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            BinaryTagIO.writer().write(NBT, os);
-            return ItemStack.deserializeBytes(os.toByteArray());
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
+    public static ItemStack createItem(CompoundBinaryTag nbt) throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        BinaryTagIO.writer().write(nbt, os);
+        return ItemStack.deserializeBytes(os.toByteArray());
     }
 
     /**
@@ -91,25 +80,14 @@ public final class ItemStackExtensions {
         ItemMeta meta = itemStack.getItemMeta();
         if (!(meta instanceof SkullMeta skullMeta)) return itemStack;
 
-        PlayerProfile profile = Bukkit.createProfile(UUID.fromString(texture));
-        String decoded = new String(Base64.getDecoder().decode(texture));
-        URL skinUrl;
-        try {
-            skinUrl = new URI(JsonParser.parseString(decoded)
-                    .getAsJsonObject()
-                    .getAsJsonObject("textures")
-                    .getAsJsonObject("SKIN")
-                    .get("url").getAsString())
-                    .toURL();
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
-        }
-        profile.getTextures().setSkin(skinUrl);
+        GameProfile gameProfile = new GameProfile(
+                UUID.nameUUIDFromBytes(texture.getBytes(StandardCharsets.UTF_8)),
+                "",
+                List.of(new GameProfile.Property(PlayerTextures.TEXTURES, texture, null)));
 
-        skullMeta.setPlayerProfile(profile);
+        skullMeta.setPlayerProfile(gameProfile.asPaper());
 
-        ItemStack textured = itemStack.clone();
-        textured.setItemMeta(skullMeta);
+        itemStack.setItemMeta(skullMeta);
 
         return itemStack;
     }

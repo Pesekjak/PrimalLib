@@ -76,4 +76,14 @@ public final class UUIDUtils {
         return Optional.of(UUID.fromString(matcher.replaceFirst(DASHES_UUID_REPLACE)));
     }
 
+    /**
+     * Returns UUID as a string without dashes.
+     *
+     * @param uuid uuid
+     * @return uuid without dashes
+     */
+    public static String undashedUUID(UUID uuid) {
+        return uuid.toString().replaceAll("-", "");
+    }
+
 }

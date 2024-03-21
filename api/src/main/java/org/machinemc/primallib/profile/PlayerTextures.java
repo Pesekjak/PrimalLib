@@ -1,17 +1,20 @@
 package org.machinemc.primallib.profile;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import com.google.common.io.BaseEncoding;
+import com.google.gson.*;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.machinemc.primallib.util.UUIDUtils;
 
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Base64;
-import java.util.Optional;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.*;
 
 /**
  * Represents player's skin textures.
@@ -25,12 +28,46 @@ public record PlayerTextures(String value,
                              @Nullable String signature,
                              URL skinURL,
                              @Nullable URL capeURL,
-                             org.bukkit.profile.PlayerTextures.SkinModel skinModel) {
+                             @Nullable org.bukkit.profile.PlayerTextures.SkinModel skinModel) {
+
+    /**
+     * Name of the textures game profile property.
+     */
+    public static final String TEXTURES = "textures";
+
+    /**
+     * Returns new instance of Player Textures builder.
+     *
+     * @return player textures builder
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * Returns player textures from Bukkit player textures.
+     *
+     * @param bukkit Bukkit player textures
+     * @return player textures
+     * @deprecated Bukkit does not expose the signature data, and thus it is lost
+     * during the conversion
+     */
+    @Deprecated
+    public static PlayerTextures fromBukkit(org.bukkit.profile.PlayerTextures bukkit) {
+        try {
+            return builder()
+                    .timestamp(Instant.ofEpochMilli(bukkit.getTimestamp()))
+                    .skin(bukkit.getSkin())
+                    .cape(bukkit.getCape())
+                    .build();
+        } catch (MalformedURLException exception) {
+            throw new IllegalStateException(exception);
+        }
+    }
 
     public PlayerTextures {
         Preconditions.checkNotNull(value, "Value of the skin can not be null");
         Preconditions.checkNotNull(skinURL, "Skin url can not be null");
-        Preconditions.checkNotNull(skinModel, "Skin model can not be null");
     }
 
     /**
@@ -43,7 +80,7 @@ public record PlayerTextures(String value,
      */
     public static Optional<PlayerTextures> create(GameProfile gameProfile) throws MalformedURLException, JsonSyntaxException {
         GameProfile.Property property = gameProfile.properties().stream()
-                .filter(p -> p.name().equals("textures"))
+                .filter(p -> p.name().equals(TEXTURES))
                 .findFirst()
                 .orElse(null);
         if (property == null) return Optional.empty();
@@ -60,7 +97,7 @@ public record PlayerTextures(String value,
      * @throws IllegalStateException if the provided property is not player textures property
      */
     public static PlayerTextures create(GameProfile.Property property) throws MalformedURLException, JsonSyntaxException {
-        if (!property.name().equals("textures"))
+        if (!property.name().equals(TEXTURES))
             throw new IllegalStateException("Provided property is not player textures property");
         return create(property.value(), property.signature());
     }
@@ -80,7 +117,7 @@ public record PlayerTextures(String value,
         if (!decoded.isJsonObject())
             throw new JsonSyntaxException("Texture value of the skin contains malformed JSON format");
 
-        JsonObject textures = decoded.getAsJsonObject().getAsJsonObject("textures");
+        JsonObject textures = decoded.getAsJsonObject().getAsJsonObject(TEXTURES);
         JsonObject skinJson = textures.getAsJsonObject("SKIN");
 
         URL skinURL = URI.create(skinJson.get("url").getAsString()).toURL();
@@ -96,7 +133,7 @@ public record PlayerTextures(String value,
                     .getAsString()
                     .toUpperCase());
         } catch (Exception exception) {
-            skinModel = org.bukkit.profile.PlayerTextures.SkinModel.CLASSIC;
+            skinModel = null;
         }
 
         return new PlayerTextures(value, signature, skinURL, capeURL, skinModel);
@@ -118,7 +155,101 @@ public record PlayerTextures(String value,
      * @return property for these textures
      */
     public GameProfile.Property asProperty() {
-        return new GameProfile.Property("textures", value, signature);
+        return new GameProfile.Property(TEXTURES, value, signature);
+    }
+
+    /**
+     * Returns this player textures as Bukkit player textures.
+     *
+     * @return player textures
+     * @deprecated Bukkit does not expose the signature data, and thus it is lost
+     * during the conversion
+     */
+    @Deprecated
+    public org.bukkit.profile.PlayerTextures asBukkit() {
+        GameProfile gameProfile = new GameProfile(new UUID(0, 0), "", List.of(asProperty()));
+        return gameProfile.asPaper().getTextures();
+    }
+
+    /**
+     * Builder class for Player Textures.
+     * <p>
+     * To create signed player textures use {@link PlayerTextures#create(String, String)}.
+     *
+     * @apiNote Signing the texture might not work because signature is for the JSON text,
+     * which might have different formatting than JSON provided by the builder.
+     */
+    @Setter
+    @Accessors(fluent = true, chain = true)
+    public static class Builder {
+
+        private static final Gson GSON = new Gson();
+
+        @ApiStatus.Experimental
+        private @Nullable String signature;
+
+        private @Nullable Instant timestamp = Instant.now();
+        private @Nullable UUID profileID = new UUID(0, 0);
+        private @Nullable String name = "";
+
+        private URL skin;
+        private @Nullable URL cape;
+
+        private @Nullable org.bukkit.profile.PlayerTextures.SkinModel skinModel;
+
+        private Builder() {
+        }
+
+        /**
+         * Creates the player textures from this builder.
+         *
+         * @return player textures
+         * @throws MalformedURLException if the skin URL is malformed
+         */
+        public PlayerTextures build() throws MalformedURLException {
+            return PlayerTextures.create(createProperty());
+        }
+
+        private GameProfile.Property createProperty() {
+            Preconditions.checkNotNull(skin, "Skin URL can not be null");
+            JsonObject value = new JsonObject();
+
+            if (timestamp != null) value.addProperty("timestamp", timestamp.toEpochMilli());
+            if (profileID != null) value.addProperty("profileId", UUIDUtils.undashedUUID(profileID));
+            if (name != null) value.addProperty("profileName", name);
+
+            value.addProperty("signatureRequired", signature != null);
+
+            JsonObject textures = getTexturesJSON();
+
+            value.add(TEXTURES, textures);
+
+            String valueJSON = GSON.toJson(value);
+            String valueString = BaseEncoding.base64().encode(valueJSON.getBytes(StandardCharsets.UTF_8));
+
+            return new GameProfile.Property(TEXTURES, valueString, signature);
+        }
+
+        private JsonObject getTexturesJSON() {
+            JsonObject textures = new JsonObject();
+
+            JsonObject skin = new JsonObject();
+            skin.addProperty("url", this.skin.toString());
+            if (skinModel != null) {
+                JsonObject metadata = new JsonObject();
+                metadata.addProperty("model", skinModel.name().toLowerCase());
+                skin.add("metadata", metadata);
+            }
+            textures.add("SKIN", skin);
+
+            if (cape != null) {
+                JsonObject cape = new JsonObject();
+                cape.addProperty("url", this.cape.toString());
+                textures.add("CAPE", cape);
+            }
+            return textures;
+        }
+
     }
 
 }

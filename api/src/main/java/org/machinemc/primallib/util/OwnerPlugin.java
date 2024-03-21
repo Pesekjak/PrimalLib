@@ -13,6 +13,10 @@ public final class OwnerPlugin {
 
     private static Plugin owner;
 
+    private OwnerPlugin() {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Returns the plugin using the PrimalLib.
      *

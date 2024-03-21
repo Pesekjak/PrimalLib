@@ -155,8 +155,10 @@ public record PlayerInfo(GameProfile gameProfile,
      * @return copy of this game profile
      */
     @Contract(pure = true)
-    public PlayerInfo withTextures(PlayerTextures playerTextures) {
-        return withGameProfile(gameProfile.removeProperty("textures").addProperty(playerTextures.asProperty()));
+    public PlayerInfo withTextures(@Nullable PlayerTextures playerTextures) {
+        GameProfile without = gameProfile.removeProperty(PlayerTextures.TEXTURES);
+        if (playerTextures == null) return withGameProfile(without);
+        return withGameProfile(without.addProperty(playerTextures.asProperty()));
     }
 
     /**
