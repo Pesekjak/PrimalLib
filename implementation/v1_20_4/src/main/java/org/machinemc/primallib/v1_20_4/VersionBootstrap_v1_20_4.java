@@ -12,6 +12,7 @@ import org.machinemc.primallib.v1_20_4.impl.profile.PlayerInfoServiceImpl;
 import org.machinemc.primallib.v1_20_4.impl.util.MagicNumberServiceImpl;
 import org.machinemc.primallib.v1_20_4.listeners.bukkit.PlayerLoginListener;
 import org.machinemc.primallib.v1_20_4.listeners.packet.clientbound.*;
+import org.machinemc.primallib.v1_20_4.listeners.packet.serverbound.SeenAdvancementsPacketListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +35,16 @@ public class VersionBootstrap_v1_20_4 implements VersionBootstrap {
 
         // Packet Listeners
         List<PacketListener<?>> listeners = new ArrayList<>();
+
+        // Client-bound
         listeners.add(new PlayerInfoRemovePacketListener());
         listeners.add(new PlayerInfoUpdatePacketListener());
         listeners.add(new RegistryDataPacketListener());
         listeners.add(new UpdateAdvancementsPacketListener());
         listeners.add(new UpdateTagsPacketListener());
+
+        // Server-bound
+        listeners.add(new SeenAdvancementsPacketListener());
 
         // Bukkit Listeners
         Bukkit.getPluginManager().registerEvents(new PlayerLoginListener(listeners), plugin); // registers packet listeners

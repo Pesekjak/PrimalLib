@@ -67,9 +67,9 @@ public class PlayerAdvancementsUpdateEvent extends PlayerEvent implements Cancel
                                          boolean async) {
         super(Preconditions.checkNotNull(who, "Player can not be null"), async);
         this.reset = reset;
-        this.toAdd = new ArrayList<>(toAdd);
-        this.toRemove = new ArrayList<>(toRemove);
-        this.progressMap = new HashMap<>(progressMap);
+        this.toAdd = new ArrayList<>(Preconditions.checkNotNull(toAdd, "Advancements to add can not be null"));
+        this.toRemove = new ArrayList<>(Preconditions.checkNotNull(toRemove, "Advancements to remove can not be null"));
+        this.progressMap = new HashMap<>(Preconditions.checkNotNull(progressMap, "Advancement progress map can not be null"));
     }
 
     @Override
