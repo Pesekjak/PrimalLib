@@ -1,20 +1,25 @@
 package org.machinemc.primallib.v1_20_4.internal;
 
+import com.google.common.collect.Lists;
 import io.netty.channel.Channel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.minecraft.network.protocol.BundlePacket;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.machinemc.primallib.internal.PacketChannelHandler;
 
 import java.net.InetSocketAddress;
+import java.util.List;
 import java.util.Optional;
 
 @Getter
 @RequiredArgsConstructor
-public class PacketChannelHandlerImpl extends PacketChannelHandler<Packet<?>> {
+public class PacketChannelHandlerImpl extends PacketChannelHandler<Packet<?>, BundlePacket<?>> {
 
     private final CraftPlayer owner;
 
@@ -50,6 +55,23 @@ public class PacketChannelHandlerImpl extends PacketChannelHandler<Packet<?>> {
     @Override
     protected void sendPacket(Packet<?> packet) {
         owner.getHandle().connection.send(packet);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Class<BundlePacket<?>> getBundlePacketType() {
+        return (Class<BundlePacket<?>>) (Class<?>) BundlePacket.class;
+    }
+
+    @Override
+    protected List<Packet<?>> unwrap(BundlePacket<?> bundlePacket) {
+        return Lists.newArrayList(bundlePacket.subPackets());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected BundlePacket<?> bundle(List<Packet<?>> packets) {
+        return new ClientboundBundlePacket((Iterable<Packet<ClientGamePacketListener>>) packets.iterator());
     }
 
 }

@@ -19,9 +19,10 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Packet channel logic shared across all versions.
  *
- * @param <T> packet type
+ * @param <Packet> packet type
+ * @param <Bundle> bundle packet type
  */
-public abstract class PacketChannelHandler<T> extends ChannelDuplexHandler {
+public abstract class PacketChannelHandler<Packet, Bundle /* extends Packet */> extends ChannelDuplexHandler {
 
     /**
      * Unique name for the channel that can be used for channel registration.
@@ -42,7 +43,7 @@ public abstract class PacketChannelHandler<T> extends ChannelDuplexHandler {
         NAME = uniqueName;
     }
 
-    private final List<T> toSkip = Collections.synchronizedList(new ArrayList<>());
+    private final List<Packet> toSkip = Collections.synchronizedList(new ArrayList<>());
 
     private final Multimap<Class<?>, PacketListener<?>> clientBoundListeners = Multimaps.newMultimap(
             new ConcurrentHashMap<>(),
@@ -101,7 +102,7 @@ public abstract class PacketChannelHandler<T> extends ChannelDuplexHandler {
      * @param packet packet to send
      * @param skipListeners whether the packet should be ignored by the packet listeners
      */
-    public void sendPacket(T packet, boolean skipListeners) {
+    public void sendPacket(Packet packet, boolean skipListeners) {
         if (skipListeners) toSkip.add(packet);
         sendPacket(packet);
     }
@@ -115,7 +116,7 @@ public abstract class PacketChannelHandler<T> extends ChannelDuplexHandler {
      *          This method needs to implement the logic of
      *          sending the packet.
      */
-    protected abstract void sendPacket(T packet);
+    protected abstract void sendPacket(Packet packet);
 
     /**
      * Returns owner player of this handler.
@@ -124,16 +125,42 @@ public abstract class PacketChannelHandler<T> extends ChannelDuplexHandler {
      */
     protected abstract Player getOwner();
 
+    /**
+     * Returns type of bundle packet.
+     *
+     * @return bundle packet type
+     */
+    protected abstract Class<Bundle> getBundlePacketType();
+
+    /**
+     * Unwraps all packets in a bundle packet.
+     *
+     * @param bundle bundle packet
+     * @return list of packets inside a bundle packet
+     */
+    protected abstract List<Packet> unwrap(Bundle bundle);
+
+    /**
+     * Creates bundle from given packets.
+     *
+     * @param packets packets to bundle
+     * @return bundle
+     */
+    protected abstract Bundle bundle(List<Packet> packets);
+
     // Client-bound packets (S -> C)
     @Override
     @SuppressWarnings("unchecked")
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        T packet = (T) msg;
+        Packet packet = (Packet) msg;
 
         if (toSkip.contains(packet)) {
             super.write(ctx, packet, promise);
             return;
         }
+
+        if (getBundlePacketType().isInstance(packet))
+            packet = processBundle((Bundle) packet, PacketListener.Type.CLIENT_BOUND);
 
         PacketEvent<?> event = new PacketEvent<>(getOwner(), this, packet);
         fireListeners(event, PacketListener.Type.CLIENT_BOUND);
@@ -146,18 +173,34 @@ public abstract class PacketChannelHandler<T> extends ChannelDuplexHandler {
     @Override
     @SuppressWarnings("unchecked")
     public void channelRead(@NotNull ChannelHandlerContext ctx, @NotNull Object msg) throws Exception {
-        T packet = (T) msg;
+        Packet packet = (Packet) msg;
 
         if (toSkip.contains(packet)) {
             super.channelRead(ctx, packet);
             return;
         }
 
+        if (getBundlePacketType().isInstance(packet))
+            packet = processBundle((Bundle) packet, PacketListener.Type.SERVER_BOUND);
+
         PacketEvent<?> event = new PacketEvent<>(getOwner(), this, packet);
         fireListeners(event, PacketListener.Type.SERVER_BOUND);
 
         if (event.isCancelled()) return;
         super.channelRead(ctx, event.getPacket());
+    }
+
+    @SuppressWarnings("unchecked")
+    private Packet processBundle(Bundle bundle, PacketListener.Type type) throws Exception {
+        List<Packet> bundled = unwrap(bundle);
+        List<Packet> future = new ArrayList<>();
+        for (Packet next : bundled) {
+            PacketEvent<?> event = new PacketEvent<>(getOwner(), this, next);
+            fireListeners(event, type);
+            if (event.isCancelled()) continue;
+            future.add(next);
+        }
+        return (Packet) bundle(future);
     }
 
     @SuppressWarnings("unchecked")
