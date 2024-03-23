@@ -1,13 +1,16 @@
 ![banner](.github/assets/logo.png)
 
-[![license](https://img.shields.io/github/license/pesekjak/primallib?style=for-the-badge&color=657185)](LICENSE)
-![release](https://img.shields.io/github/v/release/pesekjak/primallib?style=for-the-badge&color=edb228)
-![versions](https://img.shields.io/badge/supports-%201.20.4-8A2BE2?style=for-the-badge&color=0f9418)
+<p align="center"><b>PrimalLib</b> is a library designed
+specifically for <i>Paper</i> (not Spigot) plugins,
+offering a range of additional features that are not included
+in the standard API, developed with flexibility and
+efficiency in mind.</p>
 
-**PrimalLib** is a library designed specifically for
-_Paper_ (not Spigot) plugins, offering a range of additional
-features that are not included in the standard API,
-developed with flexibility and efficiency in mind.
+<p align="center">
+    <img src="https://img.shields.io/github/license/pesekjak/primallib?style=for-the-badge&color=107185" alt="LICENSE">
+    <img src="https://img.shields.io/github/v/release/pesekjak/primallib?style=for-the-badge&color=edb228" alt="RELEASE">
+    <img src="https://img.shields.io/badge/supports-%201.20.4-8A2BE2?style=for-the-badge&color=0f9418" alt="SUPPORTS">
+</p>
 
 ---
 
