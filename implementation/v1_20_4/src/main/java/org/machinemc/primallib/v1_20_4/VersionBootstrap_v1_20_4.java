@@ -8,6 +8,7 @@ import org.machinemc.primallib.internal.PacketListener;
 import org.machinemc.primallib.internal.VersionBootstrap;
 import org.machinemc.primallib.util.AutoRegisteringService;
 import org.machinemc.primallib.v1_20_4.impl.advancement.AdvancementServiceImpl;
+import org.machinemc.primallib.v1_20_4.impl.messaging.PluginMessageServiceImpl;
 import org.machinemc.primallib.v1_20_4.impl.profile.PlayerInfoServiceImpl;
 import org.machinemc.primallib.v1_20_4.impl.util.MagicNumberServiceImpl;
 import org.machinemc.primallib.v1_20_4.listeners.bukkit.PlayerLoginListener;
@@ -26,6 +27,7 @@ public class VersionBootstrap_v1_20_4 implements VersionBootstrap {
         // Services
         List<AutoRegisteringService<?>> services = new ArrayList<>();
         services.add(new AdvancementServiceImpl().register());
+        services.add(new PluginMessageServiceImpl().register());
         services.add(new PlayerInfoServiceImpl().register());
         services.add(new MagicNumberServiceImpl().register());
 
