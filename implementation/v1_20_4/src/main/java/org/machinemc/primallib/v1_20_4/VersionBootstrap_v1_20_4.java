@@ -40,6 +40,7 @@ public class VersionBootstrap_v1_20_4 implements VersionBootstrap {
         listeners.add(new PlayerInfoRemovePacketListener());
         listeners.add(new PlayerInfoUpdatePacketListener());
         listeners.add(new RegistryDataPacketListener());
+        listeners.add(new ServerDataPacketListener());
         listeners.add(new UpdateAdvancementsPacketListener());
         listeners.add(new UpdateTagsPacketListener());
 
