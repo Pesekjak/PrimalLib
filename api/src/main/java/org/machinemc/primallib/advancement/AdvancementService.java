@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.intellij.lang.annotations.Subst;
+import org.jetbrains.annotations.Nullable;
 import org.machinemc.primallib.util.AutoRegisteringService;
 import org.machinemc.primallib.util.OwnerPlugin;
 import org.machinemc.primallib.version.MinecraftVersion;
@@ -223,6 +224,24 @@ public abstract class AdvancementService extends AutoRegisteringService<Advancem
     public void resendProgress(Player player, Map<Key, AdvancementProgress> progressMap) {
         sendAdvancements(player, true, getAdvancements(player), Collections.emptyList(), progressMap);
     }
+
+    /**
+     * Indicate that the client should switch advancement tab.
+     *
+     * @param player player
+     * @param advancement advancement in the tab the player should switch to
+     */
+    public void selectAdvancementsTab(Player player, Advancement advancement) {
+        selectAdvancementsTab(player, advancement.root(player).map(Advancement::key).orElse(null));
+    }
+
+    /**
+     * Indicate that the client should switch advancement tab.
+     *
+     * @param player player
+     * @param tab key of the tab the player should switch to
+     */
+    public abstract void selectAdvancementsTab(Player player, @Nullable Key tab);
 
     @Override
     public Class<AdvancementService> getRegistrationClass() {

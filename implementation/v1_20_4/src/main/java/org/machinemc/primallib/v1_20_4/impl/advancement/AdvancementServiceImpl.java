@@ -2,6 +2,7 @@ package org.machinemc.primallib.v1_20_4.impl.advancement;
 
 import net.kyori.adventure.key.Key;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.network.protocol.game.ClientboundSelectAdvancementsTabPacket;
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
 import net.minecraft.resources.ResourceLocation;
 import org.bukkit.entity.Player;
@@ -9,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.Nullable;
 import org.machinemc.primallib.advancement.Advancement;
 import org.machinemc.primallib.advancement.AdvancementProgress;
 import org.machinemc.primallib.advancement.AdvancementService;
@@ -63,6 +65,15 @@ public class AdvancementServiceImpl extends AdvancementService implements Listen
     public Optional<Advancement> getAdvancement(Player player, Key key) {
         if (!cachedAdvancements.containsKey(player)) return Optional.empty();
         return Optional.ofNullable(cachedAdvancements.get(player).get(Converters.toMinecraft(key))).map(Converters::fromMinecraft);
+    }
+
+    @Override
+    public void selectAdvancementsTab(Player player, @Nullable Key tab) {
+        PacketChannelHandlerImpl.sendPacket(
+                player,
+                new ClientboundSelectAdvancementsTabPacket(tab != null ? Converters.toMinecraft(tab) : null),
+                false
+        );
     }
 
 }
