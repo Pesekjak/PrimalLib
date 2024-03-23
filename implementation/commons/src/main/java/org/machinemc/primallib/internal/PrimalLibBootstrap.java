@@ -7,7 +7,7 @@ import io.papermc.paper.plugin.bootstrap.PluginProviderContext;
 import lombok.SneakyThrows;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.machinemc.primallib.util.OwnerPlugin;
+import org.machinemc.primallib.util.OwnerPluginAccessor;
 import org.machinemc.primallib.util.PluginUtils;
 import org.yaml.snakeyaml.Yaml;
 
@@ -50,7 +50,7 @@ public class PrimalLibBootstrap implements PluginBootstrap {
     @SneakyThrows
     public @NotNull JavaPlugin createPlugin(@NotNull PluginProviderContext context) {
         JavaPlugin plugin = bootstrapper.createPlugin(context);
-        OwnerPlugin.initialize(plugin);
+        OwnerPluginAccessor.inject(plugin);
         PluginUtils.silentlyEnable(plugin);
         VersionBootstrap.Selector.create().select().bootstrap(plugin, context);
         PluginUtils.silentlyDisable(plugin);
