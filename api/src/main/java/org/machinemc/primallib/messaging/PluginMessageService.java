@@ -21,7 +21,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Service that can manage
+ * Service that makes it much easier to manage plugin messages, including channels
+ * that can not be registered using only the API.
  */
 @VersionDependant
 public abstract class PluginMessageService extends AutoRegisteringService<PluginMessageService> {
@@ -29,7 +30,7 @@ public abstract class PluginMessageService extends AutoRegisteringService<Plugin
     /**
      * Returns instance of plugin message service for currently running server.
      *
-     * @return player info service
+     * @return plugin message service
      */
     public static PluginMessageService get() {
         var provider = Bukkit.getServicesManager().getRegistration(PluginMessageService.class);

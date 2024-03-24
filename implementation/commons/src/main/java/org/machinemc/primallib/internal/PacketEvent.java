@@ -15,13 +15,13 @@ import org.bukkit.event.Cancellable;
 public final class PacketEvent<T> implements Cancellable {
 
     private final Player player;
-    private final PacketChannelHandler<T> channel;
+    private final PacketChannelHandler<T, ?> channel;
     private T packet;
 
     @Setter
     private boolean cancelled = false;
 
-    public PacketEvent(Player player, PacketChannelHandler<T> channel, T packet) {
+    public PacketEvent(Player player, PacketChannelHandler<T, ?> channel, T packet) {
         this.player = Preconditions.checkNotNull(player, "Player can not be null");
         this.channel = Preconditions.checkNotNull(channel, "Channel can not be null");
         this.packet = Preconditions.checkNotNull(packet, "Packet can not be null");

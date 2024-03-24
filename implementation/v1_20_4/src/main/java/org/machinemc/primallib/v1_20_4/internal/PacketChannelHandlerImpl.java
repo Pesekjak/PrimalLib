@@ -71,7 +71,7 @@ public class PacketChannelHandlerImpl extends PacketChannelHandler<Packet<?>, Bu
     @Override
     @SuppressWarnings("unchecked")
     protected BundlePacket<?> bundle(List<Packet<?>> packets) {
-        return new ClientboundBundlePacket((Iterable<Packet<ClientGamePacketListener>>) packets.iterator());
+        return new ClientboundBundlePacket((Iterable<Packet<ClientGamePacketListener>>) (Iterable<?>) packets);
     }
 
 }
