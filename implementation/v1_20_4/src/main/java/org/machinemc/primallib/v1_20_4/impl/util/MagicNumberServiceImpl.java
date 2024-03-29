@@ -15,12 +15,12 @@ public class MagicNumberServiceImpl extends MagicNumberService {
 
     @Override
     public BlockData getBlockDataFromID(int id) {
-        return Converters.fromMinecraft(Block.BLOCK_STATE_REGISTRY.byId(id));
+        return Converters.fromMinecraft(Block.stateById(id));
     }
 
     @Override
     public int getIDFromBlockData(BlockData blockData) {
-        return Block.BLOCK_STATE_REGISTRY.getId(Converters.toMinecraft(blockData));
+        return Block.getId(Converters.toMinecraft(blockData));
     }
 
     @Override

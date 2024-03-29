@@ -1,0 +1,122 @@
+package org.machinemc.primallib.player;
+
+import com.google.common.base.Preconditions;
+import io.papermc.paper.math.BlockPosition;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.sign.Side;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.AbstractHorseInventory;
+import org.machinemc.primallib.entity.EntityLike;
+import org.machinemc.primallib.util.AutoRegisteringService;
+import org.machinemc.primallib.version.MinecraftVersion;
+import org.machinemc.primallib.version.VersionDependant;
+import org.machinemc.primallib.world.BlockAction;
+
+/**
+ * Service for additional interactions with players not available in the API that
+ * did not fit anywhere else.
+ */
+@VersionDependant
+public abstract class PlayerActionService extends AutoRegisteringService<PlayerActionService> {
+
+    /**
+     * Returns instance of player action service for currently running server.
+     *
+     * @return player action service
+     */
+    public static PlayerActionService get() {
+        var provider = Bukkit.getServicesManager().getRegistration(PlayerActionService.class);
+        Preconditions.checkNotNull(provider, "Plugin Message service is not supported on " + MinecraftVersion.get() + " server");
+        return provider.getProvider();
+    }
+
+    /**
+     * Opens sign at given position to player.
+     * <p>
+     * Compare to the method in the API, sign at this position can be fully
+     * client-sided and used for sign input menus.
+     * <p>
+     * Should only be used for packet/clientside related stuff.
+     * Not intended for modifying server side state.
+     *
+     * @param player player to open the sign for
+     * @param position position of the sign
+     * @param side side of the sign to open
+     * @see org.machinemc.primallib.event.block.PlayerSignChangeEvent
+     */
+    @SuppressWarnings("UnstableApiUsage")
+    public abstract void openSign(Player player, BlockPosition position, Side side);
+
+    /**
+     * Changes camera spectator target of player to another entity.
+     * <p>
+     * Should only be used for packet/clientside related stuff.
+     * Not intended for modifying server side state.
+     *
+     * @param player player
+     * @param entityLike new target
+     */
+    public abstract void setCamera(Player player, EntityLike entityLike);
+
+    /**
+     * Resets camera target for given player.
+     *
+     * @param player player to reset the camera for
+     */
+    public void resetCamera(Player player) {
+        setCamera(player, EntityLike.fromBukkit(player));
+    }
+
+    /**
+     * Opens horse inventory for the player.
+     *
+     * @param player player to open the inventory for
+     * @param inventory inventory to open
+     */
+    public abstract void openHorseInventory(Player player, AbstractHorseInventory inventory);
+
+    /**
+     * Modifies the field of view, like a speed potion. Defaults to 0.1 for players.
+     *
+     * @param player player
+     * @param fov new fov
+     */
+    public abstract void setFOVModifier(Player player, float fov);
+
+    /**
+     * Plays block action for player on given block.
+     * <p>
+     * Should only be used for packet/clientside related stuff.
+     * Not intended for modifying server side state.
+     *
+     * @param player player
+     * @param block block
+     * @param blockAction block action to play
+     */
+    @SuppressWarnings("UnstableApiUsage")
+    public void playBlockAction(Player player, Block block, BlockAction blockAction) {
+        playBlockAction(player, block.getLocation().toBlock(), block.getType(), blockAction);
+    }
+
+    /**
+     * Plays block action for player on given block.
+     * <p>
+     * Should only be used for packet/clientside related stuff.
+     * Not intended for modifying server side state.
+     *
+     * @param player player
+     * @param position position of the block
+     * @param block material of the block
+     * @param blockAction block action to play
+     */
+    @SuppressWarnings("UnstableApiUsage")
+    public abstract void playBlockAction(Player player, BlockPosition position, Material block, BlockAction blockAction);
+
+    @Override
+    public Class<PlayerActionService> getRegistrationClass() {
+        return PlayerActionService.class;
+    }
+
+}

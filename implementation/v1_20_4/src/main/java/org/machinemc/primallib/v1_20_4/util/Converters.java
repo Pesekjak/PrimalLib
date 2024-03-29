@@ -6,11 +6,14 @@ import com.mojang.authlib.properties.PropertyMap;
 import io.netty.buffer.Unpooled;
 import io.papermc.paper.advancement.AdvancementDisplay;
 import io.papermc.paper.adventure.PaperAdventure;
+import io.papermc.paper.math.BlockPosition;
+import io.papermc.paper.math.Position;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.TagStringIO;
 import net.kyori.adventure.text.Component;
 import net.minecraft.advancements.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -66,6 +69,16 @@ public final class Converters {
     public static ResourceLocation toMinecraft(Key key) {
         if (key == null) return null;
         return CraftNamespacedKey.toMinecraft(new NamespacedKey(key.namespace(), key.value()));
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static BlockPosition fromMinecraft(BlockPos blockPos) {
+        return Position.block(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static BlockPos toMinecraft(BlockPosition position) {
+        return new BlockPos(position.blockX(), position.blockY(), position.blockZ());
     }
 
     public static EntityType fromMinecraft(net.minecraft.world.entity.EntityType<?> entityType) {

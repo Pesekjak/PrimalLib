@@ -9,11 +9,12 @@ import org.machinemc.primallib.internal.VersionBootstrap;
 import org.machinemc.primallib.util.AutoRegisteringService;
 import org.machinemc.primallib.v1_20_4.impl.advancement.AdvancementServiceImpl;
 import org.machinemc.primallib.v1_20_4.impl.messaging.PluginMessageServiceImpl;
+import org.machinemc.primallib.v1_20_4.impl.player.PlayerActionServiceImpl;
 import org.machinemc.primallib.v1_20_4.impl.profile.PlayerInfoServiceImpl;
 import org.machinemc.primallib.v1_20_4.impl.util.MagicNumberServiceImpl;
 import org.machinemc.primallib.v1_20_4.listeners.bukkit.PlayerLoginListener;
 import org.machinemc.primallib.v1_20_4.listeners.packet.clientbound.*;
-import org.machinemc.primallib.v1_20_4.listeners.packet.serverbound.SeenAdvancementsPacketListener;
+import org.machinemc.primallib.v1_20_4.listeners.packet.serverbound.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class VersionBootstrap_v1_20_4 implements VersionBootstrap {
         List<AutoRegisteringService<?>> services = new ArrayList<>();
         services.add(new AdvancementServiceImpl().register());
         services.add(new PluginMessageServiceImpl().register());
+        services.add(new PlayerActionServiceImpl().register());
         services.add(new PlayerInfoServiceImpl().register());
         services.add(new MagicNumberServiceImpl().register());
 
@@ -47,7 +49,11 @@ public class VersionBootstrap_v1_20_4 implements VersionBootstrap {
         listeners.add(new UpdateTagsPacketListener());
 
         // Server-bound
+        listeners.add(new PaddleBoatPacketListener());
+        listeners.add(new PlayerCommandPacketListener());
+        listeners.add(new PlayerInputPacketListener());
         listeners.add(new SeenAdvancementsPacketListener());
+        listeners.add(new SignUpdatePacketListener());
 
         // Bukkit Listeners
         Bukkit.getPluginManager().registerEvents(new PlayerLoginListener(listeners), plugin); // registers packet listeners
