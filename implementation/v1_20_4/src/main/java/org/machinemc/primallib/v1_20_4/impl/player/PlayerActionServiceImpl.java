@@ -4,10 +4,13 @@ import io.netty.buffer.Unpooled;
 import io.papermc.paper.math.BlockPosition;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ClientboundBlockEventPacket;
-import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket;
-import net.minecraft.network.protocol.game.ClientboundSetCameraPacket;
+import net.minecraft.network.protocol.game.*;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.level.block.Block;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.sign.Side;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftAbstractHorse;
@@ -17,9 +20,12 @@ import org.bukkit.inventory.AbstractHorseInventory;
 import org.bukkit.inventory.ItemStack;
 import org.machinemc.primallib.entity.EntityLike;
 import org.machinemc.primallib.player.PlayerActionService;
+import org.machinemc.primallib.util.OwnerPlugin;
 import org.machinemc.primallib.v1_20_4.internal.PacketChannelHandlerImpl;
 import org.machinemc.primallib.v1_20_4.util.Converters;
 import org.machinemc.primallib.world.*;
+
+import java.util.Collections;
 
 @SuppressWarnings("UnstableApiUsage")
 public class PlayerActionServiceImpl extends PlayerActionService {
@@ -96,6 +102,45 @@ public class PlayerActionServiceImpl extends PlayerActionService {
         }
 
         var packet = new ClientboundBlockEventPacket(blockPos, minecraftBlock, type, data);
+        PacketChannelHandlerImpl.sendPacket(player, packet, false);
+    }
+
+    @Override
+    public void refreshPlayer(Player player) {
+        // This method mirrors CraftPlayer#refreshPlayer method
+        ServerPlayer handle = ((CraftPlayer) player).getHandle();
+        Location loc = player.getLocation();
+
+        showLoadingScreen(player);
+        handle.onUpdateAbilities();
+        handle.connection.internalTeleport(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch(), Collections.emptySet());
+
+        PlayerList playerList = handle.server.getPlayerList();
+        playerList.sendPlayerPermissionLevel(handle, false);
+        playerList.sendLevelInfo(handle, handle.serverLevel());
+        playerList.sendAllPlayerInfo(handle);
+
+        var experiencePacket = new ClientboundSetExperiencePacket(handle.experienceProgress, handle.totalExperience, handle.experienceLevel);
+        PacketChannelHandlerImpl.sendPacket(player, experiencePacket, false);
+
+        for (MobEffectInstance effect : handle.getActiveEffects()) {
+            PacketChannelHandlerImpl.sendPacket(player, new ClientboundUpdateMobEffectPacket(handle.getId(), effect), false);
+        }
+
+        // Refresh player for others
+        Bukkit.getOnlinePlayers().stream()
+                .filter(p -> !p.equals(player))
+                .forEach(p -> {
+                    p.hideEntity(OwnerPlugin.get(), player);
+                    p.showEntity(OwnerPlugin.get(), player);
+                });
+    }
+
+    @Override
+    public void showLoadingScreen(Player player) {
+        ServerPlayer handle = ((CraftPlayer) player).getHandle();
+        CommonPlayerSpawnInfo spawnInfo = handle.createCommonSpawnInfo(handle.serverLevel());
+        ClientboundRespawnPacket packet = new ClientboundRespawnPacket(spawnInfo, ClientboundRespawnPacket.KEEP_ALL_DATA);
         PacketChannelHandlerImpl.sendPacket(player, packet, false);
     }
 

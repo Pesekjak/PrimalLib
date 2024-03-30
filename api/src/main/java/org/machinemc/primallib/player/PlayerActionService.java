@@ -6,10 +6,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.sign.Side;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.AbstractHorseInventory;
+import org.jetbrains.annotations.ApiStatus;
 import org.machinemc.primallib.entity.EntityLike;
 import org.machinemc.primallib.util.AutoRegisteringService;
+import org.machinemc.primallib.util.OwnerPlugin;
 import org.machinemc.primallib.version.MinecraftVersion;
 import org.machinemc.primallib.version.VersionDependant;
 import org.machinemc.primallib.world.BlockAction;
@@ -113,6 +116,45 @@ public abstract class PlayerActionService extends AutoRegisteringService<PlayerA
      */
     @SuppressWarnings("UnstableApiUsage")
     public abstract void playBlockAction(Player player, BlockPosition position, Material block, BlockAction blockAction);
+
+    /**
+     * Refreshes the entity for a player.
+     * <p>
+     * This can not be used for refreshing player itself, for
+     * that use {@link #refreshPlayer(Player)}.
+     *
+     * @param player player to refresh the entity for
+     * @param entity entity to refresh
+     */
+    public void refreshEntity(Player player, Entity entity) {
+        Preconditions.checkNotNull(player, "Player can not be null");
+        Preconditions.checkNotNull(entity, "Entity can not be null");
+        if (player.equals(entity)) return;
+        player.hideEntity(OwnerPlugin.get(), entity);
+        player.showEntity(OwnerPlugin.get(), entity);
+    }
+
+    /**
+     * Refreshes the player for all players online and themselves.
+     *
+     * @param player player to refresh
+     */
+    public abstract void refreshPlayer(Player player);
+
+    /**
+     * Shows terrain loading screen for the player.
+     * <p>
+     * This results in unexpected behaviour on the client-side, it is required
+     * to use {@link #refreshPlayer(Player)} to sync up the client with the server
+     * after closing the loading screen.
+     * <p>
+     * If the screen is not closed using {@link Player#closeInventory()}, client
+     * automatically closes the screen after 30 seconds.
+     *
+     * @param player player to display the loading screen for
+     */
+    @ApiStatus.Experimental
+    public abstract void showLoadingScreen(Player player);
 
     @Override
     public Class<PlayerActionService> getRegistrationClass() {
