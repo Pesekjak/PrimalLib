@@ -5,7 +5,6 @@ import com.google.common.io.BaseEncoding;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import lombok.Getter;
-import lombok.experimental.ExtensionMethod;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.BinaryTagType;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
@@ -18,11 +17,12 @@ import org.machinemc.primallib.nbt.BinaryTagTypeUtils;
 
 import java.util.BitSet;
 
+import static org.machinemc.primallib.persistence.PersistentDataContainerExtension.*;
+
 /**
  * Persistent data type for adventure compound binary tag (NBT).
  */
 @Getter
-@ExtensionMethod(PersistentDataContainerExtension.class)
 public class CompoundTagDataType implements PersistentDataType<PersistentDataContainer, CompoundBinaryTag> {
 
     private static final CompoundTagDataType INSTANCE = new CompoundTagDataType();
@@ -52,7 +52,7 @@ public class CompoundTagDataType implements PersistentDataType<PersistentDataCon
 
             NamespacedKey namespacedKey = getNamespacedKey(key, binaryTag.type());
 
-            container.setTag(namespacedKey, binaryTag);
+            setTag(container, namespacedKey, binaryTag);
         }
         return container;
     }
@@ -63,7 +63,7 @@ public class CompoundTagDataType implements PersistentDataType<PersistentDataCon
         CompoundBinaryTag.Builder compound = CompoundBinaryTag.builder();
         for (NamespacedKey namespacedKey : primitive.getKeys()) {
             Pair<String, BinaryTagType<BinaryTag>> pair = getKey(namespacedKey);
-            BinaryTag tag = primitive.getTag(namespacedKey, pair.second());
+            BinaryTag tag = getTag(primitive, namespacedKey, pair.second());
             compound.put(pair.key(), tag);
         }
         return compound.build();

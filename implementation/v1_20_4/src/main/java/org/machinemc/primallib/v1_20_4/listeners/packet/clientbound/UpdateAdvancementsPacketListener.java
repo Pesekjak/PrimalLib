@@ -66,7 +66,7 @@ public class UpdateAdvancementsPacketListener implements PacketListener<Clientbo
 
         event.setPacket(packet);
 
-        ((AdvancementServiceImpl) AdvancementService.get()).setAdvancements(player, packet);
+        advancementService.setAdvancements(player, packet);
     }
 
     @Override

@@ -4,7 +4,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.SOURCE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Used to mark parts of code that targets only some Minecraft versions.
@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  * multiple versions at the same time.
  */
 @Target({TYPE, FIELD, METHOD})
-@Retention(SOURCE)
+@Retention(RUNTIME)
 public @interface Targets {
 
     /**
@@ -34,5 +34,40 @@ public @interface Targets {
      * @return the last supported version
      */
     ProtocolVersion to() default ProtocolVersion.UNKNOWN;
+
+    /**
+     * Utils for the {@link Targets} annotation.
+     */
+    final class Utils {
+
+        private Utils() {
+            throw new UnsupportedOperationException();
+        }
+
+        /**
+         * Returns an actual protocol version from targets annotation.
+         *
+         * @param targets targets annotation
+         * @return the earliest supported version
+         */
+        public static ProtocolVersion getFrom(Targets targets) {
+            return targets.from() == ProtocolVersion.UNKNOWN
+                    ? ProtocolVersion.oldest()
+                    : targets.from();
+        }
+
+        /**
+         * Returns an actual protocol version from targets annotation.
+         *
+         * @param targets targets annotation
+         * @return the latest supported version
+         */
+        public static ProtocolVersion getTo(Targets targets) {
+            return targets.to() == ProtocolVersion.UNKNOWN
+                    ? ProtocolVersion.latest()
+                    : targets.to();
+        }
+
+    }
 
 }

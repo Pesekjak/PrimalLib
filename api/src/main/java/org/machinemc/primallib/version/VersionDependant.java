@@ -4,7 +4,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.SOURCE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Used to mark services or events that depend on different version implementations.
@@ -13,6 +13,6 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  * for each different version, so they can be easily tracked.
  */
 @Target(TYPE)
-@Retention(SOURCE)
+@Retention(RUNTIME)
 public @interface VersionDependant {
 }

@@ -2,7 +2,6 @@ package org.machinemc.primallib.persistence;
 
 import com.google.common.base.Preconditions;
 import lombok.Getter;
-import lombok.experimental.ExtensionMethod;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.BinaryTagType;
 import net.kyori.adventure.nbt.IntBinaryTag;
@@ -17,11 +16,12 @@ import org.machinemc.primallib.nbt.BinaryTagTypeUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.machinemc.primallib.persistence.PersistentDataContainerExtension.*;
+
 /**
  * Persistent data type for adventure compound binary tag (NBT).
  */
 @Getter
-@ExtensionMethod(PersistentDataContainerExtension.class)
 public class ListTagDataType implements PersistentDataType<PersistentDataContainer, ListBinaryTag> {
 
     private static final ListTagDataType INSTANCE = new ListTagDataType();
@@ -45,13 +45,10 @@ public class ListTagDataType implements PersistentDataType<PersistentDataContain
     public @NotNull PersistentDataContainer toPrimitive(@NotNull ListBinaryTag complex,
                                                         @NotNull PersistentDataAdapterContext context) {
         PersistentDataContainer container = context.newPersistentDataContainer();
-        container.setTag(NamespacedKey.minecraft("type"), IntBinaryTag.intBinaryTag(complex.elementType().id()));
-        container.setTag(NamespacedKey.minecraft("size"), IntBinaryTag.intBinaryTag(complex.size()));
+        setTag(container, NamespacedKey.minecraft("type"), IntBinaryTag.intBinaryTag(complex.elementType().id()));
+        setTag(container, NamespacedKey.minecraft("size"), IntBinaryTag.intBinaryTag(complex.size()));
         for (int i = 0; i < complex.size(); i++) {
-            container.setTag(
-                    NamespacedKey.minecraft(String.valueOf(i)),
-                    complex.get(i)
-            );
+            setTag(container, NamespacedKey.minecraft(String.valueOf(i)), complex.get(i));
         }
         return container;
     }
@@ -66,7 +63,7 @@ public class ListTagDataType implements PersistentDataType<PersistentDataContain
         BinaryTagType<BinaryTag> type = BinaryTagTypeUtils.getByID(id).orElseThrow(UnsupportedOperationException::new);
         List<BinaryTag> tags = new ArrayList<>();
         for (int i = 0; i < size; i++)
-            tags.add(primitive.getTag(NamespacedKey.minecraft(String.valueOf(i)), type));
+            tags.add(getTag(primitive, NamespacedKey.minecraft(String.valueOf(i)), type));
         return ListBinaryTag.listBinaryTag(type, tags);
     }
 

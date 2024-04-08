@@ -1,5 +1,6 @@
 package org.machinemc.primallib.v1_20_4.util;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
@@ -18,6 +19,7 @@ import net.minecraft.core.particles.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.RemoteChatSession;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.ProfilePublicKey;
 import net.minecraft.world.level.GameType;
@@ -43,6 +45,7 @@ import org.machinemc.primallib.advancement.AdvancementCriteria;
 import org.machinemc.primallib.particle.ConfiguredParticle;
 import org.machinemc.primallib.profile.ChatSession;
 import org.machinemc.primallib.profile.GameProfile;
+import org.machinemc.primallib.profile.PlayerInfo;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -349,6 +352,81 @@ public final class Converters {
     public static RemoteChatSession.Data toMinecraft(ChatSession chatSession) {
         if (chatSession == null) return null;
         return new RemoteChatSession.Data(chatSession.id(), new ProfilePublicKey.Data(chatSession.expiresAt(), chatSession.key(), chatSession.signature()));
+    }
+
+    public static PlayerInfo fromMinecraft(ClientboundPlayerInfoUpdatePacket.Entry entry,
+                                    @Nullable PlayerInfo parent,
+                                    Collection<ClientboundPlayerInfoUpdatePacket.Action> actions) {
+        if (entry == null) return null;
+
+        if (parent != null) Preconditions.checkState(entry.profileId().equals(parent.getUUID()));
+        if (parent == null && entry.profile() == null) throw new IllegalArgumentException();
+
+        GameProfile gp = entry.profile() != null
+                ? fromMinecraft(entry.profile())
+                : parent.gameProfile();
+
+        PlayerInfo playerInfo = new PlayerInfo(gp);
+
+        if (actions.contains(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER))
+            playerInfo = playerInfo.withGameProfile(Converters.fromMinecraft(entry.profile()));
+
+        if (actions.contains(ClientboundPlayerInfoUpdatePacket.Action.INITIALIZE_CHAT))
+            playerInfo = playerInfo.withChatSession(Converters.fromMinecraft(entry.chatSession()));
+
+        if (actions.contains(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE))
+            playerInfo = playerInfo.withGameMode(Converters.fromMinecraft(entry.gameMode()));
+
+        if (actions.contains(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED))
+            playerInfo = playerInfo.withListed(entry.listed());
+
+        if (actions.contains(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LATENCY))
+            playerInfo = playerInfo.withLatency(entry.latency());
+
+        if (actions.contains(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME))
+            playerInfo = playerInfo.withDisplayName(Converters.fromMinecraft(entry.displayName()));
+
+        return playerInfo;
+    }
+
+    public static ClientboundPlayerInfoUpdatePacket.Entry toMinecraft(PlayerInfo playerInfo) {
+        if (playerInfo == null) return null;
+        UUID uuid = playerInfo.getUUID();
+        com.mojang.authlib.GameProfile gameProfile = Converters.toMinecraft(playerInfo.gameProfile());
+        boolean listed = playerInfo.listed();
+        int latency = playerInfo.latency();
+        GameType gameType = Converters.toMinecraft(playerInfo.gameMode());
+        net.minecraft.network.chat.Component displayName = playerInfo.hasDisplayName()
+                ? Converters.toMinecraft(playerInfo.displayName())
+                : null;
+        RemoteChatSession.Data session = playerInfo.hasInitializedChat()
+                ? Converters.toMinecraft(playerInfo.chatSession())
+                : null;
+        return new ClientboundPlayerInfoUpdatePacket.Entry(uuid, gameProfile, listed, latency, gameType, displayName, session);
+    }
+
+    public static PlayerInfo.Action fromMinecraft(ClientboundPlayerInfoUpdatePacket.Action action) {
+        if (action == null) return null;
+        return switch (action) {
+            case ADD_PLAYER -> PlayerInfo.Action.ADD_PLAYER;
+            case INITIALIZE_CHAT -> PlayerInfo.Action.INITIALIZE_CHAT;
+            case UPDATE_GAME_MODE -> PlayerInfo.Action.UPDATE_GAME_MODE;
+            case UPDATE_LISTED -> PlayerInfo.Action.UPDATE_LISTED;
+            case UPDATE_LATENCY -> PlayerInfo.Action.UPDATE_LATENCY;
+            case UPDATE_DISPLAY_NAME -> PlayerInfo.Action.UPDATE_DISPLAY_NAME;
+        };
+    }
+
+    public static ClientboundPlayerInfoUpdatePacket.Action toMinecraft(PlayerInfo.Action action) {
+        if (action == null) return null;
+        return switch (action) {
+            case ADD_PLAYER -> ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER;
+            case INITIALIZE_CHAT -> ClientboundPlayerInfoUpdatePacket.Action.INITIALIZE_CHAT;
+            case UPDATE_GAME_MODE -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE;
+            case UPDATE_LISTED -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED;
+            case UPDATE_LATENCY -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LATENCY;
+            case UPDATE_DISPLAY_NAME -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME;
+        };
     }
 
 }

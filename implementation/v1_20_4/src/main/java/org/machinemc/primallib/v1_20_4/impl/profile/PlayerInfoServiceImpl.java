@@ -1,12 +1,9 @@
 package org.machinemc.primallib.v1_20_4.impl.profile;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.RemoteChatSession;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.GameType;
 import org.bukkit.GameMode;
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -52,24 +49,7 @@ public class PlayerInfoServiceImpl extends PlayerInfoService implements Listener
                 continue; // tried to update non-existing profile
             }
 
-            if (actions.contains(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER))
-                playerInfo = playerInfo.withGameProfile(Converters.fromMinecraft(entry.profile()));
-
-            if (actions.contains(ClientboundPlayerInfoUpdatePacket.Action.INITIALIZE_CHAT))
-                playerInfo = playerInfo.withChatSession(Converters.fromMinecraft(entry.chatSession()));
-
-            if (actions.contains(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE))
-                playerInfo = playerInfo.withGameMode(Converters.fromMinecraft(entry.gameMode()));
-
-            if (actions.contains(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED))
-                playerInfo = playerInfo.withListed(entry.listed());
-
-            if (actions.contains(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LATENCY))
-                playerInfo = playerInfo.withLatency(entry.latency());
-
-            if (actions.contains(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME))
-                playerInfo = playerInfo.withDisplayName(Converters.fromMinecraft(entry.displayName()));
-
+            playerInfo = Converters.fromMinecraft(entry, playerInfo, actions);
             map.put(entry.profileId(), playerInfo);
         }
     }
@@ -96,8 +76,8 @@ public class PlayerInfoServiceImpl extends PlayerInfoService implements Listener
 
     @Override
     public void sendPlayerInfoUpdates(Player player, Collection<PlayerInfo> playerInfos, PlayerInfo.Action... actions) {
-        EnumSet<ClientboundPlayerInfoUpdatePacket.Action> actionEnumSet = EnumSet.copyOf(Arrays.stream(actions).map(this::getAction).toList());
-        List<ClientboundPlayerInfoUpdatePacket.Entry> entries = playerInfos.stream().map(this::asEntry).toList();
+        EnumSet<ClientboundPlayerInfoUpdatePacket.Action> actionEnumSet = EnumSet.copyOf(Arrays.stream(actions).map(Converters::toMinecraft).toList());
+        List<ClientboundPlayerInfoUpdatePacket.Entry> entries = playerInfos.stream().map(Converters::toMinecraft).toList();
         ClientboundPlayerInfoUpdatePacket packet = new ClientboundPlayerInfoUpdatePacket(actionEnumSet, entries);
         PacketChannelHandlerImpl.sendPacket(player, packet, false);
     }
@@ -116,32 +96,6 @@ public class PlayerInfoServiceImpl extends PlayerInfoService implements Listener
     @Override
     public Optional<PlayerInfo> getPlayerInfo(Player player, UUID uuid) {
         return Optional.ofNullable(cachedPlayerInfos.get(player).get(uuid));
-    }
-
-    private ClientboundPlayerInfoUpdatePacket.Entry asEntry(PlayerInfo playerInfo) {
-        UUID uuid = playerInfo.getUUID();
-        com.mojang.authlib.GameProfile gameProfile = Converters.toMinecraft(playerInfo.gameProfile());
-        boolean listed = playerInfo.listed();
-        int latency = playerInfo.latency();
-        GameType gameType = Converters.toMinecraft(playerInfo.gameMode());
-        Component displayName = playerInfo.hasDisplayName()
-                ? Converters.toMinecraft(playerInfo.displayName())
-                : null;
-        RemoteChatSession.Data session = playerInfo.hasInitializedChat()
-                ? Converters.toMinecraft(playerInfo.chatSession())
-                : null;
-        return new ClientboundPlayerInfoUpdatePacket.Entry(uuid, gameProfile, listed, latency, gameType, displayName, session);
-    }
-
-    private ClientboundPlayerInfoUpdatePacket.Action getAction(PlayerInfo.Action action) {
-        return switch (action) {
-            case ADD_PLAYER -> ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER;
-            case INITIALIZE_CHAT -> ClientboundPlayerInfoUpdatePacket.Action.INITIALIZE_CHAT;
-            case UPDATE_GAME_MODE -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE;
-            case UPDATE_LISTED -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED;
-            case UPDATE_LATENCY -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LATENCY;
-            case UPDATE_DISPLAY_NAME -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME;
-        };
     }
 
 }
