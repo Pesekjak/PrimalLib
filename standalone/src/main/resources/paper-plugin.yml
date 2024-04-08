@@ -1,0 +1,11 @@
+name: PrimalLib
+version: '$version'
+main: org.machinemc.primallib.standalone.PrimalLibPlugin
+description: Paper library for extra features not included in the API
+api-version: '1.20'
+
+# PrimalLib's bootstrapper
+bootstrapper: org.machinemc.primallib.internal.PrimalLibBootstrap
+
+# Plugin's own bootstrapper
+delegate-bootstrapper: org.machinemc.primallib.standalone.Bootstrap

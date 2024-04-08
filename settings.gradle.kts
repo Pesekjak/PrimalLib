@@ -1,6 +1,7 @@
 rootProject.name = "PrimalLib"
 
 include("api")
+include("standalone")
 include("test-plugin")
 listOf(
     "commons", // commons module
