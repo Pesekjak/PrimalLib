@@ -6,10 +6,21 @@ include("test-plugin")
 listOf(
     "commons", // commons module
     "shared", // shared module
+    // v stands for version
     "v1_20_4"
 ).forEach {
     include("implementation:$it")
     findProject(":implementation:$it")?.name = it
+}
+
+listOf(
+    "commons", // commons module
+    "application", // generators application module
+    // p stands for protocol
+    "p1_20_4"
+).forEach {
+    include("code-generators:$it")
+    findProject(":code-generators:$it")?.name = it
 }
 
 pluginManagement {
@@ -51,6 +62,9 @@ dependencyResolutionManagement {
 
             val mockBukkit: String by settings
             library("mockbukkit", "com.github.seeseemelk:MockBukkit-v1.20:$mockBukkit")
+
+            val javaPoet: String by settings
+            library("javapoet", "com.squareup:javapoet:$javaPoet")
 
             val shadow: String by settings
             plugin("shadow", "io.github.goooler.shadow").version(shadow)
