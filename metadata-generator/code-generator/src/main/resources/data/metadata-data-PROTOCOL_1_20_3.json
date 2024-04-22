@@ -1,0 +1,1476 @@
+{
+  "_version": "PROTOCOL_1_20_3",
+  "Allay": {
+    "name": "Allay",
+    "inherits": "PathfinderMob",
+    "fields": [
+      {
+        "name": "DATA_DANCING",
+        "index": 16,
+        "serializer": "boolean"
+      },
+      {
+        "name": "DATA_CAN_DUPLICATE",
+        "index": 17,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "AreaEffectCloud": {
+    "name": "AreaEffectCloud",
+    "inherits": "Entity",
+    "fields": [
+      {
+        "name": "DATA_RADIUS",
+        "index": 8,
+        "serializer": "float"
+      },
+      {
+        "name": "DATA_COLOR",
+        "index": 9,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_WAITING",
+        "index": 10,
+        "serializer": "boolean"
+      },
+      {
+        "name": "DATA_PARTICLE",
+        "index": 11,
+        "serializer": "particle"
+      }
+    ]
+  },
+  "ArmorStand": {
+    "name": "ArmorStand",
+    "inherits": "LivingEntity",
+    "fields": [
+      {
+        "name": "DATA_CLIENT_FLAGS",
+        "index": 15,
+        "serializer": "byte"
+      },
+      {
+        "name": "DATA_HEAD_POSE",
+        "index": 16,
+        "serializer": "rotations"
+      },
+      {
+        "name": "DATA_BODY_POSE",
+        "index": 17,
+        "serializer": "rotations"
+      },
+      {
+        "name": "DATA_LEFT_ARM_POSE",
+        "index": 18,
+        "serializer": "rotations"
+      },
+      {
+        "name": "DATA_RIGHT_ARM_POSE",
+        "index": 19,
+        "serializer": "rotations"
+      },
+      {
+        "name": "DATA_LEFT_LEG_POSE",
+        "index": 20,
+        "serializer": "rotations"
+      },
+      {
+        "name": "DATA_RIGHT_LEG_POSE",
+        "index": 21,
+        "serializer": "rotations"
+      }
+    ]
+  },
+  "Arrow": {
+    "name": "Arrow",
+    "inherits": "AbstractArrow",
+    "fields": [
+      {
+        "name": "ID_EFFECT_COLOR",
+        "index": 10,
+        "serializer": "int"
+      }
+    ]
+  },
+  "Axolotl": {
+    "name": "Axolotl",
+    "inherits": "Animal",
+    "fields": [
+      {
+        "name": "DATA_VARIANT",
+        "index": 17,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_PLAYING_DEAD",
+        "index": 18,
+        "serializer": "boolean"
+      },
+      {
+        "name": "FROM_BUCKET",
+        "index": 19,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "Bat": {
+    "name": "Bat",
+    "inherits": "AmbientCreature",
+    "fields": [
+      {
+        "name": "DATA_ID_FLAGS",
+        "index": 16,
+        "serializer": "byte"
+      }
+    ]
+  },
+  "Bee": {
+    "name": "Bee",
+    "inherits": "Animal",
+    "fields": [
+      {
+        "name": "DATA_FLAGS_ID",
+        "index": 17,
+        "serializer": "byte"
+      },
+      {
+        "name": "DATA_REMAINING_ANGER_TIME",
+        "index": 18,
+        "serializer": "int"
+      }
+    ]
+  },
+  "Blaze": {
+    "name": "Blaze",
+    "inherits": "Monster",
+    "fields": [
+      {
+        "name": "DATA_FLAGS_ID",
+        "index": 16,
+        "serializer": "byte"
+      }
+    ]
+  },
+  "BlockDisplay": {
+    "name": "BlockDisplay",
+    "inherits": "Display",
+    "fields": [
+      {
+        "name": "DATA_BLOCK_STATE_ID",
+        "index": 23,
+        "serializer": "block_state"
+      }
+    ]
+  },
+  "Boat": {
+    "name": "Boat",
+    "inherits": "VehicleEntity",
+    "fields": [
+      {
+        "name": "DATA_ID_TYPE",
+        "index": 11,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_ID_PADDLE_LEFT",
+        "index": 12,
+        "serializer": "boolean"
+      },
+      {
+        "name": "DATA_ID_PADDLE_RIGHT",
+        "index": 13,
+        "serializer": "boolean"
+      },
+      {
+        "name": "DATA_ID_BUBBLE_TIME",
+        "index": 14,
+        "serializer": "int"
+      }
+    ]
+  },
+  "Breeze": {
+    "name": "Breeze",
+    "inherits": "Monster",
+    "fields": []
+  },
+  "Camel": {
+    "name": "Camel",
+    "inherits": "AbstractHorse",
+    "fields": [
+      {
+        "name": "DASH",
+        "index": 18,
+        "serializer": "boolean"
+      },
+      {
+        "name": "LAST_POSE_CHANGE_TICK",
+        "index": 19,
+        "serializer": "long"
+      }
+    ]
+  },
+  "Cat": {
+    "name": "Cat",
+    "inherits": "TamableAnimal",
+    "fields": [
+      {
+        "name": "DATA_VARIANT_ID",
+        "index": 19,
+        "serializer": "cat_variant"
+      },
+      {
+        "name": "IS_LYING",
+        "index": 20,
+        "serializer": "boolean"
+      },
+      {
+        "name": "RELAX_STATE_ONE",
+        "index": 21,
+        "serializer": "boolean"
+      },
+      {
+        "name": "DATA_COLLAR_COLOR",
+        "index": 22,
+        "serializer": "int"
+      }
+    ]
+  },
+  "CaveSpider": {
+    "name": "CaveSpider",
+    "inherits": "Spider",
+    "fields": []
+  },
+  "ChestBoat": {
+    "name": "ChestBoat",
+    "inherits": "Boat",
+    "fields": []
+  },
+  "Chicken": {
+    "name": "Chicken",
+    "inherits": "Animal",
+    "fields": []
+  },
+  "Cod": {
+    "name": "Cod",
+    "inherits": "AbstractSchoolingFish",
+    "fields": []
+  },
+  "Cow": {
+    "name": "Cow",
+    "inherits": "Animal",
+    "fields": []
+  },
+  "Creeper": {
+    "name": "Creeper",
+    "inherits": "Monster",
+    "fields": [
+      {
+        "name": "DATA_SWELL_DIR",
+        "index": 16,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_IS_POWERED",
+        "index": 17,
+        "serializer": "boolean"
+      },
+      {
+        "name": "DATA_IS_IGNITED",
+        "index": 18,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "Dolphin": {
+    "name": "Dolphin",
+    "inherits": "WaterAnimal",
+    "fields": [
+      {
+        "name": "TREASURE_POS",
+        "index": 16,
+        "serializer": "position"
+      },
+      {
+        "name": "GOT_FISH",
+        "index": 17,
+        "serializer": "boolean"
+      },
+      {
+        "name": "MOISTNESS_LEVEL",
+        "index": 18,
+        "serializer": "int"
+      }
+    ]
+  },
+  "Donkey": {
+    "name": "Donkey",
+    "inherits": "AbstractChestedHorse",
+    "fields": []
+  },
+  "DragonFireball": {
+    "name": "DragonFireball",
+    "inherits": "AbstractHurtingProjectile",
+    "fields": []
+  },
+  "Drowned": {
+    "name": "Drowned",
+    "inherits": "Zombie",
+    "fields": []
+  },
+  "ElderGuardian": {
+    "name": "ElderGuardian",
+    "inherits": "Guardian",
+    "fields": []
+  },
+  "EndCrystal": {
+    "name": "EndCrystal",
+    "inherits": "Entity",
+    "fields": [
+      {
+        "name": "DATA_BEAM_TARGET",
+        "index": 8,
+        "serializer": "optional_position"
+      },
+      {
+        "name": "DATA_SHOW_BOTTOM",
+        "index": 9,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "EnderDragon": {
+    "name": "EnderDragon",
+    "inherits": "Mob",
+    "fields": [
+      {
+        "name": "DATA_PHASE",
+        "index": 16,
+        "serializer": "int"
+      }
+    ]
+  },
+  "EnderMan": {
+    "name": "EnderMan",
+    "inherits": "Monster",
+    "fields": [
+      {
+        "name": "DATA_CARRY_STATE",
+        "index": 16,
+        "serializer": "optional_block_state"
+      },
+      {
+        "name": "DATA_CREEPY",
+        "index": 17,
+        "serializer": "boolean"
+      },
+      {
+        "name": "DATA_STARED_AT",
+        "index": 18,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "Endermite": {
+    "name": "Endermite",
+    "inherits": "Monster",
+    "fields": []
+  },
+  "Evoker": {
+    "name": "Evoker",
+    "inherits": "SpellcasterIllager",
+    "fields": []
+  },
+  "EvokerFangs": {
+    "name": "EvokerFangs",
+    "inherits": "Entity",
+    "fields": []
+  },
+  "ExperienceOrb": {
+    "name": "ExperienceOrb",
+    "inherits": "Entity",
+    "fields": []
+  },
+  "EyeOfEnder": {
+    "name": "EyeOfEnder",
+    "inherits": "Entity",
+    "fields": [
+      {
+        "name": "DATA_ITEM_STACK",
+        "index": 8,
+        "serializer": "slot"
+      }
+    ]
+  },
+  "FallingBlockEntity": {
+    "name": "FallingBlockEntity",
+    "inherits": "Entity",
+    "fields": [
+      {
+        "name": "DATA_START_POS",
+        "index": 8,
+        "serializer": "position"
+      }
+    ]
+  },
+  "FireworkRocketEntity": {
+    "name": "FireworkRocketEntity",
+    "inherits": "Projectile",
+    "fields": [
+      {
+        "name": "DATA_ID_FIREWORKS_ITEM",
+        "index": 8,
+        "serializer": "slot"
+      },
+      {
+        "name": "DATA_ATTACHED_TO_TARGET",
+        "index": 9,
+        "serializer": "optional_int"
+      },
+      {
+        "name": "DATA_SHOT_AT_ANGLE",
+        "index": 10,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "FishingHook": {
+    "name": "FishingHook",
+    "inherits": "Projectile",
+    "fields": [
+      {
+        "name": "DATA_HOOKED_ENTITY",
+        "index": 8,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_BITING",
+        "index": 9,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "Fox": {
+    "name": "Fox",
+    "inherits": "Animal",
+    "fields": [
+      {
+        "name": "DATA_TYPE_ID",
+        "index": 17,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_FLAGS_ID",
+        "index": 18,
+        "serializer": "byte"
+      },
+      {
+        "name": "DATA_TRUSTED_ID_0",
+        "index": 19,
+        "serializer": "optional_uuid"
+      },
+      {
+        "name": "DATA_TRUSTED_ID_1",
+        "index": 20,
+        "serializer": "optional_uuid"
+      }
+    ]
+  },
+  "Frog": {
+    "name": "Frog",
+    "inherits": "Animal",
+    "fields": [
+      {
+        "name": "DATA_VARIANT_ID",
+        "index": 17,
+        "serializer": "frog_variant"
+      },
+      {
+        "name": "DATA_TONGUE_TARGET_ID",
+        "index": 18,
+        "serializer": "optional_int"
+      }
+    ]
+  },
+  "Ghast": {
+    "name": "Ghast",
+    "inherits": "FlyingMob",
+    "fields": [
+      {
+        "name": "DATA_IS_CHARGING",
+        "index": 16,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "Giant": {
+    "name": "Giant",
+    "inherits": "Monster",
+    "fields": []
+  },
+  "GlowItemFrame": {
+    "name": "GlowItemFrame",
+    "inherits": "ItemFrame",
+    "fields": []
+  },
+  "GlowSquid": {
+    "name": "GlowSquid",
+    "inherits": "Squid",
+    "fields": [
+      {
+        "name": "DATA_DARK_TICKS_REMAINING",
+        "index": 16,
+        "serializer": "int"
+      }
+    ]
+  },
+  "Goat": {
+    "name": "Goat",
+    "inherits": "Animal",
+    "fields": [
+      {
+        "name": "DATA_IS_SCREAMING_GOAT",
+        "index": 17,
+        "serializer": "boolean"
+      },
+      {
+        "name": "DATA_HAS_LEFT_HORN",
+        "index": 18,
+        "serializer": "boolean"
+      },
+      {
+        "name": "DATA_HAS_RIGHT_HORN",
+        "index": 19,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "Guardian": {
+    "name": "Guardian",
+    "inherits": "Monster",
+    "fields": [
+      {
+        "name": "DATA_ID_MOVING",
+        "index": 16,
+        "serializer": "boolean"
+      },
+      {
+        "name": "DATA_ID_ATTACK_TARGET",
+        "index": 17,
+        "serializer": "int"
+      }
+    ]
+  },
+  "Hoglin": {
+    "name": "Hoglin",
+    "inherits": "Animal",
+    "fields": [
+      {
+        "name": "DATA_IMMUNE_TO_ZOMBIFICATION",
+        "index": 17,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "Horse": {
+    "name": "Horse",
+    "inherits": "AbstractHorse",
+    "fields": [
+      {
+        "name": "DATA_ID_TYPE_VARIANT",
+        "index": 18,
+        "serializer": "int"
+      }
+    ]
+  },
+  "Husk": {
+    "name": "Husk",
+    "inherits": "Zombie",
+    "fields": []
+  },
+  "Illusioner": {
+    "name": "Illusioner",
+    "inherits": "SpellcasterIllager",
+    "fields": []
+  },
+  "Interaction": {
+    "name": "Interaction",
+    "inherits": "Entity",
+    "fields": [
+      {
+        "name": "DATA_WIDTH_ID",
+        "index": 8,
+        "serializer": "float"
+      },
+      {
+        "name": "DATA_HEIGHT_ID",
+        "index": 9,
+        "serializer": "float"
+      },
+      {
+        "name": "DATA_RESPONSE_ID",
+        "index": 10,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "IronGolem": {
+    "name": "IronGolem",
+    "inherits": "AbstractGolem",
+    "fields": [
+      {
+        "name": "DATA_FLAGS_ID",
+        "index": 16,
+        "serializer": "byte"
+      }
+    ]
+  },
+  "ItemDisplay": {
+    "name": "ItemDisplay",
+    "inherits": "Display",
+    "fields": [
+      {
+        "name": "DATA_ITEM_STACK_ID",
+        "index": 23,
+        "serializer": "slot"
+      },
+      {
+        "name": "DATA_ITEM_DISPLAY_ID",
+        "index": 24,
+        "serializer": "byte"
+      }
+    ]
+  },
+  "ItemEntity": {
+    "name": "ItemEntity",
+    "inherits": "Entity",
+    "fields": [
+      {
+        "name": "DATA_ITEM",
+        "index": 8,
+        "serializer": "slot"
+      }
+    ]
+  },
+  "ItemFrame": {
+    "name": "ItemFrame",
+    "inherits": "HangingEntity",
+    "fields": [
+      {
+        "name": "DATA_ITEM",
+        "index": 8,
+        "serializer": "slot"
+      },
+      {
+        "name": "DATA_ROTATION",
+        "index": 9,
+        "serializer": "int"
+      }
+    ]
+  },
+  "LargeFireball": {
+    "name": "LargeFireball",
+    "inherits": "Fireball",
+    "fields": []
+  },
+  "LeashFenceKnotEntity": {
+    "name": "LeashFenceKnotEntity",
+    "inherits": "HangingEntity",
+    "fields": []
+  },
+  "LightningBolt": {
+    "name": "LightningBolt",
+    "inherits": "Entity",
+    "fields": []
+  },
+  "Llama": {
+    "name": "Llama",
+    "inherits": "AbstractChestedHorse",
+    "fields": [
+      {
+        "name": "DATA_STRENGTH_ID",
+        "index": 19,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_SWAG_ID",
+        "index": 20,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_VARIANT_ID",
+        "index": 21,
+        "serializer": "int"
+      }
+    ]
+  },
+  "LlamaSpit": {
+    "name": "LlamaSpit",
+    "inherits": "Projectile",
+    "fields": []
+  },
+  "MagmaCube": {
+    "name": "MagmaCube",
+    "inherits": "Slime",
+    "fields": []
+  },
+  "Marker": {
+    "name": "Marker",
+    "inherits": "Entity",
+    "fields": []
+  },
+  "Minecart": {
+    "name": "Minecart",
+    "inherits": "AbstractMinecart",
+    "fields": []
+  },
+  "MinecartChest": {
+    "name": "MinecartChest",
+    "inherits": "AbstractMinecartContainer",
+    "fields": []
+  },
+  "MinecartCommandBlock": {
+    "name": "MinecartCommandBlock",
+    "inherits": "AbstractMinecart",
+    "fields": [
+      {
+        "name": "DATA_ID_COMMAND_NAME",
+        "index": 14,
+        "serializer": "string"
+      },
+      {
+        "name": "DATA_ID_LAST_OUTPUT",
+        "index": 15,
+        "serializer": "component"
+      }
+    ]
+  },
+  "MinecartFurnace": {
+    "name": "MinecartFurnace",
+    "inherits": "AbstractMinecart",
+    "fields": [
+      {
+        "name": "DATA_ID_FUEL",
+        "index": 14,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "MinecartHopper": {
+    "name": "MinecartHopper",
+    "inherits": "AbstractMinecartContainer",
+    "fields": []
+  },
+  "MinecartSpawner": {
+    "name": "MinecartSpawner",
+    "inherits": "AbstractMinecart",
+    "fields": []
+  },
+  "MinecartTNT": {
+    "name": "MinecartTNT",
+    "inherits": "AbstractMinecart",
+    "fields": []
+  },
+  "Mule": {
+    "name": "Mule",
+    "inherits": "AbstractChestedHorse",
+    "fields": []
+  },
+  "MushroomCow": {
+    "name": "MushroomCow",
+    "inherits": "Cow",
+    "fields": [
+      {
+        "name": "DATA_TYPE",
+        "index": 17,
+        "serializer": "string"
+      }
+    ]
+  },
+  "Ocelot": {
+    "name": "Ocelot",
+    "inherits": "Animal",
+    "fields": [
+      {
+        "name": "DATA_TRUSTING",
+        "index": 17,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "Painting": {
+    "name": "Painting",
+    "inherits": "HangingEntity",
+    "fields": [
+      {
+        "name": "DATA_PAINTING_VARIANT_ID",
+        "index": 8,
+        "serializer": "painting_variant"
+      }
+    ]
+  },
+  "Panda": {
+    "name": "Panda",
+    "inherits": "Animal",
+    "fields": [
+      {
+        "name": "UNHAPPY_COUNTER",
+        "index": 17,
+        "serializer": "int"
+      },
+      {
+        "name": "SNEEZE_COUNTER",
+        "index": 18,
+        "serializer": "int"
+      },
+      {
+        "name": "EAT_COUNTER",
+        "index": 19,
+        "serializer": "int"
+      },
+      {
+        "name": "MAIN_GENE_ID",
+        "index": 20,
+        "serializer": "byte"
+      },
+      {
+        "name": "HIDDEN_GENE_ID",
+        "index": 21,
+        "serializer": "byte"
+      },
+      {
+        "name": "DATA_ID_FLAGS",
+        "index": 22,
+        "serializer": "byte"
+      }
+    ]
+  },
+  "Parrot": {
+    "name": "Parrot",
+    "inherits": "ShoulderRidingEntity",
+    "fields": [
+      {
+        "name": "DATA_VARIANT_ID",
+        "index": 19,
+        "serializer": "int"
+      }
+    ]
+  },
+  "Phantom": {
+    "name": "Phantom",
+    "inherits": "FlyingMob",
+    "fields": [
+      {
+        "name": "ID_SIZE",
+        "index": 16,
+        "serializer": "int"
+      }
+    ]
+  },
+  "Pig": {
+    "name": "Pig",
+    "inherits": "Animal",
+    "fields": [
+      {
+        "name": "DATA_SADDLE_ID",
+        "index": 17,
+        "serializer": "boolean"
+      },
+      {
+        "name": "DATA_BOOST_TIME",
+        "index": 18,
+        "serializer": "int"
+      }
+    ]
+  },
+  "Piglin": {
+    "name": "Piglin",
+    "inherits": "AbstractPiglin",
+    "fields": [
+      {
+        "name": "DATA_BABY_ID",
+        "index": 17,
+        "serializer": "boolean"
+      },
+      {
+        "name": "DATA_IS_CHARGING_CROSSBOW",
+        "index": 18,
+        "serializer": "boolean"
+      },
+      {
+        "name": "DATA_IS_DANCING",
+        "index": 19,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "PiglinBrute": {
+    "name": "PiglinBrute",
+    "inherits": "AbstractPiglin",
+    "fields": []
+  },
+  "Pillager": {
+    "name": "Pillager",
+    "inherits": "AbstractIllager",
+    "fields": [
+      {
+        "name": "IS_CHARGING_CROSSBOW",
+        "index": 17,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "Player": {
+    "name": "Player",
+    "inherits": "LivingEntity",
+    "fields": [
+      {
+        "name": "DATA_PLAYER_ABSORPTION_ID",
+        "index": 15,
+        "serializer": "float"
+      },
+      {
+        "name": "DATA_SCORE_ID",
+        "index": 16,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_PLAYER_MODE_CUSTOMISATION",
+        "index": 17,
+        "serializer": "byte"
+      },
+      {
+        "name": "DATA_PLAYER_MAIN_HAND",
+        "index": 18,
+        "serializer": "byte"
+      },
+      {
+        "name": "DATA_SHOULDER_LEFT",
+        "index": 19,
+        "serializer": "nbt"
+      },
+      {
+        "name": "DATA_SHOULDER_RIGHT",
+        "index": 20,
+        "serializer": "nbt"
+      }
+    ]
+  },
+  "PolarBear": {
+    "name": "PolarBear",
+    "inherits": "Animal",
+    "fields": [
+      {
+        "name": "DATA_STANDING_ID",
+        "index": 17,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "PrimedTnt": {
+    "name": "PrimedTnt",
+    "inherits": "Entity",
+    "fields": [
+      {
+        "name": "DATA_FUSE_ID",
+        "index": 8,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_BLOCK_STATE_ID",
+        "index": 9,
+        "serializer": "block_state"
+      }
+    ]
+  },
+  "Pufferfish": {
+    "name": "Pufferfish",
+    "inherits": "AbstractFish",
+    "fields": [
+      {
+        "name": "PUFF_STATE",
+        "index": 17,
+        "serializer": "int"
+      }
+    ]
+  },
+  "Rabbit": {
+    "name": "Rabbit",
+    "inherits": "Animal",
+    "fields": [
+      {
+        "name": "DATA_TYPE_ID",
+        "index": 17,
+        "serializer": "int"
+      }
+    ]
+  },
+  "Ravager": {
+    "name": "Ravager",
+    "inherits": "Raider",
+    "fields": []
+  },
+  "Salmon": {
+    "name": "Salmon",
+    "inherits": "AbstractSchoolingFish",
+    "fields": []
+  },
+  "Sheep": {
+    "name": "Sheep",
+    "inherits": "Animal",
+    "fields": [
+      {
+        "name": "DATA_WOOL_ID",
+        "index": 17,
+        "serializer": "byte"
+      }
+    ]
+  },
+  "Shulker": {
+    "name": "Shulker",
+    "inherits": "AbstractGolem",
+    "fields": [
+      {
+        "name": "DATA_ATTACH_FACE_ID",
+        "index": 16,
+        "serializer": "direction"
+      },
+      {
+        "name": "DATA_PEEK_ID",
+        "index": 17,
+        "serializer": "byte"
+      },
+      {
+        "name": "DATA_COLOR_ID",
+        "index": 18,
+        "serializer": "byte"
+      }
+    ]
+  },
+  "ShulkerBullet": {
+    "name": "ShulkerBullet",
+    "inherits": "Projectile",
+    "fields": []
+  },
+  "Silverfish": {
+    "name": "Silverfish",
+    "inherits": "Monster",
+    "fields": []
+  },
+  "Skeleton": {
+    "name": "Skeleton",
+    "inherits": "AbstractSkeleton",
+    "fields": [
+      {
+        "name": "DATA_STRAY_CONVERSION_ID",
+        "index": 16,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "SkeletonHorse": {
+    "name": "SkeletonHorse",
+    "inherits": "AbstractHorse",
+    "fields": []
+  },
+  "Slime": {
+    "name": "Slime",
+    "inherits": "Mob",
+    "fields": [
+      {
+        "name": "ID_SIZE",
+        "index": 16,
+        "serializer": "int"
+      }
+    ]
+  },
+  "SmallFireball": {
+    "name": "SmallFireball",
+    "inherits": "Fireball",
+    "fields": []
+  },
+  "Sniffer": {
+    "name": "Sniffer",
+    "inherits": "Animal",
+    "fields": [
+      {
+        "name": "DATA_STATE",
+        "index": 17,
+        "serializer": "sniffer_state"
+      },
+      {
+        "name": "DATA_DROP_SEED_AT_TICK",
+        "index": 18,
+        "serializer": "int"
+      }
+    ]
+  },
+  "SnowGolem": {
+    "name": "SnowGolem",
+    "inherits": "AbstractGolem",
+    "fields": [
+      {
+        "name": "DATA_PUMPKIN_ID",
+        "index": 16,
+        "serializer": "byte"
+      }
+    ]
+  },
+  "Snowball": {
+    "name": "Snowball",
+    "inherits": "ThrowableItemProjectile",
+    "fields": []
+  },
+  "SpectralArrow": {
+    "name": "SpectralArrow",
+    "inherits": "AbstractArrow",
+    "fields": []
+  },
+  "Spider": {
+    "name": "Spider",
+    "inherits": "Monster",
+    "fields": [
+      {
+        "name": "DATA_FLAGS_ID",
+        "index": 16,
+        "serializer": "byte"
+      }
+    ]
+  },
+  "Squid": {
+    "name": "Squid",
+    "inherits": "WaterAnimal",
+    "fields": []
+  },
+  "Stray": {
+    "name": "Stray",
+    "inherits": "AbstractSkeleton",
+    "fields": []
+  },
+  "Strider": {
+    "name": "Strider",
+    "inherits": "Animal",
+    "fields": [
+      {
+        "name": "DATA_BOOST_TIME",
+        "index": 17,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_SUFFOCATING",
+        "index": 18,
+        "serializer": "boolean"
+      },
+      {
+        "name": "DATA_SADDLE_ID",
+        "index": 19,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "Tadpole": {
+    "name": "Tadpole",
+    "inherits": "AbstractFish",
+    "fields": []
+  },
+  "TextDisplay": {
+    "name": "TextDisplay",
+    "inherits": "Display",
+    "fields": [
+      {
+        "name": "DATA_TEXT_ID",
+        "index": 23,
+        "serializer": "component"
+      },
+      {
+        "name": "DATA_LINE_WIDTH_ID",
+        "index": 24,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_BACKGROUND_COLOR_ID",
+        "index": 25,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_TEXT_OPACITY_ID",
+        "index": 26,
+        "serializer": "byte"
+      },
+      {
+        "name": "DATA_STYLE_FLAGS_ID",
+        "index": 27,
+        "serializer": "byte"
+      }
+    ]
+  },
+  "ThrownEgg": {
+    "name": "ThrownEgg",
+    "inherits": "ThrowableItemProjectile",
+    "fields": []
+  },
+  "ThrownEnderpearl": {
+    "name": "ThrownEnderpearl",
+    "inherits": "ThrowableItemProjectile",
+    "fields": []
+  },
+  "ThrownExperienceBottle": {
+    "name": "ThrownExperienceBottle",
+    "inherits": "ThrowableItemProjectile",
+    "fields": []
+  },
+  "ThrownPotion": {
+    "name": "ThrownPotion",
+    "inherits": "ThrowableItemProjectile",
+    "fields": []
+  },
+  "ThrownTrident": {
+    "name": "ThrownTrident",
+    "inherits": "AbstractArrow",
+    "fields": [
+      {
+        "name": "ID_LOYALTY",
+        "index": 10,
+        "serializer": "byte"
+      },
+      {
+        "name": "ID_FOIL",
+        "index": 11,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "TraderLlama": {
+    "name": "TraderLlama",
+    "inherits": "Llama",
+    "fields": []
+  },
+  "TropicalFish": {
+    "name": "TropicalFish",
+    "inherits": "AbstractSchoolingFish",
+    "fields": [
+      {
+        "name": "DATA_ID_TYPE_VARIANT",
+        "index": 17,
+        "serializer": "int"
+      }
+    ]
+  },
+  "Turtle": {
+    "name": "Turtle",
+    "inherits": "Animal",
+    "fields": [
+      {
+        "name": "HOME_POS",
+        "index": 17,
+        "serializer": "position"
+      },
+      {
+        "name": "HAS_EGG",
+        "index": 18,
+        "serializer": "boolean"
+      },
+      {
+        "name": "LAYING_EGG",
+        "index": 19,
+        "serializer": "boolean"
+      },
+      {
+        "name": "TRAVEL_POS",
+        "index": 20,
+        "serializer": "position"
+      },
+      {
+        "name": "GOING_HOME",
+        "index": 21,
+        "serializer": "boolean"
+      },
+      {
+        "name": "TRAVELLING",
+        "index": 22,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "Vex": {
+    "name": "Vex",
+    "inherits": "Monster",
+    "fields": [
+      {
+        "name": "DATA_FLAGS_ID",
+        "index": 16,
+        "serializer": "byte"
+      }
+    ]
+  },
+  "Villager": {
+    "name": "Villager",
+    "inherits": "AbstractVillager",
+    "fields": [
+      {
+        "name": "DATA_VILLAGER_DATA",
+        "index": 18,
+        "serializer": "villager_data"
+      }
+    ]
+  },
+  "Vindicator": {
+    "name": "Vindicator",
+    "inherits": "AbstractIllager",
+    "fields": []
+  },
+  "WanderingTrader": {
+    "name": "WanderingTrader",
+    "inherits": "AbstractVillager",
+    "fields": []
+  },
+  "Warden": {
+    "name": "Warden",
+    "inherits": "Monster",
+    "fields": [
+      {
+        "name": "CLIENT_ANGER_LEVEL",
+        "index": 16,
+        "serializer": "int"
+      }
+    ]
+  },
+  "WindCharge": {
+    "name": "WindCharge",
+    "inherits": "AbstractHurtingProjectile",
+    "fields": []
+  },
+  "Witch": {
+    "name": "Witch",
+    "inherits": "Raider",
+    "fields": [
+      {
+        "name": "DATA_USING_ITEM",
+        "index": 17,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "WitherBoss": {
+    "name": "WitherBoss",
+    "inherits": "Monster",
+    "fields": [
+      {
+        "name": "DATA_TARGET_A",
+        "index": 16,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_TARGET_B",
+        "index": 17,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_TARGET_C",
+        "index": 18,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_ID_INV",
+        "index": 19,
+        "serializer": "int"
+      }
+    ]
+  },
+  "WitherSkeleton": {
+    "name": "WitherSkeleton",
+    "inherits": "AbstractSkeleton",
+    "fields": []
+  },
+  "WitherSkull": {
+    "name": "WitherSkull",
+    "inherits": "AbstractHurtingProjectile",
+    "fields": [
+      {
+        "name": "DATA_DANGEROUS",
+        "index": 8,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "Wolf": {
+    "name": "Wolf",
+    "inherits": "TamableAnimal",
+    "fields": [
+      {
+        "name": "DATA_INTERESTED_ID",
+        "index": 19,
+        "serializer": "boolean"
+      },
+      {
+        "name": "DATA_COLLAR_COLOR",
+        "index": 20,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_REMAINING_ANGER_TIME",
+        "index": 21,
+        "serializer": "int"
+      }
+    ]
+  },
+  "Zoglin": {
+    "name": "Zoglin",
+    "inherits": "Monster",
+    "fields": [
+      {
+        "name": "DATA_BABY_ID",
+        "index": 16,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "Zombie": {
+    "name": "Zombie",
+    "inherits": "Monster",
+    "fields": [
+      {
+        "name": "DATA_BABY_ID",
+        "index": 16,
+        "serializer": "boolean"
+      },
+      {
+        "name": "DATA_SPECIAL_TYPE_ID",
+        "index": 17,
+        "serializer": "int"
+      },
+      {
+        "name": "DATA_DROWNED_CONVERSION_ID",
+        "index": 18,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "ZombieHorse": {
+    "name": "ZombieHorse",
+    "inherits": "AbstractHorse",
+    "fields": []
+  },
+  "ZombieVillager": {
+    "name": "ZombieVillager",
+    "inherits": "Zombie",
+    "fields": [
+      {
+        "name": "DATA_CONVERTING_ID",
+        "index": 19,
+        "serializer": "boolean"
+      },
+      {
+        "name": "DATA_VILLAGER_DATA",
+        "index": 20,
+        "serializer": "villager_data"
+      }
+    ]
+  },
+  "ZombifiedPiglin": {
+    "name": "ZombifiedPiglin",
+    "inherits": "Zombie",
+    "fields": []
+  }
+}

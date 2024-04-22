@@ -2,6 +2,7 @@ plugins {
     id("java-library-convention")
     id("paperweight-classpath")
     alias(libs.plugins.paperweight.userdev)
+    application
 }
 
 repositories {
@@ -12,7 +13,6 @@ val serverVersion = "1.20.4-R0.1-SNAPSHOT"
 
 dependencies {
     implementation(project(":api"))
-    implementation(project(":code-generators:commons"))
 
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
@@ -21,5 +21,11 @@ dependencies {
 
     paperweight.paperDevBundle(serverVersion)
 
-    compileOnly(libs.adventure.nbt)
+    implementation(libs.paper.api)
+    implementation(libs.asm)
+    implementation(libs.adventure.nbt)
+}
+
+application {
+    mainClass.set("org.machinemc.primallib.generator.metadata.DataGenerator")
 }

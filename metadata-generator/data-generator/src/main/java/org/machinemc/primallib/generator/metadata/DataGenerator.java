@@ -1,7 +1,6 @@
-package org.machinemc.primallib.generator.p1_20_4.metadata;
+package org.machinemc.primallib.generator.metadata;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import net.minecraft.DetectedVersion;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -37,7 +36,6 @@ import net.minecraft.world.entity.npc.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.*;
 import net.minecraft.world.entity.vehicle.*;
-import org.machinemc.primallib.generator.metadata.AbstractMetadataGenerator;
 import org.machinemc.primallib.metadata.EntityData;
 import org.machinemc.primallib.metadata.Serializer;
 import org.machinemc.primallib.version.ProtocolVersion;
@@ -46,28 +44,51 @@ import java.io.*;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-public class MetadataGenerator extends AbstractMetadataGenerator {
+/**
+ * Data generator that generates information about metadata values for each entity type.
+ */
+public final class DataGenerator {
 
+    /**
+     * Targeted protocol version, needs to be changed for each new implementation.
+     */
+    public static final ProtocolVersion TARGET_VERSION = ProtocolVersion.PROTOCOL_1_20_3;
+
+    // NMS entity data serializer <-> PrimalLib serializer
+    private static final Map<EntityDataSerializer<?>, Serializer<?>> serializerMap = new HashMap<>();
+
+    // NMS entity classes
+    private static final Set<Class<? extends Entity>> entityClasses = new HashSet<>();
+
+    // Entity names <-> Entity data
+    private final Map<String, EntityTypeData> entityTypeData = new TreeMap<>();
+
+    // Application entry point
     public static void main(String[] args) throws Exception {
-        var gen = new MetadataGenerator(ProtocolVersion.PROTOCOL_1_20_3);
+        var gen = new DataGenerator();
+        System.out.println("Running Metadata Data Generator for version " + TARGET_VERSION);
         gen.run();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String data = gson.toJson(gen.getData());
-        File file = new File("output.json");
+        File file = new File("metadata-data-" + ProtocolVersion.PROTOCOL_1_20_3 + ".json");
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         writer.write(data);
         writer.close();
+        System.out.println("Finished, data saved to " + file.getAbsolutePath());
     }
 
-    public MetadataGenerator(ProtocolVersion version) {
-        super(version);
-    }
-
-    @Override
+    /**
+     * Runs the data generator and stores the result in {@link #getData()}.
+     */
     public void run() {
         entityClasses.forEach(this::generateForEntityClass);
     }
 
+    /**
+     * Generates entity type data information for given entity class.
+     *
+     * @param entityClass entity class
+     */
     public void generateForEntityClass(Class<? extends Entity> entityClass) {
         String name = entityClass.getSimpleName();
         if (entityTypeData.containsKey(name)) return;
@@ -96,13 +117,43 @@ public class MetadataGenerator extends AbstractMetadataGenerator {
         entityTypeData.put(name, entityData);
     }
 
-    private static final Map<EntityDataSerializer<?>, Serializer<?>> serializerMap = new HashMap<>();
+    /**
+     * Returns JSON with all loaded entity data types.
+     *
+     * @return JSON with all entity data types
+     * @see #run()
+     */
+    public JsonObject getData() {
+        JsonObject json = new JsonObject();
+        json.addProperty("_version", ProtocolVersion.PROTOCOL_1_20_3.name());
+        for (EntityTypeData data : entityTypeData.values())
+            json.add(data.name(), data.serialize());
+        return json;
+    }
 
     static {
+        // Saves system output
         PrintStream out = System.out;
+
+        // Suppresses the warning and error messages
+        // from Bootstrap
+        System.setOut(new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) { }
+        }));
+
+        // Loads some required parts of the server,
+        // can be different for each Minecraft version
         SharedConstants.setVersion(DetectedVersion.BUILT_IN);
         Bootstrap.bootStrap();
+
+        // Sets system output back to allow logging,
+        // which is disabled due to Bootstrap
         System.setOut(out);
+
+        // Maps NMS serializers to PrimalLib serializers,
+        // all NMS serializers need to have a counterpart, but
+        // not primal lib serializers need to be registered
         serializerMap.put(EntityDataSerializers.BYTE, Serializer.BYTE);
         serializerMap.put(EntityDataSerializers.INT, Serializer.INT);
         serializerMap.put(EntityDataSerializers.LONG, Serializer.LONG);
@@ -133,9 +184,9 @@ public class MetadataGenerator extends AbstractMetadataGenerator {
         serializerMap.put(EntityDataSerializers.QUATERNION, Serializer.QUATERNION);
     }
     
-    private static final Set<Class<? extends Entity>> entityClasses = new HashSet<>();
-    
     static {
+        // Loads all NMS entity types,
+        // the whole list can be seen in net.minecraft.world.entity.EntityType
         entityClasses.add(Allay.class);
         entityClasses.add(AreaEffectCloud.class);
         entityClasses.add(ArmorStand.class);

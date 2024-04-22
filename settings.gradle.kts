@@ -14,13 +14,11 @@ listOf(
 }
 
 listOf(
-    "commons", // commons module
-    "application", // generators application module
-    // p stands for protocol
-    "p1_20_4"
+    "code-generator",
+    "data-generator"
 ).forEach {
-    include("code-generators:$it")
-    findProject(":code-generators:$it")?.name = it
+    include("metadata-generator:$it")
+    findProject(":metadata-generator:$it")?.name = it
 }
 
 pluginManagement {
@@ -41,6 +39,9 @@ dependencyResolutionManagement {
 
             val lombok: String by settings
             library("lombok", "org.projectlombok:lombok:$lombok")
+
+            val asm: String by settings
+            library("asm", "org.ow2.asm:asm:$asm")
 
             val googleGuava: String by settings
             library("google-guava", "com.google.guava:guava:$googleGuava")
