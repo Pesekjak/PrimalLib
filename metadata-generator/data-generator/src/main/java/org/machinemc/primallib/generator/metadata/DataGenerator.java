@@ -1,6 +1,13 @@
 package org.machinemc.primallib.generator.metadata;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.*;
+import lombok.extern.java.Log;
+import net.fabricmc.mappingio.MappingReader;
+import net.fabricmc.mappingio.format.MappingFormat;
+import net.fabricmc.mappingio.tree.MappingTree;
+import net.fabricmc.mappingio.tree.MemoryMappingTree;
+import net.fabricmc.mappingio.tree.VisitableMappingTree;
 import net.minecraft.DetectedVersion;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -43,10 +50,12 @@ import org.machinemc.primallib.version.ProtocolVersion;
 import java.io.*;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.logging.Level;
 
 /**
  * Data generator that generates information about metadata values for each entity type.
  */
+@Log
 public final class DataGenerator {
 
     /**
@@ -55,26 +64,49 @@ public final class DataGenerator {
     public static final ProtocolVersion TARGET_VERSION = ProtocolVersion.PROTOCOL_1_20_3;
 
     // NMS entity data serializer <-> PrimalLib serializer
-    private static final Map<EntityDataSerializer<?>, Serializer<?>> serializerMap = new HashMap<>();
+    private static final Map<EntityDataSerializer<?>, Serializer<?>> serializerMap = new LinkedHashMap<>();
 
     // NMS entity classes
-    private static final Set<Class<? extends Entity>> entityClasses = new HashSet<>();
+    private static final Set<Class<? extends Entity>> entityClasses = new LinkedHashSet<>();
 
     // Entity names <-> Entity data
     private final Map<String, EntityTypeData> entityTypeData = new TreeMap<>();
 
+    private final VersionMapping versionMapping;
+
     // Application entry point
-    public static void main(String[] args) throws Exception {
-        var gen = new DataGenerator();
-        System.out.println("Running Metadata Data Generator for version " + TARGET_VERSION);
-        gen.run();
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String data = gson.toJson(gen.getData());
-        File file = new File("metadata-data-" + ProtocolVersion.PROTOCOL_1_20_3 + ".json");
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-        writer.write(data);
-        writer.close();
-        System.out.println("Finished, data saved to " + file.getAbsolutePath());
+    public static void main(String[] args) {
+        try {
+            var gen = new DataGenerator();
+            System.out.println("Running Metadata Data Generator for version " + TARGET_VERSION);
+            gen.run();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String data = gson.toJson(gen.getData());
+            File file = new File("metadata-data-" + ProtocolVersion.PROTOCOL_1_20_3 + ".json");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            writer.write(data);
+            writer.close();
+            System.out.println("Finished, data saved to " + file.getAbsolutePath());
+        } catch (Exception exception) {
+            log.log(Level.SEVERE, "Failed to run the data generator", exception);
+        }
+    }
+
+    DataGenerator() throws IOException {
+        VisitableMappingTree yarnTree = new MemoryMappingTree();
+        VisitableMappingTree vanillaTree = new MemoryMappingTree();
+
+        InputStream yarn = DataGenerator.class.getResourceAsStream("/mappings.tiny");
+        InputStream mojang = DataGenerator.class.getResourceAsStream("/client.txt");
+
+        Preconditions.checkNotNull(yarn, "Missing yarn mappings");
+        Preconditions.checkNotNull(mojang, "Missing mojang mappings");
+
+        MappingReader.read(new InputStreamReader(yarn), MappingFormat.TINY_2_FILE, yarnTree);
+        MappingReader.read(new InputStreamReader(mojang), MappingFormat.PROGUARD_FILE, vanillaTree);
+
+        versionMapping = new VersionMapping(yarnTree, vanillaTree);
+        System.out.println("Loaded mappings for version " + TARGET_VERSION);
     }
 
     /**
@@ -90,13 +122,24 @@ public final class DataGenerator {
      * @param entityClass entity class
      */
     public void generateForEntityClass(Class<? extends Entity> entityClass) {
-        String name = entityClass.getSimpleName();
+        VersionMapping.Entry entry = versionMapping.fromMojMap(entityClass.getName());
+
+        String name = entry.yarn();
         if (entityTypeData.containsKey(name)) return;
 
-        Class<?> superClass = entityClass.getSuperclass();
-        if (!Entity.class.isAssignableFrom(superClass)) superClass = null;
+        MappingTree.ClassMapping yarnClassMapping = versionMapping.yarn().getClass(entry.intermediary(), 0);
+        MappingTree.ClassMapping mojClassMapping = versionMapping.vanilla().getClass(entry.mojMap());
+        Preconditions.checkNotNull(yarnClassMapping);
+        Preconditions.checkNotNull(mojClassMapping);
 
-        EntityTypeData entityData = new EntityTypeData(name, superClass != null ? superClass.getSimpleName() : null);
+        String superClass;
+        if (Entity.class.isAssignableFrom(entityClass.getSuperclass())) {
+            superClass = versionMapping.fromMojMap(entityClass.getSuperclass().getName()).yarn();
+        } else {
+            superClass = null;
+        }
+
+        EntityTypeData entityData = new EntityTypeData(name, superClass);
         Arrays.stream(entityClass.getDeclaredFields())
                 .filter(f -> EntityDataAccessor.class.isAssignableFrom(f.getType()))
                 .filter(f -> Modifier.isStatic(f.getModifiers()))
@@ -108,11 +151,18 @@ public final class DataGenerator {
                     } catch (IllegalAccessException exception) {
                         throw new RuntimeException(exception);
                     }
-                    String fieldName = f.getName();
+
+                    MappingTree.FieldMapping fieldVanillaMapping = mojClassMapping.getField(f.getName(), null);
+                    Preconditions.checkNotNull(fieldVanillaMapping);
+
+                    MappingTree.FieldMapping fieldYarnMapping = yarnClassMapping.getField(fieldVanillaMapping.getName(0), null);
+                    Preconditions.checkNotNull(fieldYarnMapping);
+                    String yarnFieldName = fieldYarnMapping.getName(1);
+
                     int id = accessor.getId();
                     Serializer<?> serializer = serializerMap.get(accessor.getSerializer());
 
-                    entityData.fields().add(new EntityData.Field<>(fieldName, id, serializer));
+                    entityData.fields().add(new EntityData.Field<>(yarnFieldName, id, serializer));
                 });
         entityTypeData.put(name, entityData);
     }
@@ -134,13 +184,16 @@ public final class DataGenerator {
     static {
         // Saves system output
         PrintStream out = System.out;
+        PrintStream err = System.err;
 
         // Suppresses the warning and error messages
         // from Bootstrap
-        System.setOut(new PrintStream(new OutputStream() {
+        PrintStream dummy = new PrintStream(new OutputStream() {
             @Override
             public void write(int b) { }
-        }));
+        });
+        System.setOut(dummy);
+        System.setErr(dummy);
 
         // Loads some required parts of the server,
         // can be different for each Minecraft version
@@ -150,6 +203,7 @@ public final class DataGenerator {
         // Sets system output back to allow logging,
         // which is disabled due to Bootstrap
         System.setOut(out);
+        System.setErr(err);
 
         // Maps NMS serializers to PrimalLib serializers,
         // all NMS serializers need to have a counterpart, but

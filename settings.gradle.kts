@@ -55,6 +55,9 @@ dependencyResolutionManagement {
             val fastUtil: String by settings
             library("fastutil", "it.unimi.dsi:fastutil:$fastUtil")
 
+            val fabricMappingIO: String by settings
+            library("fabric-mappingio", "net.fabricmc:mapping-io:$fabricMappingIO")
+
             val paperApi: String by settings
             library("paper-api", "io.papermc.paper:paper-api:$paperApi")
 

@@ -19,6 +19,8 @@ dependencies {
     testCompileOnly(libs.lombok)
     testAnnotationProcessor(libs.lombok)
 
+    implementation(libs.fabric.mappingio)
+
     paperweight.paperDevBundle(serverVersion)
 
     implementation(libs.paper.api)
