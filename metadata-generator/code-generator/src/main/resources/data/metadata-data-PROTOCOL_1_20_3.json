@@ -26,6 +26,51 @@
       }
     ]
   },
+  "net/minecraft/entity/Entity": {
+    "name": "net/minecraft/entity/Entity",
+    "fields": [
+      {
+        "name": "FLAGS",
+        "index": 0,
+        "serializer": "byte"
+      },
+      {
+        "name": "AIR",
+        "index": 1,
+        "serializer": "int"
+      },
+      {
+        "name": "CUSTOM_NAME",
+        "index": 2,
+        "serializer": "optional_component"
+      },
+      {
+        "name": "NAME_VISIBLE",
+        "index": 3,
+        "serializer": "boolean"
+      },
+      {
+        "name": "SILENT",
+        "index": 4,
+        "serializer": "boolean"
+      },
+      {
+        "name": "NO_GRAVITY",
+        "index": 5,
+        "serializer": "boolean"
+      },
+      {
+        "name": "POSE",
+        "index": 6,
+        "serializer": "pose"
+      },
+      {
+        "name": "FROZEN_TICKS",
+        "index": 7,
+        "serializer": "int"
+      }
+    ]
+  },
   "net/minecraft/entity/ExperienceOrbEntity": {
     "name": "net/minecraft/entity/ExperienceOrbEntity",
     "inherits": "net/minecraft/entity/Entity",
@@ -68,6 +113,47 @@
     "name": "net/minecraft/entity/LightningEntity",
     "inherits": "net/minecraft/entity/Entity",
     "fields": []
+  },
+  "net/minecraft/entity/LivingEntity": {
+    "name": "net/minecraft/entity/LivingEntity",
+    "inherits": "net/minecraft/entity/Entity",
+    "fields": [
+      {
+        "name": "LIVING_FLAGS",
+        "index": 8,
+        "serializer": "byte"
+      },
+      {
+        "name": "HEALTH",
+        "index": 9,
+        "serializer": "float"
+      },
+      {
+        "name": "POTION_SWIRLS_COLOR",
+        "index": 10,
+        "serializer": "int"
+      },
+      {
+        "name": "POTION_SWIRLS_AMBIENT",
+        "index": 11,
+        "serializer": "boolean"
+      },
+      {
+        "name": "STUCK_ARROW_COUNT",
+        "index": 12,
+        "serializer": "int"
+      },
+      {
+        "name": "STINGER_COUNT",
+        "index": 13,
+        "serializer": "int"
+      },
+      {
+        "name": "SLEEPING_POSITION",
+        "index": 14,
+        "serializer": "optional_position"
+      }
+    ]
   },
   "net/minecraft/entity/MarkerEntity": {
     "name": "net/minecraft/entity/MarkerEntity",
@@ -127,6 +213,11 @@
       }
     ]
   },
+  "net/minecraft/entity/decoration/AbstractDecorationEntity": {
+    "name": "net/minecraft/entity/decoration/AbstractDecorationEntity",
+    "inherits": "net/minecraft/entity/Entity",
+    "fields": []
+  },
   "net/minecraft/entity/decoration/ArmorStandEntity": {
     "name": "net/minecraft/entity/decoration/ArmorStandEntity",
     "inherits": "net/minecraft/entity/LivingEntity",
@@ -165,6 +256,87 @@
         "name": "TRACKER_RIGHT_LEG_ROTATION",
         "index": 21,
         "serializer": "rotations"
+      }
+    ]
+  },
+  "net/minecraft/entity/decoration/DisplayEntity": {
+    "name": "net/minecraft/entity/decoration/DisplayEntity",
+    "inherits": "net/minecraft/entity/Entity",
+    "fields": [
+      {
+        "name": "START_INTERPOLATION",
+        "index": 8,
+        "serializer": "int"
+      },
+      {
+        "name": "INTERPOLATION_DURATION",
+        "index": 9,
+        "serializer": "int"
+      },
+      {
+        "name": "TELEPORT_DURATION",
+        "index": 10,
+        "serializer": "int"
+      },
+      {
+        "name": "TRANSLATION",
+        "index": 11,
+        "serializer": "vector3"
+      },
+      {
+        "name": "SCALE",
+        "index": 12,
+        "serializer": "vector3"
+      },
+      {
+        "name": "LEFT_ROTATION",
+        "index": 13,
+        "serializer": "quaternion"
+      },
+      {
+        "name": "RIGHT_ROTATION",
+        "index": 14,
+        "serializer": "quaternion"
+      },
+      {
+        "name": "BILLBOARD",
+        "index": 15,
+        "serializer": "byte"
+      },
+      {
+        "name": "BRIGHTNESS",
+        "index": 16,
+        "serializer": "int"
+      },
+      {
+        "name": "VIEW_RANGE",
+        "index": 17,
+        "serializer": "float"
+      },
+      {
+        "name": "SHADOW_RADIUS",
+        "index": 18,
+        "serializer": "float"
+      },
+      {
+        "name": "SHADOW_STRENGTH",
+        "index": 19,
+        "serializer": "float"
+      },
+      {
+        "name": "WIDTH",
+        "index": 20,
+        "serializer": "float"
+      },
+      {
+        "name": "HEIGHT",
+        "index": 21,
+        "serializer": "float"
+      },
+      {
+        "name": "GLOW_COLOR_OVERRIDE",
+        "index": 22,
+        "serializer": "int"
       }
     ]
   },
@@ -300,6 +472,27 @@
       }
     ]
   },
+  "net/minecraft/entity/mob/AbstractPiglinEntity": {
+    "name": "net/minecraft/entity/mob/AbstractPiglinEntity",
+    "inherits": "net/minecraft/entity/mob/HostileEntity",
+    "fields": [
+      {
+        "name": "IMMUNE_TO_ZOMBIFICATION",
+        "index": 16,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "net/minecraft/entity/mob/AbstractSkeletonEntity": {
+    "name": "net/minecraft/entity/mob/AbstractSkeletonEntity",
+    "inherits": "net/minecraft/entity/mob/HostileEntity",
+    "fields": []
+  },
+  "net/minecraft/entity/mob/AmbientEntity": {
+    "name": "net/minecraft/entity/mob/AmbientEntity",
+    "inherits": "net/minecraft/entity/mob/MobEntity",
+    "fields": []
+  },
   "net/minecraft/entity/mob/BlazeEntity": {
     "name": "net/minecraft/entity/mob/BlazeEntity",
     "inherits": "net/minecraft/entity/mob/HostileEntity",
@@ -388,6 +581,11 @@
     "inherits": "net/minecraft/entity/Entity",
     "fields": []
   },
+  "net/minecraft/entity/mob/FlyingEntity": {
+    "name": "net/minecraft/entity/mob/FlyingEntity",
+    "inherits": "net/minecraft/entity/mob/MobEntity",
+    "fields": []
+  },
   "net/minecraft/entity/mob/GhastEntity": {
     "name": "net/minecraft/entity/mob/GhastEntity",
     "inherits": "net/minecraft/entity/mob/FlyingEntity",
@@ -431,9 +629,19 @@
       }
     ]
   },
+  "net/minecraft/entity/mob/HostileEntity": {
+    "name": "net/minecraft/entity/mob/HostileEntity",
+    "inherits": "net/minecraft/entity/mob/PathAwareEntity",
+    "fields": []
+  },
   "net/minecraft/entity/mob/HuskEntity": {
     "name": "net/minecraft/entity/mob/HuskEntity",
     "inherits": "net/minecraft/entity/mob/ZombieEntity",
+    "fields": []
+  },
+  "net/minecraft/entity/mob/IllagerEntity": {
+    "name": "net/minecraft/entity/mob/IllagerEntity",
+    "inherits": "net/minecraft/entity/raid/RaiderEntity",
     "fields": []
   },
   "net/minecraft/entity/mob/IllusionerEntity": {
@@ -444,6 +652,27 @@
   "net/minecraft/entity/mob/MagmaCubeEntity": {
     "name": "net/minecraft/entity/mob/MagmaCubeEntity",
     "inherits": "net/minecraft/entity/mob/SlimeEntity",
+    "fields": []
+  },
+  "net/minecraft/entity/mob/MobEntity": {
+    "name": "net/minecraft/entity/mob/MobEntity",
+    "inherits": "net/minecraft/entity/LivingEntity",
+    "fields": [
+      {
+        "name": "MOB_FLAGS",
+        "index": 15,
+        "serializer": "byte"
+      }
+    ]
+  },
+  "net/minecraft/entity/mob/PathAwareEntity": {
+    "name": "net/minecraft/entity/mob/PathAwareEntity",
+    "inherits": "net/minecraft/entity/mob/MobEntity",
+    "fields": []
+  },
+  "net/minecraft/entity/mob/PatrolEntity": {
+    "name": "net/minecraft/entity/mob/PatrolEntity",
+    "inherits": "net/minecraft/entity/mob/HostileEntity",
     "fields": []
   },
   "net/minecraft/entity/mob/PhantomEntity": {
@@ -552,6 +781,17 @@
       }
     ]
   },
+  "net/minecraft/entity/mob/SpellcastingIllagerEntity": {
+    "name": "net/minecraft/entity/mob/SpellcastingIllagerEntity",
+    "inherits": "net/minecraft/entity/mob/IllagerEntity",
+    "fields": [
+      {
+        "name": "SPELL",
+        "index": 17,
+        "serializer": "byte"
+      }
+    ]
+  },
   "net/minecraft/entity/mob/SpiderEntity": {
     "name": "net/minecraft/entity/mob/SpiderEntity",
     "inherits": "net/minecraft/entity/mob/HostileEntity",
@@ -594,6 +834,11 @@
         "serializer": "int"
       }
     ]
+  },
+  "net/minecraft/entity/mob/WaterCreatureEntity": {
+    "name": "net/minecraft/entity/mob/WaterCreatureEntity",
+    "inherits": "net/minecraft/entity/mob/PathAwareEntity",
+    "fields": []
   },
   "net/minecraft/entity/mob/WitchEntity": {
     "name": "net/minecraft/entity/mob/WitchEntity",
@@ -669,6 +914,28 @@
     "inherits": "net/minecraft/entity/mob/ZombieEntity",
     "fields": []
   },
+  "net/minecraft/entity/passive/AbstractDonkeyEntity": {
+    "name": "net/minecraft/entity/passive/AbstractDonkeyEntity",
+    "inherits": "net/minecraft/entity/passive/AbstractHorseEntity",
+    "fields": [
+      {
+        "name": "CHEST",
+        "index": 18,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "net/minecraft/entity/passive/AbstractHorseEntity": {
+    "name": "net/minecraft/entity/passive/AbstractHorseEntity",
+    "inherits": "net/minecraft/entity/passive/AnimalEntity",
+    "fields": [
+      {
+        "name": "HORSE_FLAGS",
+        "index": 17,
+        "serializer": "byte"
+      }
+    ]
+  },
   "net/minecraft/entity/passive/AllayEntity": {
     "name": "net/minecraft/entity/passive/AllayEntity",
     "inherits": "net/minecraft/entity/mob/PathAwareEntity",
@@ -684,6 +951,11 @@
         "serializer": "boolean"
       }
     ]
+  },
+  "net/minecraft/entity/passive/AnimalEntity": {
+    "name": "net/minecraft/entity/passive/AnimalEntity",
+    "inherits": "net/minecraft/entity/passive/PassiveEntity",
+    "fields": []
   },
   "net/minecraft/entity/passive/AxolotlEntity": {
     "name": "net/minecraft/entity/passive/AxolotlEntity",
@@ -816,6 +1088,17 @@
     "inherits": "net/minecraft/entity/passive/AbstractDonkeyEntity",
     "fields": []
   },
+  "net/minecraft/entity/passive/FishEntity": {
+    "name": "net/minecraft/entity/passive/FishEntity",
+    "inherits": "net/minecraft/entity/mob/WaterCreatureEntity",
+    "fields": [
+      {
+        "name": "FROM_BUCKET",
+        "index": 16,
+        "serializer": "boolean"
+      }
+    ]
+  },
   "net/minecraft/entity/passive/FoxEntity": {
     "name": "net/minecraft/entity/passive/FoxEntity",
     "inherits": "net/minecraft/entity/passive/AnimalEntity",
@@ -890,6 +1173,11 @@
       }
     ]
   },
+  "net/minecraft/entity/passive/GolemEntity": {
+    "name": "net/minecraft/entity/passive/GolemEntity",
+    "inherits": "net/minecraft/entity/mob/PathAwareEntity",
+    "fields": []
+  },
   "net/minecraft/entity/passive/HorseEntity": {
     "name": "net/minecraft/entity/passive/HorseEntity",
     "inherits": "net/minecraft/entity/passive/AbstractHorseEntity",
@@ -929,6 +1217,17 @@
       {
         "name": "VARIANT",
         "index": 21,
+        "serializer": "int"
+      }
+    ]
+  },
+  "net/minecraft/entity/passive/MerchantEntity": {
+    "name": "net/minecraft/entity/passive/MerchantEntity",
+    "inherits": "net/minecraft/entity/passive/PassiveEntity",
+    "fields": [
+      {
+        "name": "HEAD_ROLLING_TIME_LEFT",
+        "index": 17,
         "serializer": "int"
       }
     ]
@@ -1007,6 +1306,17 @@
       }
     ]
   },
+  "net/minecraft/entity/passive/PassiveEntity": {
+    "name": "net/minecraft/entity/passive/PassiveEntity",
+    "inherits": "net/minecraft/entity/mob/PathAwareEntity",
+    "fields": [
+      {
+        "name": "CHILD",
+        "index": 16,
+        "serializer": "boolean"
+      }
+    ]
+  },
   "net/minecraft/entity/passive/PigEntity": {
     "name": "net/minecraft/entity/passive/PigEntity",
     "inherits": "net/minecraft/entity/passive/AnimalEntity",
@@ -1059,6 +1369,11 @@
   "net/minecraft/entity/passive/SalmonEntity": {
     "name": "net/minecraft/entity/passive/SalmonEntity",
     "inherits": "net/minecraft/entity/passive/SchoolingFishEntity",
+    "fields": []
+  },
+  "net/minecraft/entity/passive/SchoolingFishEntity": {
+    "name": "net/minecraft/entity/passive/SchoolingFishEntity",
+    "inherits": "net/minecraft/entity/passive/FishEntity",
     "fields": []
   },
   "net/minecraft/entity/passive/SheepEntity": {
@@ -1128,6 +1443,27 @@
   "net/minecraft/entity/passive/TadpoleEntity": {
     "name": "net/minecraft/entity/passive/TadpoleEntity",
     "inherits": "net/minecraft/entity/passive/FishEntity",
+    "fields": []
+  },
+  "net/minecraft/entity/passive/TameableEntity": {
+    "name": "net/minecraft/entity/passive/TameableEntity",
+    "inherits": "net/minecraft/entity/passive/AnimalEntity",
+    "fields": [
+      {
+        "name": "TAMEABLE_FLAGS",
+        "index": 17,
+        "serializer": "byte"
+      },
+      {
+        "name": "OWNER_UUID",
+        "index": 18,
+        "serializer": "optional_uuid"
+      }
+    ]
+  },
+  "net/minecraft/entity/passive/TameableShoulderEntity": {
+    "name": "net/minecraft/entity/passive/TameableShoulderEntity",
+    "inherits": "net/minecraft/entity/passive/TameableEntity",
     "fields": []
   },
   "net/minecraft/entity/passive/TraderLlamaEntity": {
@@ -1255,6 +1591,17 @@
       }
     ]
   },
+  "net/minecraft/entity/projectile/AbstractFireballEntity": {
+    "name": "net/minecraft/entity/projectile/AbstractFireballEntity",
+    "inherits": "net/minecraft/entity/projectile/ExplosiveProjectileEntity",
+    "fields": [
+      {
+        "name": "ITEM",
+        "index": 8,
+        "serializer": "slot"
+      }
+    ]
+  },
   "net/minecraft/entity/projectile/ArrowEntity": {
     "name": "net/minecraft/entity/projectile/ArrowEntity",
     "inherits": "net/minecraft/entity/projectile/PersistentProjectileEntity",
@@ -1269,6 +1616,11 @@
   "net/minecraft/entity/projectile/DragonFireballEntity": {
     "name": "net/minecraft/entity/projectile/DragonFireballEntity",
     "inherits": "net/minecraft/entity/projectile/ExplosiveProjectileEntity",
+    "fields": []
+  },
+  "net/minecraft/entity/projectile/ExplosiveProjectileEntity": {
+    "name": "net/minecraft/entity/projectile/ExplosiveProjectileEntity",
+    "inherits": "net/minecraft/entity/projectile/ProjectileEntity",
     "fields": []
   },
   "net/minecraft/entity/projectile/FireballEntity": {
@@ -1316,6 +1668,27 @@
   "net/minecraft/entity/projectile/LlamaSpitEntity": {
     "name": "net/minecraft/entity/projectile/LlamaSpitEntity",
     "inherits": "net/minecraft/entity/projectile/ProjectileEntity",
+    "fields": []
+  },
+  "net/minecraft/entity/projectile/PersistentProjectileEntity": {
+    "name": "net/minecraft/entity/projectile/PersistentProjectileEntity",
+    "inherits": "net/minecraft/entity/projectile/ProjectileEntity",
+    "fields": [
+      {
+        "name": "PROJECTILE_FLAGS",
+        "index": 8,
+        "serializer": "byte"
+      },
+      {
+        "name": "PIERCE_LEVEL",
+        "index": 9,
+        "serializer": "byte"
+      }
+    ]
+  },
+  "net/minecraft/entity/projectile/ProjectileEntity": {
+    "name": "net/minecraft/entity/projectile/ProjectileEntity",
+    "inherits": "net/minecraft/entity/Entity",
     "fields": []
   },
   "net/minecraft/entity/projectile/ShulkerBulletEntity": {
@@ -1389,6 +1762,54 @@
     "name": "net/minecraft/entity/projectile/thrown/SnowballEntity",
     "inherits": "net/minecraft/entity/projectile/thrown/ThrownItemEntity",
     "fields": []
+  },
+  "net/minecraft/entity/projectile/thrown/ThrownEntity": {
+    "name": "net/minecraft/entity/projectile/thrown/ThrownEntity",
+    "inherits": "net/minecraft/entity/projectile/ProjectileEntity",
+    "fields": []
+  },
+  "net/minecraft/entity/projectile/thrown/ThrownItemEntity": {
+    "name": "net/minecraft/entity/projectile/thrown/ThrownItemEntity",
+    "inherits": "net/minecraft/entity/projectile/thrown/ThrownEntity",
+    "fields": [
+      {
+        "name": "ITEM",
+        "index": 8,
+        "serializer": "slot"
+      }
+    ]
+  },
+  "net/minecraft/entity/raid/RaiderEntity": {
+    "name": "net/minecraft/entity/raid/RaiderEntity",
+    "inherits": "net/minecraft/entity/mob/PatrolEntity",
+    "fields": [
+      {
+        "name": "CELEBRATING",
+        "index": 16,
+        "serializer": "boolean"
+      }
+    ]
+  },
+  "net/minecraft/entity/vehicle/AbstractMinecartEntity": {
+    "name": "net/minecraft/entity/vehicle/AbstractMinecartEntity",
+    "inherits": "net/minecraft/entity/vehicle/VehicleEntity",
+    "fields": [
+      {
+        "name": "CUSTOM_BLOCK_ID",
+        "index": 11,
+        "serializer": "int"
+      },
+      {
+        "name": "CUSTOM_BLOCK_OFFSET",
+        "index": 12,
+        "serializer": "int"
+      },
+      {
+        "name": "CUSTOM_BLOCK_PRESENT",
+        "index": 13,
+        "serializer": "boolean"
+      }
+    ]
   },
   "net/minecraft/entity/vehicle/BoatEntity": {
     "name": "net/minecraft/entity/vehicle/BoatEntity",
@@ -1468,9 +1889,35 @@
     "inherits": "net/minecraft/entity/vehicle/AbstractMinecartEntity",
     "fields": []
   },
+  "net/minecraft/entity/vehicle/StorageMinecartEntity": {
+    "name": "net/minecraft/entity/vehicle/StorageMinecartEntity",
+    "inherits": "net/minecraft/entity/vehicle/AbstractMinecartEntity",
+    "fields": []
+  },
   "net/minecraft/entity/vehicle/TntMinecartEntity": {
     "name": "net/minecraft/entity/vehicle/TntMinecartEntity",
     "inherits": "net/minecraft/entity/vehicle/AbstractMinecartEntity",
     "fields": []
+  },
+  "net/minecraft/entity/vehicle/VehicleEntity": {
+    "name": "net/minecraft/entity/vehicle/VehicleEntity",
+    "inherits": "net/minecraft/entity/Entity",
+    "fields": [
+      {
+        "name": "DAMAGE_WOBBLE_TICKS",
+        "index": 8,
+        "serializer": "int"
+      },
+      {
+        "name": "DAMAGE_WOBBLE_SIDE",
+        "index": 9,
+        "serializer": "int"
+      },
+      {
+        "name": "DAMAGE_WOBBLE_STRENGTH",
+        "index": 10,
+        "serializer": "float"
+      }
+    ]
   }
 }

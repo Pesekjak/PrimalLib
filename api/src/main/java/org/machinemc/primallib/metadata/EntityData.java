@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
-import org.machinemc.primallib.version.UsedByGenerators;
 
 import java.util.Collections;
 import java.util.Map;
@@ -17,7 +16,6 @@ import java.util.TreeMap;
  * Does not contain information about the mob type, but just
  * the data mapped to their numerical ID values.
  */
-@UsedByGenerators
 @NoArgsConstructor
 public final class EntityData {
 
@@ -110,7 +108,6 @@ public final class EntityData {
      * @param serializer used serializer
      * @param <T> value type
      */
-    @UsedByGenerators
     public record Field<T>(@Nullable String name, int index, Serializer<T> serializer) implements Comparable<Field<?>> {
 
         public static <T> Field<T> invalid() {

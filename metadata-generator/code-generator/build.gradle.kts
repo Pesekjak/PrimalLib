@@ -15,8 +15,11 @@ dependencies {
     testCompileOnly(libs.lombok)
     testAnnotationProcessor(libs.lombok)
 
+    implementation(libs.google.gson)
     implementation(libs.javapoet)
     implementation(libs.paper.api)
+
+    implementation(libs.jetbrains.annotations) // for annotating generated classes
 }
 
 application {

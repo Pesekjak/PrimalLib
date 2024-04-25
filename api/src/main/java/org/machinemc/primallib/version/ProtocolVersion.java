@@ -8,12 +8,6 @@ import org.jetbrains.annotations.ApiStatus;
  * Represents Minecraft protocol version.
  */
 @Getter
-@UsedByGenerators("""
-        Generators can not call for the protocol version of
-        currently running server because it is unavailable during
-        the generation process, but can reference the constants
-        and use their comparing methods.
-        """)
 public enum ProtocolVersion {
 
     /**

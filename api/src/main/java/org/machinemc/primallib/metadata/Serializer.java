@@ -23,7 +23,6 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.machinemc.primallib.entity.VillagerData;
 import org.machinemc.primallib.particle.ConfiguredParticle;
-import org.machinemc.primallib.version.UsedByGenerators;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -37,7 +36,6 @@ import java.util.UUID;
  * @param <T> type
  */
 @Getter
-@UsedByGenerators
 @SuppressWarnings("UnstableApiUsage")
 public final class Serializer<T> {
 

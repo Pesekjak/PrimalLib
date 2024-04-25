@@ -121,7 +121,10 @@ public final class DataGenerator {
      *
      * @param entityClass entity class
      */
+    @SuppressWarnings("unchecked")
     public void generateForEntityClass(Class<? extends Entity> entityClass) {
+        if (!Entity.class.isAssignableFrom(entityClass)) return;
+
         VersionMapping.Entry entry = versionMapping.fromMojMap(entityClass.getName());
 
         String name = entry.yarn();
@@ -135,6 +138,7 @@ public final class DataGenerator {
         String superClass;
         if (Entity.class.isAssignableFrom(entityClass.getSuperclass())) {
             superClass = versionMapping.fromMojMap(entityClass.getSuperclass().getName()).yarn();
+            generateForEntityClass((Class<? extends Entity>) entityClass.getSuperclass());
         } else {
             superClass = null;
         }
