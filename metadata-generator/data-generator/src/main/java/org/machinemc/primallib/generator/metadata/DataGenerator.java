@@ -166,7 +166,7 @@ public final class DataGenerator {
                     int id = accessor.getId();
                     Serializer<?> serializer = serializerMap.get(accessor.getSerializer());
 
-                    entityData.fields().add(new EntityData.Field<>(yarnFieldName, id, serializer));
+                    entityData.fields().add(new EntityTypeData.NamedField(yarnFieldName, new EntityData.Field<>(id, serializer)));
                 });
         entityTypeData.put(name, entityData);
     }

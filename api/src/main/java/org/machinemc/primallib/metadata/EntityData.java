@@ -103,19 +103,14 @@ public final class EntityData {
      * <p>
      * Different entity types have different data fields.
      *
-     * @param name name of the field
      * @param index index of the data
      * @param serializer used serializer
      * @param <T> value type
      */
-    public record Field<T>(@Nullable String name, int index, Serializer<T> serializer) implements Comparable<Field<?>> {
+    public record Field<T>(int index, Serializer<T> serializer) implements Comparable<Field<?>> {
 
         public static <T> Field<T> invalid() {
-            return new Field<>("INVALID", -1, null);
-        }
-
-        public Field(int index, Serializer<T> serializer) {
-            this(null, index, serializer);
+            return new Field<>(-1, null);
         }
 
         public Field {

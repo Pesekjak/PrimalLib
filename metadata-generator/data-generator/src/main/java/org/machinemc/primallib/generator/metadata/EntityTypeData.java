@@ -19,7 +19,7 @@ import java.util.List;
  * @param inherits name of the entity type this entity type inherits all data from
  * @param fields fields specific for this entity type
  */
-public record EntityTypeData(String name, @Nullable String inherits, List<EntityData.Field<?>> fields) {
+public record EntityTypeData(String name, @Nullable String inherits, List<NamedField> fields) {
 
     /**
      * Deserializes the entity data type from json object.
@@ -33,7 +33,7 @@ public record EntityTypeData(String name, @Nullable String inherits, List<Entity
         String inherits = json.has("inherits")
                 ? json.get("inherits").getAsString()
                 : null;
-        List<EntityData.Field<?>> fields = new ArrayList<>();
+        List<NamedField> fields = new ArrayList<>();
         json.getAsJsonArray("fields").asList().stream()
                 .map(JsonElement::getAsJsonObject)
                 .map(jsonObject -> {
@@ -42,7 +42,7 @@ public record EntityTypeData(String name, @Nullable String inherits, List<Entity
                             : null;
                     int index = jsonObject.getAsJsonPrimitive("index").getAsInt();
                     Serializer<?> serializer = Serializer.getByName(jsonObject.getAsJsonPrimitive("serializer").getAsString());
-                    return new EntityData.Field<>(fieldName, index, serializer);
+                    return new NamedField(fieldName, new EntityData.Field<>(index, serializer));
                 })
                 .forEach(fields::add);
         return new EntityTypeData(name, inherits, fields);
@@ -56,7 +56,7 @@ public record EntityTypeData(String name, @Nullable String inherits, List<Entity
         Preconditions.checkNotNull(name, "Name can not be null");
         Preconditions.checkNotNull(fields, "Fields can not be null");
         fields = new ArrayList<>(fields);
-        fields.sort(Comparator.comparingInt(EntityData.Field::index));
+        fields.sort(Comparator.comparingInt(f -> f.field.index()));
     }
 
     /**
@@ -74,13 +74,28 @@ public record EntityTypeData(String name, @Nullable String inherits, List<Entity
                 .map(field -> {
                     JsonObject jsonObject = new JsonObject();
                     if (field.name() != null) jsonObject.addProperty("name", field.name());
-                    jsonObject.addProperty("index", field.index());
-                    jsonObject.addProperty("serializer", Serializer.getName(field.serializer()));
+                    jsonObject.addProperty("index", field.field.index());
+                    jsonObject.addProperty("serializer", Serializer.getName(field.field.serializer()));
                     return jsonObject;
                 })
                 .forEach(jsonArray::add);
         json.add("fields", jsonArray);
         return json;
+    }
+
+    /**
+     * Represents a named entity data field.
+     *
+     * @param name name of the field
+     * @param field field
+     */
+    public record NamedField(String name, EntityData.Field<?> field) {
+
+        public NamedField {
+            Preconditions.checkNotNull(name, "Name of the field can not be null");
+            Preconditions.checkNotNull(field, "Field can not be null");
+        }
+
     }
 
 }
