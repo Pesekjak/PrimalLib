@@ -78,7 +78,10 @@ public final class MVEntityTypeData {
      * @return primal lib class name
      */
     public static String renamePackage(String yarn) {
-        return yarn.replaceFirst("net/minecraft/entity", "org/machinemc/primallib/metadata/model");
+        String relocated = yarn.replaceFirst("net/minecraft/entity", "org/machinemc/primallib/metadata/model");
+        int innerIndex = relocated.lastIndexOf('$');
+        if (innerIndex == -1) return relocated;
+        return relocated.substring(0, relocated.lastIndexOf('/')) + "/" + relocated.substring(innerIndex + 1);
     }
 
     /**

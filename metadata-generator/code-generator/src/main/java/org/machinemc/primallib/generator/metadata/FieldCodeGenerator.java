@@ -78,6 +78,7 @@ public record FieldCodeGenerator(MVEntityTypeData.Field field) {
         versions.remove(ProtocolVersion.UNKNOWN);
         Collections.reverse(versions);
 
+        boolean first = true;
         ProtocolVersion last = versions.getFirst();
 
         for (int i = 0; i < versions.size(); i++) {
@@ -88,7 +89,14 @@ public record FieldCodeGenerator(MVEntityTypeData.Field field) {
                 continue;
             }
 
-            String flow = last == versions.getFirst() ? "if" : "else if";
+            String flow;
+            if (first) {
+                first = false;
+                flow = "if";
+            } else {
+                flow = "else if";
+            }
+
             code.beginControlFlow(
                     flow + " ($T.get().noLessThan($T.$L))",
                     ProtocolVersion.class, ProtocolVersion.class, last.name()

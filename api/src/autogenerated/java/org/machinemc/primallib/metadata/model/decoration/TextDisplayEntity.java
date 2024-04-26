@@ -9,10 +9,10 @@ import org.machinemc.primallib.metadata.EntityData;
 import org.machinemc.primallib.metadata.Serializer;
 
 /**
- * Applicable metadata fields for all entities inheriting {@link DisplayEntity$TextDisplayEntity} type.
+ * Applicable metadata fields for all entities inheriting {@link TextDisplayEntity} type.
  */
 @Generated("org.machinemc.primallib.generator.metadata.CodeGenerator")
-public interface DisplayEntity$TextDisplayEntity extends DisplayEntity {
+public interface TextDisplayEntity extends DisplayEntity {
     /**
      * Metadata field for TEXT state of the entity
      */

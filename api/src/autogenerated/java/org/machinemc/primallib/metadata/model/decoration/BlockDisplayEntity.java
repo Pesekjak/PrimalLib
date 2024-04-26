@@ -7,10 +7,10 @@ import org.machinemc.primallib.metadata.EntityData;
 import org.machinemc.primallib.metadata.Serializer;
 
 /**
- * Applicable metadata fields for all entities inheriting {@link DisplayEntity$BlockDisplayEntity} type.
+ * Applicable metadata fields for all entities inheriting {@link BlockDisplayEntity} type.
  */
 @Generated("org.machinemc.primallib.generator.metadata.CodeGenerator")
-public interface DisplayEntity$BlockDisplayEntity extends DisplayEntity {
+public interface BlockDisplayEntity extends DisplayEntity {
     /**
      * Metadata field for BLOCK_STATE state of the entity
      */
