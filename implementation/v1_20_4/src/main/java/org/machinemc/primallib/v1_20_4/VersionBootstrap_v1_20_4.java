@@ -41,6 +41,7 @@ public class VersionBootstrap_v1_20_4 implements VersionBootstrap {
         List<PacketListener<?>> listeners = new ArrayList<>();
 
         // Client-bound
+        listeners.add(new LoginPacketListener());
         listeners.add(new PlayerInfoRemovePacketListener());
         listeners.add(new PlayerInfoUpdatePacketListener());
         listeners.add(new RegistryDataPacketListener());

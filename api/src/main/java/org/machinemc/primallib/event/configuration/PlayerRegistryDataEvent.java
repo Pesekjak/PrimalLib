@@ -15,6 +15,8 @@ import org.machinemc.primallib.version.VersionDependant;
  * <p>
  * Should only be used for packet/clientside related stuff.
  * Not intended for modifying server side state.
+ * <p>
+ * This event can be triggered with {@link org.machinemc.primallib.player.PlayerActionService#resendConfigurations(Player)}.
  */
 @Getter
 @VersionDependant
