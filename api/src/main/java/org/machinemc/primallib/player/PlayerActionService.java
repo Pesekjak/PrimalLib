@@ -156,6 +156,34 @@ public abstract class PlayerActionService extends AutoRegisteringService<PlayerA
     @ApiStatus.Experimental
     public abstract void showLoadingScreen(Player player);
 
+    /**
+     * Switches player to configuration state.
+     *
+     * @param player player
+     * @see #switchToPlay(Player)
+     */
+    public abstract void switchToConfiguration(Player player);
+
+    /**
+     * Switches the player to play state.
+     *
+     * @param player player
+     * @see #switchToConfiguration(Player)
+     */
+    public abstract void switchToPlay(Player player);
+
+    /**
+     * Resends configuration to the player.
+     * <p>
+     * To receive a configuration, player has to be in a configuration state.
+     * <p>
+     * This operation will return player back to play state.
+     *
+     * @param player player
+     * @see #switchToConfiguration(Player)
+     */
+    public abstract void resendConfigurations(Player player);
+
     @Override
     public Class<PlayerActionService> getRegistrationClass() {
         return PlayerActionService.class;

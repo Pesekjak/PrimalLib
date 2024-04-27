@@ -4,8 +4,11 @@ import io.netty.buffer.Unpooled;
 import io.papermc.paper.math.BlockPosition;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketListener;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.level.block.Block;
@@ -142,6 +145,30 @@ public class PlayerActionServiceImpl extends PlayerActionService {
         CommonPlayerSpawnInfo spawnInfo = handle.createCommonSpawnInfo(handle.serverLevel());
         ClientboundRespawnPacket packet = new ClientboundRespawnPacket(spawnInfo, ClientboundRespawnPacket.KEEP_ALL_DATA);
         PacketChannelHandlerImpl.sendPacket(player, packet, false);
+    }
+
+    @Override
+    public void switchToConfiguration(Player player) {
+        ServerPlayer handle = ((CraftPlayer) player).getHandle();
+        PacketListener listener = handle.connection.connection.getPacketListener();
+        if (!(listener instanceof ServerGamePacketListenerImpl)) return;
+        handle.connection.switchToConfig();
+    }
+
+    @Override
+    public void switchToPlay(Player player) {
+        ServerPlayer handle = ((CraftPlayer) player).getHandle();
+        PacketListener listener = handle.connection.connection.getPacketListener();
+        if (!(listener instanceof ServerConfigurationPacketListenerImpl configurationListener)) return;
+        configurationListener.returnToWorld();
+    }
+
+    @Override
+    public void resendConfigurations(Player player) {
+        ServerPlayer handle = ((CraftPlayer) player).getHandle();
+        PacketListener listener = handle.connection.connection.getPacketListener();
+        if (!(listener instanceof ServerConfigurationPacketListenerImpl configurationListener)) return;
+        configurationListener.startConfiguration();
     }
 
 }
