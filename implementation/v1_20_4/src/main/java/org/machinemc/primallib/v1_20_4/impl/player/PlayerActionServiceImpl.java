@@ -165,6 +165,7 @@ public class PlayerActionServiceImpl extends PlayerActionService {
 
     @Override
     public void switchToConfiguration(Player player) {
+        player.closeInventory();
         getReconfigurationData(player).setState(PlayerReconfigurationData.State.AWAITING_CONFIGURATION_REQ);
         PacketChannelHandlerImpl.sendPacket(player, new ClientboundStartConfigurationPacket(), false);
     }

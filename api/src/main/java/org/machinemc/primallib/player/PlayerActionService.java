@@ -136,8 +136,6 @@ public abstract class PlayerActionService extends AutoRegisteringService<PlayerA
 
     /**
      * Refreshes the player for all players online and themselves.
-     * <p>
-     * Must be executed on the main thread.
      *
      * @param player player to refresh
      */
