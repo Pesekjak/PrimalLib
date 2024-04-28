@@ -136,6 +136,8 @@ public abstract class PlayerActionService extends AutoRegisteringService<PlayerA
 
     /**
      * Refreshes the player for all players online and themselves.
+     * <p>
+     * Must be executed on the main thread.
      *
      * @param player player to refresh
      */
@@ -158,30 +160,44 @@ public abstract class PlayerActionService extends AutoRegisteringService<PlayerA
 
     /**
      * Switches player to configuration state.
+     * <p>
+     * Paper breaks the ability to send player to configuration state,
+     * this uses some tricky methods to achieve that and might not
+     * work as expected, use with caution.
      *
      * @param player player
      * @see #switchToPlay(Player)
      */
+    @ApiStatus.Experimental
     public abstract void switchToConfiguration(Player player);
 
     /**
      * Switches the player to play state.
+     * <p>
+     * Paper breaks the ability to send player to configuration state,
+     * this uses some tricky methods to achieve that and might not
+     * work as expected, use with caution.
      *
      * @param player player
      * @see #switchToConfiguration(Player)
      */
+    @ApiStatus.Experimental
     public abstract void switchToPlay(Player player);
 
     /**
      * Resends configuration to the player.
      * <p>
      * To receive a configuration, player has to be in a configuration state.
-     * <p>
      * This operation will return player back to play state.
+     * <p>
+     * Paper breaks the ability to send player to configuration state,
+     * this uses some tricky methods to achieve that and might not
+     * work as expected, use with caution.
      *
      * @param player player
      * @see #switchToConfiguration(Player)
      */
+    @ApiStatus.Experimental
     public abstract void resendConfigurations(Player player);
 
     @Override

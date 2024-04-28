@@ -54,7 +54,7 @@ public class PacketChannelHandlerImpl extends PacketChannelHandler<Packet<?>, Bu
 
     @Override
     protected void sendPacket(Packet<?> packet) {
-        owner.getHandle().connection.send(packet);
+        owner.getHandle().connection.connection.send(packet);
     }
 
     @Override
