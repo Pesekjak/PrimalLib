@@ -79,6 +79,7 @@ public final class MVEntityTypeData {
      */
     public static String renamePackage(String yarn) {
         String relocated = yarn.replaceFirst("net/minecraft/entity", "org/machinemc/primallib/metadata/model");
+        relocated = relocated + "DataModel";
         int innerIndex = relocated.lastIndexOf('$');
         if (innerIndex == -1) return relocated;
         return relocated.substring(0, relocated.lastIndexOf('/')) + "/" + relocated.substring(innerIndex + 1);

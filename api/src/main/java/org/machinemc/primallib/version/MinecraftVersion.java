@@ -5,7 +5,7 @@ import org.bukkit.Bukkit;
 
 import java.util.List;
 
-import static org.machinemc.primallib.version.ProtocolVersion.PROTOCOL_1_20_3;
+import static org.machinemc.primallib.version.ProtocolVersion.*;
 
 /**
  * Represents Minecraft version.
@@ -15,7 +15,7 @@ import static org.machinemc.primallib.version.ProtocolVersion.PROTOCOL_1_20_3;
  */
 public enum MinecraftVersion {
 
-    MINECRAFT_1_20_4    (PROTOCOL_1_20_3, "1.20.4");
+    MINECRAFT_1_20_6    (PROTOCOL_1_20_5, "1.20.6");
 
     @Getter
     private final ProtocolVersion protocol;

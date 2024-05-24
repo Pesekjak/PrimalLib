@@ -16,7 +16,7 @@ public enum ProtocolVersion {
      */
     @ApiStatus.Internal UNKNOWN (-1),
 
-    PROTOCOL_1_20_3             (765);
+    PROTOCOL_1_20_5             (766);
 
     private final int value;
 

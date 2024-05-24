@@ -3,7 +3,6 @@ package org.machinemc.primallib.metadata;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableSet;
 import io.papermc.paper.math.Position;
 import it.unimi.dsi.fastutil.Pair;
 import lombok.Getter;
@@ -13,22 +12,17 @@ import org.bukkit.Art;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.Cat;
-import org.bukkit.entity.Frog;
-import org.bukkit.entity.Pose;
-import org.bukkit.entity.Sniffer;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.EulerAngle;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.machinemc.primallib.entity.ArmadilloState;
 import org.machinemc.primallib.entity.VillagerData;
 import org.machinemc.primallib.particle.ConfiguredParticle;
 
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Serializer for different possible value types of entity metadata.
@@ -80,6 +74,26 @@ public final class Serializer<T> {
     public static final Serializer<ItemStack> SLOT = create(ItemStack.class);
 
     /**
+     * Serializer for block state values.
+     */
+    public static final Serializer<BlockData> BLOCK_STATE = create(BlockData.class);
+
+    /**
+     * Serializer for optional block state values.
+     */
+    public static final Serializer<Optional<BlockData>> OPTIONAL_BLOCK_STATE = create(Optional.class);
+
+    /**
+     * Serializer for particle values.
+     */
+    public static final Serializer<ConfiguredParticle> PARTICLE = create(ConfiguredParticle.class);
+
+    /**
+     * Serializer for multiple particle values.
+     */
+    public static final Serializer<List<ConfiguredParticle>> PARTICLES = create(List.class);
+
+    /**
      * Serializer for boolean values.
      */
     public static final Serializer<Boolean> BOOLEAN = create(Boolean.class);
@@ -113,24 +127,17 @@ public final class Serializer<T> {
     public static final Serializer<Optional<UUID>> OPTIONAL_UUID = create(Optional.class);
 
     /**
-     * Serializer for block state values.
+     * Serializer for global position values.
+     *
+     * @apiNote currently unused by the protocol, subject to change
      */
-    public static final Serializer<BlockData> BLOCK_STATE = create(BlockData.class);
-
-    /**
-     * Serializer for optional block state values.
-     */
-    public static final Serializer<Optional<BlockData>> OPTIONAL_BLOCK_STATE = create(Optional.class);
+    @SuppressWarnings("all")
+    public static final Serializer<Optional<Pair<World, Position>>> OPTIONAL_GLOBAL_POSITION = create(Optional.class);
 
     /**
      * Serializer for NBT values.
      */
     public static final Serializer<CompoundBinaryTag> NBT = create(CompoundBinaryTag.class);
-
-    /**
-     * Serializer for particle values.
-     */
-    public static final Serializer<ConfiguredParticle> PARTICLE = create(ConfiguredParticle.class);
 
     /**
      * Serializer for villager data values.
@@ -142,63 +149,77 @@ public final class Serializer<T> {
      *
      * @apiNote the integer values are unsigned
      */
-    public static Serializer<Optional<Integer>> OPTIONAL_INT = create(Optional.class);
+    public static final Serializer<Optional<Integer>> OPTIONAL_INT = create(Optional.class);
 
     /**
      * Serializer for pose values.
      */
-    public static Serializer<Pose> POSE = create(Pose.class);
+    public static final Serializer<Pose> POSE = create(Pose.class);
 
     /**
      * Serializer for cat variant values.
      */
-    public static Serializer<Cat.Type> CAT_VARIANT = create(Cat.Type.class);
+    public static final Serializer<Cat.Type> CAT_VARIANT = create(Cat.Type.class);
+
+    /**
+     * Serializer for wolf variant values.
+     */
+    public static final Serializer<Wolf.Variant> WOLF_VARIANT = create(Wolf.Variant.class);
 
     /**
      * Serializer for frog variant values.
      */
-    public static Serializer<Frog.Variant> FROG_VARIANT = create(Frog.Variant.class);
-
-    /**
-     * Serializer for global position values.
-     *
-     * @apiNote currently unused by the protocol, subject to change
-     */
-    @SuppressWarnings("all")
-    public static Serializer<Optional<Pair<World, Position>>> OPTIONAL_GLOBAL_POSITION = create(Optional.class);
+    public static final Serializer<Frog.Variant> FROG_VARIANT = create(Frog.Variant.class);
 
     /**
      * Serializer for painting variant values.
      */
-    public static Serializer<Art> PAINTING_VARIANT = create(Art.class);
+    public static final Serializer<Art> PAINTING_VARIANT = create(Art.class);
+
+    /**
+     * Serializer for armadillo state values.
+     */
+    public static final Serializer<ArmadilloState> ARMADILLO_STATE = create(ArmadilloState.class);
 
     /**
      * Serializer for sniffer state values.
      */
-    public static Serializer<Sniffer.State> SNIFFER_STATE = create(Sniffer.State.class);
+    public static final Serializer<Sniffer.State> SNIFFER_STATE = create(Sniffer.State.class);
 
     /**
      * Serializer for vector3 values.
      */
-    public static Serializer<Vector3f> VECTOR3 = create(Vector3f.class);
+    public static final Serializer<Vector3f> VECTOR3 = create(Vector3f.class);
 
     /**
      * Serializer for quaternion values.
      */
-    public static Serializer<Quaternionf> QUATERNION = create(Quaternionf.class);
+    public static final Serializer<Quaternionf> QUATERNION = create(Quaternionf.class);
 
     private static final BiMap<Serializer<?>, String> serializers;
 
     static {
-        Set<Serializer<?>> validSerializers = ImmutableSet.copyOf(Serializer.values());
-        serializers = HashBiMap.create(validSerializers.size());
+        var all = Arrays.stream(Serializer.class.getFields())
+                .filter(field -> field.getType().equals(Serializer.class))
+                .filter(field -> Modifier.isPublic(field.getModifiers()))
+                .filter(field -> Modifier.isStatic(field.getModifiers()))
+                .filter(field -> Modifier.isFinal(field.getModifiers()))
+                .map(field -> {
+                    try {
+                        return (Serializer<?>) field.get(null);
+                    } catch (IllegalAccessException exception) {
+                        throw new RuntimeException(exception);
+                    }
+                })
+                .toList();
+        serializers = HashBiMap.create(all.size());
         Arrays.stream(Serializer.class.getFields())
                 .filter(f -> Serializer.class.isAssignableFrom(f.getType()))
                 .filter(f -> Modifier.isStatic(f.getModifiers()))
                 .forEach(f -> {
                     try {
                         Serializer<?> serializer = (Serializer<?>) f.get(null);
-                        if (!validSerializers.contains(serializer)) return;
+                        if (!all.contains(serializer)) return;
                         serializers.put(serializer, f.getName().toLowerCase());
                     } catch (IllegalAccessException ignored) { }
                 });
@@ -248,14 +269,7 @@ public final class Serializer<T> {
      * @return all serializers
      */
     public static Serializer<?>[] values() {
-        return new Serializer[] {
-            BYTE, INT, LONG, FLOAT, STRING, COMPONENT, OPTIONAL_COMPONENT,
-                SLOT, BOOLEAN, ROTATIONS, POSITION, OPTIONAL_POSITION,
-                DIRECTION, OPTIONAL_UUID, BLOCK_STATE, OPTIONAL_BLOCK_STATE,
-                NBT, PARTICLE, VILLAGER_DATA, OPTIONAL_INT, POSE,
-                CAT_VARIANT, FROG_VARIANT, OPTIONAL_GLOBAL_POSITION, PAINTING_VARIANT,
-                SNIFFER_STATE, VECTOR3, QUATERNION
-        };
+        return serializers.keySet().toArray(new Serializer[0]);
     }
 
 }

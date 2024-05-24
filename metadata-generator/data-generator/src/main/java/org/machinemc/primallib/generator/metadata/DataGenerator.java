@@ -18,6 +18,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.*;
 import net.minecraft.world.entity.animal.allay.Allay;
+import net.minecraft.world.entity.animal.armadillo.Armadillo;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.entity.animal.frog.Frog;
@@ -42,6 +43,8 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.*;
+import net.minecraft.world.entity.projectile.windcharge.BreezeWindCharge;
+import net.minecraft.world.entity.projectile.windcharge.WindCharge;
 import net.minecraft.world.entity.vehicle.*;
 import org.machinemc.primallib.metadata.EntityData;
 import org.machinemc.primallib.metadata.Serializer;
@@ -61,7 +64,7 @@ public final class DataGenerator {
     /**
      * Targeted protocol version, needs to be changed for each new implementation.
      */
-    public static final ProtocolVersion TARGET_VERSION = ProtocolVersion.PROTOCOL_1_20_3;
+    public static final ProtocolVersion TARGET_VERSION = ProtocolVersion.PROTOCOL_1_20_5;
 
     // NMS entity data serializer <-> PrimalLib serializer
     private static final Map<EntityDataSerializer<?>, Serializer<?>> serializerMap = new LinkedHashMap<>();
@@ -82,7 +85,7 @@ public final class DataGenerator {
             gen.run();
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String data = gson.toJson(gen.getData());
-            File file = new File("metadata-data-" + ProtocolVersion.PROTOCOL_1_20_3 + ".json");
+            File file = new File("metadata-data-" + TARGET_VERSION + ".json");
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
             writer.write(data);
             writer.close();
@@ -163,8 +166,8 @@ public final class DataGenerator {
                     Preconditions.checkNotNull(fieldYarnMapping);
                     String yarnFieldName = fieldYarnMapping.getName(1);
 
-                    int id = accessor.getId();
-                    Serializer<?> serializer = serializerMap.get(accessor.getSerializer());
+                    int id = accessor.id();
+                    Serializer<?> serializer = serializerMap.get(accessor.serializer());
 
                     entityData.fields().add(new EntityTypeData.NamedField(yarnFieldName, new EntityData.Field<>(id, serializer)));
                 });
@@ -179,7 +182,7 @@ public final class DataGenerator {
      */
     public JsonObject getData() {
         JsonObject json = new JsonObject();
-        json.addProperty("_version", ProtocolVersion.PROTOCOL_1_20_3.name());
+        json.addProperty("_version", TARGET_VERSION.name());
         for (EntityTypeData data : entityTypeData.values())
             json.add(data.name(), data.serialize());
         return json;
@@ -199,10 +202,19 @@ public final class DataGenerator {
         System.setOut(dummy);
         System.setErr(dummy);
 
-        // Loads some required parts of the server,
-        // can be different for each Minecraft version
-        SharedConstants.setVersion(DetectedVersion.BUILT_IN);
-        Bootstrap.bootStrap();
+        try {
+
+            // Loads some required parts of the server,
+            // can be different for each Minecraft version
+            SharedConstants.setVersion(DetectedVersion.BUILT_IN);
+            Bootstrap.bootStrap();
+
+        } catch (Throwable throwable) {
+            throwable.printStackTrace(err);
+            err.println("This is either an error or you are missing required dependencies");
+            err.println("See README.txt in the runtime-dependencies directory for instructions");
+            throw new RuntimeException(throwable);
+        }
 
         // Sets system output back to allow logging,
         // which is disabled due to Bootstrap
@@ -220,23 +232,26 @@ public final class DataGenerator {
         serializerMap.put(EntityDataSerializers.COMPONENT, Serializer.COMPONENT);
         serializerMap.put(EntityDataSerializers.OPTIONAL_COMPONENT, Serializer.OPTIONAL_COMPONENT);
         serializerMap.put(EntityDataSerializers.ITEM_STACK, Serializer.SLOT);
+        serializerMap.put(EntityDataSerializers.BLOCK_STATE, Serializer.BLOCK_STATE);
+        serializerMap.put(EntityDataSerializers.OPTIONAL_BLOCK_STATE, Serializer.OPTIONAL_BLOCK_STATE);
+        serializerMap.put(EntityDataSerializers.PARTICLE, Serializer.PARTICLE);
+        serializerMap.put(EntityDataSerializers.PARTICLES, Serializer.PARTICLES);
         serializerMap.put(EntityDataSerializers.BOOLEAN, Serializer.BOOLEAN);
         serializerMap.put(EntityDataSerializers.ROTATIONS, Serializer.ROTATIONS);
         serializerMap.put(EntityDataSerializers.BLOCK_POS, Serializer.POSITION);
         serializerMap.put(EntityDataSerializers.OPTIONAL_BLOCK_POS, Serializer.OPTIONAL_POSITION);
         serializerMap.put(EntityDataSerializers.DIRECTION, Serializer.DIRECTION);
         serializerMap.put(EntityDataSerializers.OPTIONAL_UUID, Serializer.OPTIONAL_UUID);
-        serializerMap.put(EntityDataSerializers.BLOCK_STATE, Serializer.BLOCK_STATE);
-        serializerMap.put(EntityDataSerializers.OPTIONAL_BLOCK_STATE, Serializer.OPTIONAL_BLOCK_STATE);
+        serializerMap.put(EntityDataSerializers.OPTIONAL_GLOBAL_POS, Serializer.OPTIONAL_GLOBAL_POSITION);
         serializerMap.put(EntityDataSerializers.COMPOUND_TAG, Serializer.NBT);
-        serializerMap.put(EntityDataSerializers.PARTICLE, Serializer.PARTICLE);
         serializerMap.put(EntityDataSerializers.VILLAGER_DATA, Serializer.VILLAGER_DATA);
         serializerMap.put(EntityDataSerializers.OPTIONAL_UNSIGNED_INT, Serializer.OPTIONAL_INT);
         serializerMap.put(EntityDataSerializers.POSE, Serializer.POSE);
         serializerMap.put(EntityDataSerializers.CAT_VARIANT, Serializer.CAT_VARIANT);
+        serializerMap.put(EntityDataSerializers.WOLF_VARIANT, Serializer.WOLF_VARIANT);
         serializerMap.put(EntityDataSerializers.FROG_VARIANT, Serializer.FROG_VARIANT);
-        serializerMap.put(EntityDataSerializers.OPTIONAL_GLOBAL_POS, Serializer.OPTIONAL_GLOBAL_POSITION);
         serializerMap.put(EntityDataSerializers.PAINTING_VARIANT, Serializer.PAINTING_VARIANT);
+        serializerMap.put(EntityDataSerializers.ARMADILLO_STATE, Serializer.ARMADILLO_STATE);
         serializerMap.put(EntityDataSerializers.SNIFFER_STATE, Serializer.SNIFFER_STATE);
         serializerMap.put(EntityDataSerializers.VECTOR3, Serializer.VECTOR3);
         serializerMap.put(EntityDataSerializers.QUATERNION, Serializer.QUATERNION);
@@ -247,6 +262,7 @@ public final class DataGenerator {
         // the whole list can be seen in net.minecraft.world.entity.EntityType
         entityClasses.add(Allay.class);
         entityClasses.add(AreaEffectCloud.class);
+        entityClasses.add(Armadillo.class);
         entityClasses.add(ArmorStand.class);
         entityClasses.add(Arrow.class);
         entityClasses.add(Axolotl.class);
@@ -255,7 +271,9 @@ public final class DataGenerator {
         entityClasses.add(Blaze.class);
         entityClasses.add(Display.BlockDisplay.class);
         entityClasses.add(Boat.class);
+        entityClasses.add(Bogged.class);
         entityClasses.add(Breeze.class);
+        entityClasses.add(BreezeWindCharge.class);
         entityClasses.add(Camel.class);
         entityClasses.add(Cat.class);
         entityClasses.add(CaveSpider.class);
@@ -303,6 +321,7 @@ public final class DataGenerator {
         entityClasses.add(ItemEntity.class);
         entityClasses.add(Display.ItemDisplay.class);
         entityClasses.add(ItemFrame.class);
+        entityClasses.add(OminousItemSpawner.class);
         entityClasses.add(LargeFireball.class);
         entityClasses.add(LeashFenceKnotEntity.class);
         entityClasses.add(LightningBolt.class);

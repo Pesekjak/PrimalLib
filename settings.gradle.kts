@@ -64,9 +64,6 @@ dependencyResolutionManagement {
             val adventure: String by settings
             library("adventure-nbt", "net.kyori:adventure-nbt:$adventure")
 
-            val mockBukkit: String by settings
-            library("mockbukkit", "com.github.seeseemelk:MockBukkit-v1.20:$mockBukkit")
-
             val javaPoet: String by settings
             library("javapoet", "com.squareup:javapoet:$javaPoet")
 

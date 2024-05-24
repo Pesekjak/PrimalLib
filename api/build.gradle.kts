@@ -19,8 +19,6 @@ dependencies {
 
     compileOnly(libs.paper.api)
     implementation(libs.adventure.nbt) // is not part of paper server
-
-    testImplementation(libs.mockbukkit)
 }
 
 sourceSets {
