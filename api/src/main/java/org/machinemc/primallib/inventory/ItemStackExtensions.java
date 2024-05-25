@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.BiFunction;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -97,20 +96,6 @@ public final class ItemStackExtensions {
         itemStack.setItemMeta(skullMeta);
 
         return itemStack;
-    }
-
-    /**
-     * Updates the item meta of an item stack.
-     *
-     * @param itemStack item stack to update the item meta for
-     * @param function function returning the modified meta
-     * @return whether successfully applied the item meta
-     * @param <Meta> type of meta for the item
-     */
-    @SuppressWarnings("unchecked")
-    public static <Meta extends ItemMeta> boolean modifyItemMeta(ItemStack itemStack, BiFunction<ItemStack, Meta, ItemMeta> function) {
-        Meta meta = (Meta) itemStack.getItemMeta();
-        return itemStack.setItemMeta(function.apply(itemStack, meta));
     }
 
 }

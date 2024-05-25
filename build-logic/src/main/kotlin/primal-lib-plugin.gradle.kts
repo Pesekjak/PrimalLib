@@ -17,9 +17,9 @@ dependencies {
     implementation(project(":implementation:commons"))
     implementation(project(":implementation:shared"))
     listOf(
-        "v1_20_4"
+        "v1_20_6"
     ).forEach {
-        implementation(project(":implementation:$it", "reobf"))
+        implementation(project(":implementation:$it"))
     }
 
     compileOnly(libs.findLibrary("paper-api").get())

@@ -58,11 +58,9 @@ public class PlayerServerDataEvent extends PlayerEvent {
      *
      * @param motd motd of the server
      * @param iconData favicon data of the server
-     * @param enforcesSecureChat whether secure chat is enforced, if not
-     *                           toast about insecure chat is displayed for the player
      */
     @With
-    public record ServerData(Component motd, byte @Nullable [] iconData, boolean enforcesSecureChat) {
+    public record ServerData(Component motd, byte @Nullable [] iconData) {
 
         public ServerData {
             Preconditions.checkNotNull(motd, "MOTD can not be null");

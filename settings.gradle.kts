@@ -7,7 +7,7 @@ listOf(
     "commons", // commons module
     "shared", // shared module
     // v stands for version
-    "v1_20_4"
+    "v1_20_6"
 ).forEach {
     include("implementation:$it")
     findProject(":implementation:$it")?.name = it

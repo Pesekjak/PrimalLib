@@ -48,16 +48,24 @@ public class PlayerLoginEvent extends PlayerEvent {
      */
     private boolean isFlat;
 
-    public PlayerLoginEvent(Player who, boolean hardcore, boolean reducedDebugInfo, boolean isDebug, boolean isFlat) {
-        this(who, hardcore, reducedDebugInfo, isDebug, isFlat, !Bukkit.isPrimaryThread());
+    /**
+     * Whether the server enforces secure chat.
+     * <p>
+     * If set to false, this will display a warning pop up on join.
+     */
+    private boolean enforcesSecureChat;
+
+    public PlayerLoginEvent(Player who, boolean hardcore, boolean reducedDebugInfo, boolean isDebug, boolean isFlat, boolean enforcesSecureChat) {
+        this(who, hardcore, reducedDebugInfo, isDebug, isFlat, enforcesSecureChat, !Bukkit.isPrimaryThread());
     }
 
-    public PlayerLoginEvent(Player who, boolean hardcore, boolean reducedDebugInfo, boolean isDebug, boolean isFlat, boolean async) {
+    public PlayerLoginEvent(Player who, boolean hardcore, boolean reducedDebugInfo, boolean isDebug, boolean isFlat, boolean enforcesSecureChat, boolean async) {
         super(Preconditions.checkNotNull(who, "Player can not be null"), async);
         this.hardcore = hardcore;
         this.reducedDebugInfo = reducedDebugInfo;
         this.isDebug = isDebug;
         this.isFlat = isFlat;
+        this.enforcesSecureChat = enforcesSecureChat;
     }
 
     @Override

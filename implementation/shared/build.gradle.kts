@@ -10,7 +10,7 @@ dependencies {
     implementation(project(":api"))
     listOf(
         "commons", // commons module
-        "v1_20_4"
+        "v1_20_6"
     ).forEach {
         implementation(project(":implementation:$it"))
     }

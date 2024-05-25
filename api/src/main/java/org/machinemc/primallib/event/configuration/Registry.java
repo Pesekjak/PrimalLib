@@ -9,7 +9,8 @@ import lombok.Getter;
 import lombok.With;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.*;
-import org.bukkit.NamespacedKey;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 
@@ -25,58 +26,6 @@ public class Registry {
     @Getter
     private final Key key;
     private final Int2ObjectMap<Entry> entries = new Int2ObjectOpenHashMap<>();
-
-    /**
-     * Returns list of registries from codec NBT.
-     *
-     * @param registryData data of all registries as NBT
-     * @return registries included in the provided NBT codec
-     */
-    public static List<Registry> getRegistries(CompoundBinaryTag registryData) {
-        List<Registry> registries = new ArrayList<>();
-        for (String unparsed : registryData.keySet()) {
-            NamespacedKey name = NamespacedKey.fromString(unparsed);
-            CompoundBinaryTag data = registryData.getCompound(unparsed);
-
-            ListBinaryTag values = data.getList("value");
-            Int2ObjectMap<Entry> entries = new Int2ObjectOpenHashMap<>();
-            values.stream()
-                    .map(e -> (CompoundBinaryTag) e)
-                    .forEach(e -> {
-                        NamespacedKey key = NamespacedKey.fromString(e.getString("name"));
-                        int id = e.getInt("id");
-                        CompoundBinaryTag element = e.getCompound("element");
-                        entries.put(id, new Entry(key, element));
-                    });
-            registries.add(new Registry(name, entries));
-        }
-        return Collections.unmodifiableList(registries);
-    }
-
-    /**
-     * Creates NBT codec from collection of provided registries.
-     *
-     * @param registries registries
-     * @return codec created from provided registries
-     */
-    public static CompoundBinaryTag createCodec(Collection<Registry> registries) {
-        CompoundBinaryTag.Builder codec = CompoundBinaryTag.builder();
-        for (Registry registry : registries) {
-            CompoundBinaryTag.Builder registryNBT = CompoundBinaryTag.builder();
-            registryNBT.put("type", StringBinaryTag.stringBinaryTag(registry.getKey().toString()));
-            var values = ListBinaryTag.builder(BinaryTagTypes.COMPOUND);
-            registry.getEntries().forEach((id, entry) -> {
-                CompoundBinaryTag.Builder entryNBT = CompoundBinaryTag.builder();
-                entryNBT.put("name", StringBinaryTag.stringBinaryTag(entry.key().toString()));
-                entryNBT.put("id", IntBinaryTag.intBinaryTag(id));
-                entryNBT.put("element", entry.element());
-                values.add(entryNBT.build());
-            });
-            registryNBT.put("value", values.build());
-            codec.put(registry.getKey().toString(), registryNBT.build());
-        }
-        return codec.build();
-    }
 
     /**
      * New empty registry with specified key.
@@ -105,7 +54,7 @@ public class Registry {
      *
      * @return entries
      */
-    public final Int2ObjectMap<Entry> getEntries() {
+    public final @Unmodifiable Int2ObjectMap<Entry> getEntries() {
         return Int2ObjectMaps.unmodifiable(entries);
     }
 
@@ -137,11 +86,10 @@ public class Registry {
      * @param key name of the entry
      * @param element NBT element of the entry.
      */
-    public record Entry(Key key, @With CompoundBinaryTag element) {
+    public record Entry(Key key, @With @Nullable CompoundBinaryTag element) {
 
         public Entry {
             Preconditions.checkNotNull(key, "Key can not be null");
-            Preconditions.checkNotNull(element, "Element tag can not be null");
         }
 
     }
