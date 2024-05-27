@@ -31,7 +31,7 @@ public abstract class PlayerActionService extends AutoRegisteringService<PlayerA
      */
     public static PlayerActionService get() {
         var provider = Bukkit.getServicesManager().getRegistration(PlayerActionService.class);
-        Preconditions.checkNotNull(provider, "Plugin Message service is not supported on " + MinecraftVersion.get() + " server");
+        Preconditions.checkNotNull(provider, "Player action service is not supported on " + MinecraftVersion.get() + " server");
         return provider.getProvider();
     }
 
@@ -155,48 +155,6 @@ public abstract class PlayerActionService extends AutoRegisteringService<PlayerA
      */
     @ApiStatus.Experimental
     public abstract void showLoadingScreen(Player player);
-
-    /**
-     * Switches player to configuration state.
-     * <p>
-     * Paper breaks the ability to send player to configuration state,
-     * this uses some tricky methods to achieve that and might not
-     * work as expected, use with caution.
-     *
-     * @param player player
-     * @see #switchToPlay(Player)
-     */
-    @ApiStatus.Experimental
-    public abstract void switchToConfiguration(Player player);
-
-    /**
-     * Switches the player to play state.
-     * <p>
-     * Paper breaks the ability to send player to configuration state,
-     * this uses some tricky methods to achieve that and might not
-     * work as expected, use with caution.
-     *
-     * @param player player
-     * @see #switchToConfiguration(Player)
-     */
-    @ApiStatus.Experimental
-    public abstract void switchToPlay(Player player);
-
-    /**
-     * Resends configuration to the player.
-     * <p>
-     * To receive a configuration, player has to be in a configuration state.
-     * This operation will return player back to play state.
-     * <p>
-     * Paper breaks the ability to send player to configuration state,
-     * this uses some tricky methods to achieve that and might not
-     * work as expected, use with caution.
-     *
-     * @param player player
-     * @see #switchToConfiguration(Player)
-     */
-    @ApiStatus.Experimental
-    public abstract void resendConfigurations(Player player);
 
     @Override
     public Class<PlayerActionService> getRegistrationClass() {

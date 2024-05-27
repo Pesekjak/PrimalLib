@@ -4,11 +4,8 @@ import io.netty.buffer.Unpooled;
 import io.papermc.paper.math.BlockPosition;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.PacketListener;
-import net.minecraft.network.protocol.configuration.ClientboundFinishConfigurationPacket;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.level.block.Block;
@@ -19,8 +16,6 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.craftbukkit.entity.CraftAbstractHorse;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.AbstractHorseInventory;
 import org.bukkit.inventory.ItemStack;
 import org.machinemc.primallib.entity.EntityLike;
@@ -28,26 +23,12 @@ import org.machinemc.primallib.player.PlayerActionService;
 import org.machinemc.primallib.util.OwnerPlugin;
 import org.machinemc.primallib.v1_20_6.internal.PacketChannelHandlerImpl;
 import org.machinemc.primallib.v1_20_6.util.Converters;
-import org.machinemc.primallib.v1_20_6.util.configuration.PlayerReconfigurationData;
 import org.machinemc.primallib.world.*;
 
 import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("UnstableApiUsage")
 public class PlayerActionServiceImpl extends PlayerActionService {
-
-    private final Map<Player, PlayerReconfigurationData> reconfigurationData = new ConcurrentHashMap<>();
-
-    public PlayerReconfigurationData getReconfigurationData(Player player) {
-        return reconfigurationData.computeIfAbsent(player, PlayerReconfigurationData::new);
-    }
-
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        reconfigurationData.remove(event.getPlayer());
-    }
 
     @Override
     public void openSign(Player player, BlockPosition position, Side side) {
@@ -161,27 +142,6 @@ public class PlayerActionServiceImpl extends PlayerActionService {
         CommonPlayerSpawnInfo spawnInfo = handle.createCommonSpawnInfo(handle.serverLevel());
         ClientboundRespawnPacket packet = new ClientboundRespawnPacket(spawnInfo, ClientboundRespawnPacket.KEEP_ALL_DATA);
         PacketChannelHandlerImpl.sendPacket(player, packet, false);
-    }
-
-    @Override
-    public void switchToConfiguration(Player player) {
-        player.closeInventory();
-        getReconfigurationData(player).setState(PlayerReconfigurationData.State.AWAITING_CONFIGURATION_REQ);
-        PacketChannelHandlerImpl.sendPacket(player, ClientboundStartConfigurationPacket.INSTANCE, false);
-    }
-
-    @Override
-    public void switchToPlay(Player player) {
-        PacketChannelHandlerImpl.sendPacket(player, ClientboundFinishConfigurationPacket.INSTANCE, false);
-    }
-
-    @Override
-    public void resendConfigurations(Player player) {
-        ServerPlayer handle = ((CraftPlayer) player).getHandle();
-        PacketListener listener = handle.connection.connection.getPacketListener();
-        if (!(listener instanceof ServerConfigurationPacketListenerImpl configurationListener)) return;
-        // TODO copy the code from #startConfiguration, except for the part sending player back to world
-        configurationListener.startConfiguration();
     }
 
 }

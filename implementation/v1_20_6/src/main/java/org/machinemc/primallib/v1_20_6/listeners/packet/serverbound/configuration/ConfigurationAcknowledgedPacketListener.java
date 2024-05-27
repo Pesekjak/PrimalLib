@@ -8,8 +8,8 @@ import net.minecraft.server.network.CommonListenerCookie;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.machinemc.primallib.internal.PacketEvent;
 import org.machinemc.primallib.internal.PacketListener;
-import org.machinemc.primallib.player.PlayerActionService;
-import org.machinemc.primallib.v1_20_6.impl.player.PlayerActionServiceImpl;
+import org.machinemc.primallib.player.ConfigurationStateService;
+import org.machinemc.primallib.v1_20_6.impl.player.ConfigurationStateServiceImpl;
 import org.machinemc.primallib.v1_20_6.util.configuration.PaperServerConfigurationPacketListener;
 import org.machinemc.primallib.v1_20_6.util.configuration.PlayerReconfigurationData;
 
@@ -17,8 +17,8 @@ public class ConfigurationAcknowledgedPacketListener implements PacketListener<S
 
     @Override
     public void onPacket(PacketEvent<ServerboundConfigurationAcknowledgedPacket> event) throws Exception {
-        PlayerActionServiceImpl playerActionService = (PlayerActionServiceImpl) PlayerActionService.get();
-        PlayerReconfigurationData data = playerActionService.getReconfigurationData(event.getPlayer());
+        ConfigurationStateServiceImpl configurationStateService = (ConfigurationStateServiceImpl) ConfigurationStateService.get();
+        PlayerReconfigurationData data = configurationStateService.getReconfigurationData(event.getPlayer());
 
         if (data.getState() != PlayerReconfigurationData.State.AWAITING_CONFIGURATION_ACK) return;
 

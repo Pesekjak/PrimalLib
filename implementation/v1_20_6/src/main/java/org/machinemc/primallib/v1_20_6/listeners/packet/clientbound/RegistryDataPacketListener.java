@@ -1,14 +1,13 @@
 package org.machinemc.primallib.v1_20_6.listeners.packet.clientbound;
 
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.minecraft.core.RegistrySynchronization;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.configuration.ClientboundRegistryDataPacket;
 import org.machinemc.primallib.event.configuration.PlayerRegistryDataEvent;
 import org.machinemc.primallib.event.configuration.Registry;
 import org.machinemc.primallib.internal.PacketEvent;
 import org.machinemc.primallib.internal.PacketListener;
+import org.machinemc.primallib.player.ConfigurationStateService;
+import org.machinemc.primallib.v1_20_6.impl.player.ConfigurationStateServiceImpl;
 import org.machinemc.primallib.v1_20_6.util.Converters;
 
 import java.util.*;
@@ -22,27 +21,19 @@ public class RegistryDataPacketListener implements PacketListener<ClientboundReg
         Map<Integer, Registry.Entry> entries = new LinkedHashMap<>();
 
         for (RegistrySynchronization.PackedRegistryEntry entry : packet.entries()) {
-            Key name = Converters.fromMinecraft(entry.id());
-            CompoundBinaryTag tag = entry.data().map(t -> Converters.fromMinecraft((CompoundTag) t)).orElse(null);
-            Registry.Entry wrapped = new Registry.Entry(name, tag);
-            entries.put(entries.size(), wrapped);
+            entries.put(entries.size(), Converters.fromMinecraft(entry));
         }
 
         Registry registry = new Registry(Converters.fromMinecraft(packet.registry().location()), entries);
-
+        ConfigurationStateServiceImpl configurationStateService = (ConfigurationStateServiceImpl) ConfigurationStateService.get();
+        configurationStateService.updateRegistry(event.getPlayer(), registry.getKey(), registry);
 
         var registryEvent = new PlayerRegistryDataEvent(event.getPlayer(), registry);
         registryEvent.callEvent();
 
-        List<RegistrySynchronization.PackedRegistryEntry> modified = new ArrayList<>();
-        for (Registry.Entry entry : registry.getEntries().values()) {
-            modified.add(new RegistrySynchronization.PackedRegistryEntry(
-                    Converters.toMinecraft(entry.key()),
-                    entry.element() != null
-                            ? Optional.of(Converters.toMinecraft(entry.element()))
-                            : Optional.empty()
-            ));
-        }
+        List<RegistrySynchronization.PackedRegistryEntry> modified = registry.getEntries().values().stream()
+                .map(Converters::toMinecraft)
+                .toList();
 
         event.setPacket(new ClientboundRegistryDataPacket(packet.registry(), modified));
     }

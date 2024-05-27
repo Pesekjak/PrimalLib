@@ -9,6 +9,7 @@ import org.machinemc.primallib.internal.VersionBootstrap;
 import org.machinemc.primallib.util.AutoRegisteringService;
 import org.machinemc.primallib.v1_20_6.impl.advancement.AdvancementServiceImpl;
 import org.machinemc.primallib.v1_20_6.impl.messaging.PluginMessageServiceImpl;
+import org.machinemc.primallib.v1_20_6.impl.player.ConfigurationStateServiceImpl;
 import org.machinemc.primallib.v1_20_6.impl.player.PlayerActionServiceImpl;
 import org.machinemc.primallib.v1_20_6.impl.profile.PlayerInfoServiceImpl;
 import org.machinemc.primallib.v1_20_6.impl.util.MagicNumberServiceImpl;
@@ -32,6 +33,7 @@ public class VersionBootstrap_v1_20_6 implements VersionBootstrap {
         services.add(new AdvancementServiceImpl().register());
         services.add(new PluginMessageServiceImpl().register());
         services.add(new PlayerActionServiceImpl().register());
+        services.add(new ConfigurationStateServiceImpl().register());
         services.add(new PlayerInfoServiceImpl().register());
         services.add(new MagicNumberServiceImpl().register());
 

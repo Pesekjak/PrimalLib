@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.network.Connection;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.configuration.ServerboundFinishConfigurationPacket;
+import net.minecraft.network.protocol.configuration.ServerboundSelectKnownPacks;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.protocol.status.ServerStatus;
 import net.minecraft.server.MinecraftServer;
@@ -18,8 +19,10 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.jetbrains.annotations.NotNull;
 import org.machinemc.primallib.event.player.PlayerExitReconfigurationEvent;
+import org.machinemc.primallib.player.ConfigurationStateService;
 import org.machinemc.primallib.player.PlayerActionService;
 import org.machinemc.primallib.util.OwnerPlugin;
+import org.machinemc.primallib.v1_20_6.impl.player.ConfigurationStateServiceImpl;
 import org.machinemc.primallib.v1_20_6.impl.player.PlayerActionServiceImpl;
 
 import java.util.List;
@@ -33,8 +36,6 @@ import java.util.List;
  */
 public class PaperServerConfigurationPacketListener extends ServerConfigurationPacketListenerImpl {
 
-    private final PlayerActionServiceImpl playerActionService = (PlayerActionServiceImpl) PlayerActionService.get();
-
     public PaperServerConfigurationPacketListener(MinecraftServer server,
                                                   Connection connection,
                                                   CommonListenerCookie cookie,
@@ -43,8 +44,14 @@ public class PaperServerConfigurationPacketListener extends ServerConfigurationP
     }
 
     @Override
+    public void handleSelectKnownPacks(@NotNull ServerboundSelectKnownPacks packet) {
+        // ignored
+    }
+
+    @Override
     public void handleConfigurationFinished(@NotNull ServerboundFinishConfigurationPacket packet) {
-        PlayerReconfigurationData data = playerActionService.getReconfigurationData(player.getBukkitEntity());
+        ConfigurationStateServiceImpl configurationStateService = (ConfigurationStateServiceImpl) ConfigurationStateService.get();
+        PlayerReconfigurationData data = configurationStateService.getReconfigurationData(player.getBukkitEntity());
         data.setState(PlayerReconfigurationData.State.NONE);
 
         Connection connection = player.connection.connection;
@@ -126,6 +133,7 @@ public class PaperServerConfigurationPacketListener extends ServerConfigurationP
         //
 
         Bukkit.getScheduler().runTask(OwnerPlugin.get(), () -> {
+            PlayerActionServiceImpl playerActionService = (PlayerActionServiceImpl) PlayerActionService.get();
             playerActionService.refreshPlayer(craftPlayer);
             server.getPlayerList().respawn(player, world, true, craftPlayer.getLocation(), false, PlayerRespawnEvent.RespawnReason.PLUGIN);
         });

@@ -2,9 +2,9 @@ package org.machinemc.primallib.event.configuration;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.With;
 import net.kyori.adventure.key.Key;
@@ -23,9 +23,49 @@ import java.util.*;
  */
 public class Registry {
 
+    /**
+     * Trim material registry key.
+     */
+    public static Key TRIM_MATERIAL = Key.key("minecraft:trim_material");
+
+    /**
+     * Trim pattern registry key.
+     */
+    public static Key TRIM_PATTERN = Key.key("minecraft:trim_pattern");
+
+    /**
+     * Biome registry key.
+     */
+    public static Key BIOME = Key.key("minecraft:worldgen/biome");
+
+    /**
+     * Dimension type registry key.
+     */
+    public static Key DIMENSION_TYPE = Key.key("minecraft:dimension_type");
+
+    /**
+     * Chat type registry key.
+     */
+    public static Key CHAT_TYPE = Key.key("minecraft:chat_type");
+
+    /**
+     * Damage type registry key.
+     */
+    public static Key DAMAGE_TYPE = Key.key("minecraft:damage_type");
+
+    /**
+     * Wolf variant registry key.
+     */
+    public static Key WOLF_VARIANT = Key.key("minecraft:wolf_variant");
+
+    /**
+     * Banner pattern registry key.
+     */
+    public static Key BANNER_PATTERN = Key.key("minecraft:banner_pattern");
+
     @Getter
     private final Key key;
-    private final Int2ObjectMap<Entry> entries = new Int2ObjectOpenHashMap<>();
+    private final Int2ObjectMap<Entry> entries = new Int2ObjectArrayMap<>();
 
     /**
      * New empty registry with specified key.

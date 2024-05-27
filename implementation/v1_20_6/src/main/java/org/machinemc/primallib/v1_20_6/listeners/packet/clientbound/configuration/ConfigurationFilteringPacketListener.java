@@ -10,8 +10,8 @@ import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.machinemc.primallib.internal.PacketEvent;
 import org.machinemc.primallib.internal.PacketListener;
-import org.machinemc.primallib.player.PlayerActionService;
-import org.machinemc.primallib.v1_20_6.impl.player.PlayerActionServiceImpl;
+import org.machinemc.primallib.player.ConfigurationStateService;
+import org.machinemc.primallib.v1_20_6.impl.player.ConfigurationStateServiceImpl;
 import org.machinemc.primallib.v1_20_6.util.configuration.PlayerReconfigurationData;
 
 import java.util.HashSet;
@@ -54,11 +54,10 @@ public class ConfigurationFilteringPacketListener implements PacketListener<Pack
 
     @Override
     public void onPacket(PacketEvent<Packet<?>> event) throws Exception {
-        PlayerActionServiceImpl playerActionService = (PlayerActionServiceImpl) PlayerActionService.get();
-        PlayerReconfigurationData data = playerActionService.getReconfigurationData(event.getPlayer());
+        ConfigurationStateServiceImpl configurationStateService = (ConfigurationStateServiceImpl) ConfigurationStateService.get();
+        PlayerReconfigurationData data = configurationStateService.getReconfigurationData(event.getPlayer());
 
         Packet<?> packet = event.getPacket();
-        ServerPlayer player = ((CraftPlayer) event.getPlayer()).getHandle();
 
         switch (data.getState()) {
 
@@ -89,17 +88,9 @@ public class ConfigurationFilteringPacketListener implements PacketListener<Pack
             }
 
         }
-
-        if (!event.isCancelled()) return;
-        if (!(packet instanceof ClientboundKeepAlivePacket keepAlive)) return;
-
-        ServerboundKeepAlivePacket answer = new ServerboundKeepAlivePacket(keepAlive.getId());
-        // keeps the connection alive because player can not answer the keep alive packets while in configuration
-        answer.handle(player.connection);
     }
 
     public void eat(PlayerReconfigurationData data, Packet<?> packet) {
-        if (packet instanceof ClientboundKeepAlivePacket) return; // keep alive packets handled above
         data.getEaten().add(packet);
     }
 

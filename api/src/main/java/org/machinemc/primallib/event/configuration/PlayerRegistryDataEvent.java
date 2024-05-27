@@ -2,7 +2,6 @@ package org.machinemc.primallib.event.configuration;
 
 import com.google.common.base.Preconditions;
 import lombok.Getter;
-import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -16,36 +15,11 @@ import org.machinemc.primallib.version.VersionDependant;
  * Should only be used for packet/clientside related stuff.
  * Not intended for modifying server side state.
  * <p>
- * This event can be triggered with {@link org.machinemc.primallib.player.PlayerActionService#resendConfigurations(Player)}.
+ * This event can be triggered with {@link org.machinemc.primallib.player.ConfigurationStateService#resendRegistries(Player)}.
  */
 @Getter
 @VersionDependant
 public class PlayerRegistryDataEvent extends PlayerEvent {
-
-    /**
-     * Trim material registry key.
-     */
-    public static Key TRIM_MATERIAL = Key.key("minecraft:trim_material");
-
-    /**
-     * Trim pattern registry key.
-     */
-    public static Key TRIM_PATTERN = Key.key("minecraft:trim_pattern");
-
-    /**
-     * Biome registry key.
-     */
-    public static Key BIOME = Key.key("minecraft:worldgen/biome");
-
-    /**
-     * Chat type registry key.
-     */
-    public static Key CHAT_TYPE = Key.key("minecraft:chat_type");
-
-    /**
-     * Damage type registry key.
-     */
-    public static Key DAMAGE_TYPE = Key.key("minecraft:damage_type");
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
 

@@ -15,6 +15,7 @@ import net.kyori.adventure.nbt.TagStringIO;
 import net.kyori.adventure.text.Component;
 import net.minecraft.advancements.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistrySynchronization;
 import net.minecraft.core.particles.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -42,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import org.machinemc.primallib.advancement.Advancement;
 import org.machinemc.primallib.advancement.AdvancementCriteria;
+import org.machinemc.primallib.event.configuration.Registry;
 import org.machinemc.primallib.particle.ConfiguredParticle;
 import org.machinemc.primallib.profile.ChatSession;
 import org.machinemc.primallib.profile.GameProfile;
@@ -119,6 +121,7 @@ public final class Converters {
         return CraftBlockData.createData(blockState);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     public static BlockState toMinecraft(BlockData blockData) {
         if (blockData == null) return null;
         return CraftBlockData.newData(null, blockData.getAsString()).getState();
@@ -427,6 +430,21 @@ public final class Converters {
             case UPDATE_LATENCY -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LATENCY;
             case UPDATE_DISPLAY_NAME -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME;
         };
+    }
+
+    public static Registry.Entry fromMinecraft(RegistrySynchronization.PackedRegistryEntry entry) {
+        Key name = Converters.fromMinecraft(entry.id());
+        CompoundBinaryTag tag = entry.data().map(t -> Converters.fromMinecraft((CompoundTag) t)).orElse(null);
+        return new Registry.Entry(name, tag);
+    }
+
+    public static RegistrySynchronization.PackedRegistryEntry toMinecraft(Registry.Entry entry) {
+        return new RegistrySynchronization.PackedRegistryEntry(
+                Converters.toMinecraft(entry.key()),
+                entry.element() != null
+                        ? Optional.of(Converters.toMinecraft(entry.element()))
+                        : Optional.empty()
+        );
     }
 
 }
