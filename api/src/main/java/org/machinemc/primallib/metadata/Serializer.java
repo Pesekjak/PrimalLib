@@ -66,7 +66,7 @@ public final class Serializer<T> {
     /**
      * Serializer for nullable text component values.
      */
-    public static final Serializer<Component> OPTIONAL_COMPONENT = create(Optional.class);
+    public static final Serializer<Optional<Component>> OPTIONAL_COMPONENT = create(Optional.class);
 
     /**
      * Serializer for slot values.
@@ -114,7 +114,7 @@ public final class Serializer<T> {
     public static final Serializer<Optional<Position>> OPTIONAL_POSITION = create(Optional.class);
 
     /**
-     * Serializer for optional direction values.
+     * Serializer for direction values.
      *
      * @apiNote supports only faces that are aligned with one of
      * the unit axes in 3D Cartesian space

@@ -13,10 +13,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.sign.Side;
-import org.bukkit.craftbukkit.entity.CraftAbstractHorse;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.AbstractHorseInventory;
 import org.bukkit.inventory.ItemStack;
 import org.machinemc.primallib.entity.EntityLike;
 import org.machinemc.primallib.player.PlayerActionService;
@@ -45,17 +43,6 @@ public class PlayerActionServiceImpl extends PlayerActionService {
         buf.writeVarInt(entityLike.entityID());
         var packet = ClientboundSetCameraPacket.STREAM_CODEC.decode(buf);
         PacketChannelHandlerImpl.sendPacket(player, packet, false);
-    }
-
-    @Override
-    public void openHorseInventory(Player player, AbstractHorseInventory inventory) {
-        CraftAbstractHorse horse = ((CraftAbstractHorse) inventory.getHolder(false));
-        if (horse == null) return;
-
-        var handle = horse.getHandle();
-        var container = handle.inventory;
-
-        ((CraftPlayer) player).getHandle().openHorseInventory(handle, container);
     }
 
     @Override

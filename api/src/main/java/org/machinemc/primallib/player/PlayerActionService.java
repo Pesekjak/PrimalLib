@@ -8,7 +8,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.AbstractHorseInventory;
 import org.jetbrains.annotations.ApiStatus;
 import org.machinemc.primallib.entity.EntityLike;
 import org.machinemc.primallib.util.AutoRegisteringService;
@@ -71,14 +70,6 @@ public abstract class PlayerActionService extends AutoRegisteringService<PlayerA
     public void resetCamera(Player player) {
         setCamera(player, EntityLike.fromBukkit(player));
     }
-
-    /**
-     * Opens horse inventory for the player.
-     *
-     * @param player player to open the inventory for
-     * @param inventory inventory to open
-     */
-    public abstract void openHorseInventory(Player player, AbstractHorseInventory inventory);
 
     /**
      * Modifies the field of view, like a speed potion. Defaults to 0.1 for players.

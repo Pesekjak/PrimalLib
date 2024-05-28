@@ -16,7 +16,7 @@ import org.machinemc.primallib.version.VersionDependant;
  * <p>
  * This event can change the client state of some properties sent on player login.
  * <p>
- * This event can be triggered with {@link org.machinemc.primallib.player.PlayerActionService#resendConfigurations(Player)}.
+ * This event can be triggered with {@link org.machinemc.primallib.player.ConfigurationStateService#switchToPlay(Player)}.
  */
 @Getter
 @Setter

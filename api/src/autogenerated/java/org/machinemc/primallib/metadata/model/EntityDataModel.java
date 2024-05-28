@@ -3,6 +3,7 @@ package org.machinemc.primallib.metadata.model;
 import java.lang.Boolean;
 import java.lang.Byte;
 import java.lang.Integer;
+import java.util.Optional;
 import javax.annotation.processing.Generated;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Pose;
@@ -28,7 +29,7 @@ public interface EntityDataModel {
     /**
      * Metadata field for CUSTOM_NAME state of the entity
      */
-    EntityData.Field<Component> CUSTOM_NAME = Initializer.CUSTOM_NAME;
+    EntityData.Field<Optional<Component>> CUSTOM_NAME = Initializer.CUSTOM_NAME;
 
     /**
      * Metadata field for NAME_VISIBLE state of the entity
@@ -64,7 +65,7 @@ public interface EntityDataModel {
 
         static final EntityData.Field<Integer> AIR;
 
-        static final EntityData.Field<Component> CUSTOM_NAME;
+        static final EntityData.Field<Optional<Component>> CUSTOM_NAME;
 
         static final EntityData.Field<Boolean> NAME_VISIBLE;
 

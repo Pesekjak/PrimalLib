@@ -1,6 +1,8 @@
 package org.machinemc.primallib.v1_20_6.util;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
@@ -17,33 +19,43 @@ import net.minecraft.advancements.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistrySynchronization;
 import net.minecraft.core.particles.*;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.RemoteChatSession;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
+import net.minecraft.network.syncher.EntityDataSerializer;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.animal.CatVariant;
+import net.minecraft.world.entity.animal.FrogVariant;
+import net.minecraft.world.entity.animal.WolfVariant;
+import net.minecraft.world.entity.animal.armadillo.Armadillo;
+import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.entity.player.ProfilePublicKey;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.*;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.craftbukkit.CraftFluid;
-import org.bukkit.craftbukkit.CraftGameEvent;
-import org.bukkit.craftbukkit.CraftParticle;
-import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.*;
 import org.bukkit.craftbukkit.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.entity.CraftEntityType;
+import org.bukkit.craftbukkit.entity.CraftVillager;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.util.CraftNBTTagConfigSerializer;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import org.machinemc.primallib.advancement.Advancement;
 import org.machinemc.primallib.advancement.AdvancementCriteria;
+import org.machinemc.primallib.entity.ArmadilloState;
+import org.machinemc.primallib.entity.VillagerData;
 import org.machinemc.primallib.event.configuration.Registry;
+import org.machinemc.primallib.metadata.Serializer;
 import org.machinemc.primallib.particle.ConfiguredParticle;
 import org.machinemc.primallib.profile.ChatSession;
 import org.machinemc.primallib.profile.GameProfile;
@@ -116,7 +128,7 @@ public final class Converters {
         return CraftItemStack.asNMSCopy(itemStack);
     }
 
-    public static BlockData fromMinecraft(net.minecraft.world.level.block.state.BlockState blockState) {
+    public static BlockData fromMinecraft(BlockState blockState) {
         if (blockState == null) return null;
         return CraftBlockData.createData(blockState);
     }
@@ -218,7 +230,7 @@ public final class Converters {
         return new ConfiguredParticle(particle, options);
     }
 
-    public static net.minecraft.core.particles.ParticleOptions toMinecraft(ConfiguredParticle particle) {
+    public static ParticleOptions toMinecraft(ConfiguredParticle particle) {
         if (particle == null) return null;
         return CraftParticle.createParticleParam(particle.particle(), particle.options());
     }
@@ -433,18 +445,250 @@ public final class Converters {
     }
 
     public static Registry.Entry fromMinecraft(RegistrySynchronization.PackedRegistryEntry entry) {
+        if (entry == null) return null;
         Key name = Converters.fromMinecraft(entry.id());
         CompoundBinaryTag tag = entry.data().map(t -> Converters.fromMinecraft((CompoundTag) t)).orElse(null);
         return new Registry.Entry(name, tag);
     }
 
     public static RegistrySynchronization.PackedRegistryEntry toMinecraft(Registry.Entry entry) {
+        if (entry == null) return null;
         return new RegistrySynchronization.PackedRegistryEntry(
                 Converters.toMinecraft(entry.key()),
                 entry.element() != null
                         ? Optional.of(Converters.toMinecraft(entry.element()))
                         : Optional.empty()
         );
+    }
+
+    public static VillagerData fromMinecraft(net.minecraft.world.entity.npc.VillagerData data) {
+        if (data == null) return null;
+        return new VillagerData(
+                CraftVillager.CraftType.minecraftToBukkit(data.getType()),
+                CraftVillager.CraftProfession.minecraftToBukkit(data.getProfession()),
+                data.getLevel()
+        );
+    }
+
+    public static net.minecraft.world.entity.npc.VillagerData toMinecraft(VillagerData data) {
+        if (data == null) return null;
+        return new net.minecraft.world.entity.npc.VillagerData(
+                CraftVillager.CraftType.bukkitToMinecraft(data.type()),
+                CraftVillager.CraftProfession.bukkitToMinecraft(data.profession()),
+                data.level()
+        );
+    }
+
+    public static Pose fromMinecraft(net.minecraft.world.entity.Pose pose) {
+        if (pose == null) return null;
+        return switch (pose) {
+            case STANDING -> Pose.STANDING;
+            case FALL_FLYING -> Pose.FALL_FLYING;
+            case SLEEPING -> Pose.SLEEPING;
+            case SWIMMING -> Pose.SWIMMING;
+            case SPIN_ATTACK -> Pose.SPIN_ATTACK;
+            case CROUCHING -> Pose.SNEAKING;
+            case LONG_JUMPING -> Pose.LONG_JUMPING;
+            case DYING -> Pose.DYING;
+            case CROAKING -> Pose.CROAKING;
+            case USING_TONGUE -> Pose.USING_TONGUE;
+            case SITTING -> Pose.SITTING;
+            case ROARING -> Pose.ROARING;
+            case SNIFFING -> Pose.SNIFFING;
+            case EMERGING -> Pose.EMERGING;
+            case DIGGING -> Pose.DIGGING;
+            case SLIDING -> Pose.SLIDING;
+            case SHOOTING -> Pose.SHOOTING;
+            case INHALING -> Pose.INHALING;
+        };
+    }
+
+    public static net.minecraft.world.entity.Pose toMinecraft(Pose pose) {
+        if (pose == null) return null;
+        return switch (pose) {
+            case STANDING -> net.minecraft.world.entity.Pose.STANDING;
+            case FALL_FLYING -> net.minecraft.world.entity.Pose.FALL_FLYING;
+            case SLEEPING -> net.minecraft.world.entity.Pose.SLEEPING;
+            case SWIMMING -> net.minecraft.world.entity.Pose.SWIMMING;
+            case SPIN_ATTACK -> net.minecraft.world.entity.Pose.SPIN_ATTACK;
+            case SNEAKING -> net.minecraft.world.entity.Pose.CROUCHING;
+            case LONG_JUMPING -> net.minecraft.world.entity.Pose.LONG_JUMPING;
+            case DYING -> net.minecraft.world.entity.Pose.DYING;
+            case CROAKING -> net.minecraft.world.entity.Pose.CROAKING;
+            case USING_TONGUE -> net.minecraft.world.entity.Pose.USING_TONGUE;
+            case SITTING -> net.minecraft.world.entity.Pose.SITTING;
+            case ROARING -> net.minecraft.world.entity.Pose.ROARING;
+            case SNIFFING -> net.minecraft.world.entity.Pose.SNIFFING;
+            case EMERGING -> net.minecraft.world.entity.Pose.EMERGING;
+            case DIGGING -> net.minecraft.world.entity.Pose.DIGGING;
+            case SLIDING -> net.minecraft.world.entity.Pose.SLIDING;
+            case SHOOTING -> net.minecraft.world.entity.Pose.SHOOTING;
+            case INHALING -> net.minecraft.world.entity.Pose.INHALING;
+        };
+    }
+
+    public static CatVariant toMinecraft(Cat.Type type) {
+        if (type == null) return null;
+        return BuiltInRegistries.CAT_VARIANT.get(toMinecraft(type.getKey()));
+    }
+
+    public static Cat.Type fromMinecraft(CatVariant variant) {
+        if (variant == null) return null;
+        Key key = fromMinecraft(BuiltInRegistries.CAT_VARIANT.getKey(variant));
+        return Arrays.stream(Cat.Type.values())
+                .filter(type -> type.key().equals(key))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static WolfVariant toMinecraft(Wolf.Variant variant) {
+        if (variant == null) return null;
+        net.minecraft.core.Registry<WolfVariant> wolfVariants = ((CraftServer) Bukkit.getServer()).getHandle()
+                .getServer()
+                .registryAccess()
+                .registry(Registries.WOLF_VARIANT)
+                .orElseThrow();
+        return wolfVariants.get(toMinecraft(variant.key()));
+    }
+
+    public static Wolf.Variant fromMinecraft(WolfVariant variant) {
+        if (variant == null) return null;
+        net.minecraft.core.Registry<WolfVariant> wolfVariants = ((CraftServer) Bukkit.getServer()).getHandle()
+                .getServer()
+                .registryAccess()
+                .registry(Registries.WOLF_VARIANT)
+                .orElseThrow();
+        Key key = fromMinecraft(wolfVariants.getKey(variant));
+        Wolf.Variant[] variants = new Wolf.Variant[] {
+                Wolf.Variant.PALE, Wolf.Variant.SPOTTED,
+                Wolf.Variant.SNOWY, Wolf.Variant.BLACK,
+                Wolf.Variant.ASHEN , Wolf.Variant.RUSTY,
+                Wolf.Variant.WOODS, Wolf.Variant.CHESTNUT,
+                Wolf.Variant.STRIPED
+        };
+        for (Wolf.Variant next : variants)
+            if (next.key().equals(key)) return next;
+        return null;
+    }
+
+    public static FrogVariant toMinecraft(Frog.Variant variant) {
+        if (variant == null) return null;
+        return BuiltInRegistries.FROG_VARIANT.get(toMinecraft(variant.getKey()));
+    }
+
+    public static Frog.Variant fromMinecraft(FrogVariant variant) {
+        if (variant == null) return null;
+        Key key = fromMinecraft(BuiltInRegistries.FROG_VARIANT.getKey(variant));
+        return Arrays.stream(Frog.Variant.values())
+                .filter(type -> type.key().equals(key))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static PaintingVariant toMinecraft(Art variant) {
+        if (variant == null) return null;
+        return BuiltInRegistries.PAINTING_VARIANT.get(toMinecraft(variant.getKey()));
+    }
+
+    public static Art fromMinecraft(PaintingVariant variant) {
+        if (variant == null) return null;
+        Key key = fromMinecraft(BuiltInRegistries.PAINTING_VARIANT.getKey(variant));
+        return Arrays.stream(Art.values())
+                .filter(type -> type.key().equals(key))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static ArmadilloState fromMinecraft(Armadillo.ArmadilloState state) {
+        if (state == null) return null;
+        return switch (state) {
+            case IDLE -> ArmadilloState.IDLE;
+            case ROLLING -> ArmadilloState.ROLLING;
+            case SCARED -> ArmadilloState.SCARED;
+            case UNROLLING -> ArmadilloState.UNROLLING;
+        };
+    }
+
+    public static Armadillo.ArmadilloState toMinecraft(ArmadilloState state) {
+        if (state == null) return null;
+        return switch (state) {
+            case IDLE -> Armadillo.ArmadilloState.IDLE;
+            case ROLLING -> Armadillo.ArmadilloState.ROLLING;
+            case SCARED -> Armadillo.ArmadilloState.SCARED;
+            case UNROLLING -> Armadillo.ArmadilloState.UNROLLING;
+        };
+    }
+
+    public static Sniffer.State fromMinecraft(net.minecraft.world.entity.animal.sniffer.Sniffer.State state) {
+        if (state == null) return null;
+        return switch (state) {
+            case IDLING -> Sniffer.State.IDLING;
+            case FEELING_HAPPY -> Sniffer.State.FEELING_HAPPY;
+            case SCENTING -> Sniffer.State.SCENTING;
+            case SNIFFING -> Sniffer.State.SNIFFING;
+            case SEARCHING -> Sniffer.State.SEARCHING;
+            case DIGGING -> Sniffer.State.DIGGING;
+            case RISING -> Sniffer.State.RISING;
+        };
+    }
+
+    public static net.minecraft.world.entity.animal.sniffer.Sniffer.State toMinecraft(Sniffer.State state) {
+        if (state == null) return null;
+        return switch (state) {
+            case IDLING -> net.minecraft.world.entity.animal.sniffer.Sniffer.State.IDLING;
+            case FEELING_HAPPY -> net.minecraft.world.entity.animal.sniffer.Sniffer.State.FEELING_HAPPY;
+            case SCENTING -> net.minecraft.world.entity.animal.sniffer.Sniffer.State.SCENTING;
+            case SNIFFING -> net.minecraft.world.entity.animal.sniffer.Sniffer.State.SNIFFING;
+            case SEARCHING -> net.minecraft.world.entity.animal.sniffer.Sniffer.State.SEARCHING;
+            case DIGGING -> net.minecraft.world.entity.animal.sniffer.Sniffer.State.DIGGING;
+            case RISING -> net.minecraft.world.entity.animal.sniffer.Sniffer.State.RISING;
+        };
+    }
+
+    private static BiMap<EntityDataSerializer<?>, Serializer<?>> serializerMap;
+
+    static {
+        Map<EntityDataSerializer<?>, Serializer<?>> serializerMap = new HashMap<>();
+        serializerMap.put(EntityDataSerializers.BYTE, Serializer.BYTE);
+        serializerMap.put(EntityDataSerializers.INT, Serializer.INT);
+        serializerMap.put(EntityDataSerializers.LONG, Serializer.LONG);
+        serializerMap.put(EntityDataSerializers.FLOAT, Serializer.FLOAT);
+        serializerMap.put(EntityDataSerializers.STRING, Serializer.STRING);
+        serializerMap.put(EntityDataSerializers.COMPONENT, Serializer.COMPONENT);
+        serializerMap.put(EntityDataSerializers.OPTIONAL_COMPONENT, Serializer.OPTIONAL_COMPONENT);
+        serializerMap.put(EntityDataSerializers.ITEM_STACK, Serializer.SLOT);
+        serializerMap.put(EntityDataSerializers.BLOCK_STATE, Serializer.BLOCK_STATE);
+        serializerMap.put(EntityDataSerializers.OPTIONAL_BLOCK_STATE, Serializer.OPTIONAL_BLOCK_STATE);
+        serializerMap.put(EntityDataSerializers.PARTICLE, Serializer.PARTICLE);
+        serializerMap.put(EntityDataSerializers.PARTICLES, Serializer.PARTICLES);
+        serializerMap.put(EntityDataSerializers.BOOLEAN, Serializer.BOOLEAN);
+        serializerMap.put(EntityDataSerializers.ROTATIONS, Serializer.ROTATIONS);
+        serializerMap.put(EntityDataSerializers.BLOCK_POS, Serializer.POSITION);
+        serializerMap.put(EntityDataSerializers.OPTIONAL_BLOCK_POS, Serializer.OPTIONAL_POSITION);
+        serializerMap.put(EntityDataSerializers.DIRECTION, Serializer.DIRECTION);
+        serializerMap.put(EntityDataSerializers.OPTIONAL_UUID, Serializer.OPTIONAL_UUID);
+        serializerMap.put(EntityDataSerializers.OPTIONAL_GLOBAL_POS, Serializer.OPTIONAL_GLOBAL_POSITION);
+        serializerMap.put(EntityDataSerializers.COMPOUND_TAG, Serializer.NBT);
+        serializerMap.put(EntityDataSerializers.VILLAGER_DATA, Serializer.VILLAGER_DATA);
+        serializerMap.put(EntityDataSerializers.OPTIONAL_UNSIGNED_INT, Serializer.OPTIONAL_INT);
+        serializerMap.put(EntityDataSerializers.POSE, Serializer.POSE);
+        serializerMap.put(EntityDataSerializers.CAT_VARIANT, Serializer.CAT_VARIANT);
+        serializerMap.put(EntityDataSerializers.WOLF_VARIANT, Serializer.WOLF_VARIANT);
+        serializerMap.put(EntityDataSerializers.FROG_VARIANT, Serializer.FROG_VARIANT);
+        serializerMap.put(EntityDataSerializers.PAINTING_VARIANT, Serializer.PAINTING_VARIANT);
+        serializerMap.put(EntityDataSerializers.ARMADILLO_STATE, Serializer.ARMADILLO_STATE);
+        serializerMap.put(EntityDataSerializers.SNIFFER_STATE, Serializer.SNIFFER_STATE);
+        serializerMap.put(EntityDataSerializers.VECTOR3, Serializer.VECTOR3);
+        serializerMap.put(EntityDataSerializers.QUATERNION, Serializer.QUATERNION);
+        Converters.serializerMap = HashBiMap.create(serializerMap);
+    }
+
+    public static EntityDataSerializer<?> toMinecraft(Serializer<?> serializer) {
+        return serializerMap.inverse().get(serializer);
+    }
+
+    public static Serializer<?> fromMinecraft(EntityDataSerializer<?> serializer) {
+        return serializerMap.get(serializer);
     }
 
 }
