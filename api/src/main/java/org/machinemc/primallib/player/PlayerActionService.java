@@ -52,6 +52,21 @@ public abstract class PlayerActionService extends AutoRegisteringService<PlayerA
     public abstract void openSign(Player player, BlockPosition position, Side side);
 
     /**
+     * Updates active skin parts of the player.
+     *
+     * @param skinParts skin parts
+     */
+    public abstract void setActiveSkinParts(Player player, SkinPart... skinParts);
+
+    /**
+     * Returns active skin parts of the player.
+     *
+     * @param player player
+     * @return active skin parts
+     */
+    public abstract SkinPart[] getActiveSkinParts(Player player);
+
+    /**
      * Changes camera spectator target of player to another entity.
      * <p>
      * Should only be used for packet/clientside related stuff.

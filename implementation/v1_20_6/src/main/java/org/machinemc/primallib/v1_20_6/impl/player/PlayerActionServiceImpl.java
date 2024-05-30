@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.machinemc.primallib.entity.EntityLike;
 import org.machinemc.primallib.player.PlayerActionService;
+import org.machinemc.primallib.player.SkinPart;
 import org.machinemc.primallib.util.OwnerPlugin;
 import org.machinemc.primallib.v1_20_6.internal.PacketChannelHandlerImpl;
 import org.machinemc.primallib.v1_20_6.util.Converters;
@@ -35,6 +36,18 @@ public class PlayerActionServiceImpl extends PlayerActionService {
                 side == Side.FRONT
         );
         PacketChannelHandlerImpl.sendPacket(player, packet, false);
+    }
+
+    @Override
+    public void setActiveSkinParts(Player player, SkinPart... skinParts) {
+        ServerPlayer handle = ((CraftPlayer) player).getHandle();
+        handle.getEntityData().set(ServerPlayer.DATA_PLAYER_MODE_CUSTOMISATION, (byte) SkinPart.createMask(skinParts));
+    }
+
+    @Override
+    public SkinPart[] getActiveSkinParts(Player player) {
+        ServerPlayer handle = ((CraftPlayer) player).getHandle();
+        return SkinPart.fromMask(handle.getEntityData().get(ServerPlayer.DATA_PLAYER_MODE_CUSTOMISATION));
     }
 
     @Override

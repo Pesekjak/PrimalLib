@@ -10,7 +10,7 @@ import org.machinemc.primallib.version.VersionDependant;
 
 /**
  * Is called when a {@link Player} exists the configuration state after
- * exiting it using {@link org.machinemc.primallib.player.PlayerActionService#switchToPlay(Player)}.
+ * exiting it using {@link org.machinemc.primallib.player.ConfigurationStateService#switchToPlay(Player)}.
  * <p>
  * This event is not called when the client state change was not initiated by PrimalLib.
  */

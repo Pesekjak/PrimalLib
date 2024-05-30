@@ -56,6 +56,7 @@ public class VersionBootstrap_v1_20_6 implements VersionBootstrap {
         listeners.add(new UpdateTagsPacketListener());
 
         // Server-bound
+        listeners.add(new ClientInformationPacketPacketListener());
         listeners.add(new PaddleBoatPacketListener());
         listeners.add(new PlayerCommandPacketListener());
         listeners.add(new PlayerInputPacketListener());
