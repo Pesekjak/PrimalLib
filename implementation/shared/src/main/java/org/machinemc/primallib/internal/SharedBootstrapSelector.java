@@ -1,6 +1,6 @@
 package org.machinemc.primallib.internal;
 
-import org.machinemc.primallib.v1_20_6.VersionBootstrap_v1_20_6;
+import org.machinemc.primallib.v1_21.VersionBootstrap_v1_21;
 import org.machinemc.primallib.version.MinecraftVersion;
 
 /**
@@ -14,7 +14,7 @@ public final class SharedBootstrapSelector implements VersionBootstrap.Selector 
     @Override
     public VersionBootstrap select() {
         return switch (version) {
-            case MINECRAFT_1_20_6 -> new VersionBootstrap_v1_20_6();
+            case MINECRAFT_1_21 -> new VersionBootstrap_v1_21();
         };
     }
 

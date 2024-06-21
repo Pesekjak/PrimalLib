@@ -64,7 +64,7 @@ public final class DataGenerator {
     /**
      * Targeted protocol version, needs to be changed for each new implementation.
      */
-    public static final ProtocolVersion TARGET_VERSION = ProtocolVersion.PROTOCOL_1_20_5;
+    public static final ProtocolVersion TARGET_VERSION = ProtocolVersion.PROTOCOL_1_21;
 
     // NMS entity data serializer <-> PrimalLib serializer
     private static final Map<EntityDataSerializer<?>, Serializer<?>> serializerMap = new LinkedHashMap<>();

@@ -15,7 +15,7 @@ import static org.machinemc.primallib.version.ProtocolVersion.*;
  */
 public enum MinecraftVersion {
 
-    MINECRAFT_1_20_6    (PROTOCOL_1_20_5, "1.20.6");
+    MINECRAFT_1_21(PROTOCOL_1_21, "1.21");
 
     @Getter
     private final ProtocolVersion protocol;

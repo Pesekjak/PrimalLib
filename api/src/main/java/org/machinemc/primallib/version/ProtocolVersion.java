@@ -14,9 +14,9 @@ public enum ProtocolVersion {
      * Unknown protocol version, used for {@link Targets} annotations.
      * @see Targets.Utils
      */
-    @ApiStatus.Internal UNKNOWN (-1),
+    @ApiStatus.Internal UNKNOWN(-1),
 
-    PROTOCOL_1_20_5             (766);
+    PROTOCOL_1_21(767);
 
     private final int value;
 

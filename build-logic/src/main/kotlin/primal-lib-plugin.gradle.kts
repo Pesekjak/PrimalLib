@@ -17,7 +17,7 @@ dependencies {
     implementation(project(":implementation:commons"))
     implementation(project(":implementation:shared"))
     listOf(
-        "v1_20_6"
+        "v1_21"
     ).forEach {
         implementation(project(":implementation:$it"))
     }

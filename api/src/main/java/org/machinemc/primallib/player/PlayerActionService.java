@@ -16,6 +16,8 @@ import org.machinemc.primallib.version.MinecraftVersion;
 import org.machinemc.primallib.version.VersionDependant;
 import org.machinemc.primallib.world.BlockAction;
 
+import java.util.Map;
+
 /**
  * Service for additional interactions with players not available in the API that
  * did not fit anywhere else.
@@ -161,6 +163,19 @@ public abstract class PlayerActionService extends AutoRegisteringService<PlayerA
      */
     @ApiStatus.Experimental
     public abstract void showLoadingScreen(Player player);
+
+    /**
+     * Updates crash properties that will be print to client's crash log in case
+     * of a game error.
+     *
+     * <p> Max length of each key is 128.
+     * <p> Max length of each value is 4096;
+     * <p> Max number of entries is 32
+     *
+     * @param player player
+     * @param properties properties
+     */
+    public abstract void setCrashProperties(Player player, Map<String, String> properties);
 
     @Override
     public Class<PlayerActionService> getRegistrationClass() {

@@ -7,7 +7,7 @@ import org.bukkit.Material;
  * <p>
  * This could for example be opening chest or pushing piston.
  */
-public sealed interface BlockAction permits BellAction, ChestAction, EndGatewayAction, PistonAction, ShulkerBoxAction {
+public sealed interface BlockAction permits BellAction, ChestAction, DecoratedPotAction, EndGatewayAction, PistonAction, ShulkerBoxAction {
 
     /**
      * Returns an array of supported block types for this action.
