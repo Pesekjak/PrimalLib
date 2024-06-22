@@ -13,7 +13,7 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
 }
 
-val serverVersion = "1.20.6-R0.1-SNAPSHOT"
+val serverVersion = "1.21-R0.1-SNAPSHOT"
 
 dependencies {
     implementation(project(":api"))

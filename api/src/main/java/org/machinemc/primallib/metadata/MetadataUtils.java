@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Utilities for operations with entity metadata.
  */
-@SuppressWarnings("UnstableApiUsage")
 public final class MetadataUtils {
 
     private static final Map<EntityType, Class<? extends EntityDataModel>> models = new ConcurrentHashMap<>();
@@ -190,7 +189,7 @@ public final class MetadataUtils {
         for (Field field : fields) {
             try {
                 String name = field.getName();
-                int index = 2;
+                int index = 0;
                 while (map.containsKey(name))
                     name = field.getName() + index++;
                 EntityData.Field<?> dataField = (EntityData.Field<?>) field.get(null);

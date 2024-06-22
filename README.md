@@ -9,7 +9,7 @@ efficiency in mind.</p>
 <p align="center">
     <img src="https://img.shields.io/github/license/pesekjak/primallib?style=for-the-badge&color=107185" alt="LICENSE">
     <img src="https://img.shields.io/github/v/release/pesekjak/primallib?style=for-the-badge&color=edb228" alt="RELEASE">
-    <img src="https://img.shields.io/badge/supports-%201.20.6-8A2BE2?style=for-the-badge&color=0f9418" alt="SUPPORTS">
+    <img src="https://img.shields.io/badge/supports-%201.21-8A2BE2?style=for-the-badge&color=0f9418" alt="SUPPORTS">
 </p>
 
 ---
