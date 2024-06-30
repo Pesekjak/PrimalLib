@@ -75,9 +75,9 @@ public abstract class PlayerActionService extends AutoRegisteringService<PlayerA
      * Not intended for modifying server side state.
      *
      * @param player player
-     * @param entityLike new target
+     * @param target new target
      */
-    public abstract void setCamera(Player player, EntityLike entityLike);
+    public abstract void setCamera(Player player, EntityLike target);
 
     /**
      * Resets camera target for given player.

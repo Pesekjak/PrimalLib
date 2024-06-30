@@ -54,9 +54,9 @@ public class PlayerActionServiceImpl extends PlayerActionService {
     }
 
     @Override
-    public void setCamera(Player player, EntityLike entityLike) {
+    public void setCamera(Player player, EntityLike target) {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        buf.writeVarInt(entityLike.entityID());
+        buf.writeVarInt(target.entityID());
         var packet = ClientboundSetCameraPacket.STREAM_CODEC.decode(buf);
         PacketChannelHandlerImpl.sendPacket(player, packet, false);
     }
