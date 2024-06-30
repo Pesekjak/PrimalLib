@@ -5,6 +5,9 @@ import lombok.Getter;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 /**
  * Represents a legacy Minecraft color constants that can still be used at
  * many places even in newer versions of Minecraft.
@@ -47,6 +50,16 @@ public enum LegacyColor {
     LegacyColor(char code, boolean format) {
         this.code = code;
         this.format = format;
+    }
+
+    /**
+     * Returns legacy color with given color code or
+     * empty if there is none.
+     *
+     * @return legacy color with given color code
+     */
+    public static Optional<LegacyColor> byCode(char code) {
+        return Arrays.stream(values()).filter(color -> color.code == code).findFirst();
     }
 
     /**

@@ -3,10 +3,7 @@ package org.machinemc.primallib.scoreboard;
 import com.google.common.base.Preconditions;
 import lombok.With;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.util.TriState;
 import org.machinemc.primallib.util.LegacyColor;
-
-import java.util.Optional;
 
 /**
  * Represents a player team.
@@ -26,11 +23,11 @@ public record Team(String name,
                    Component displayName,
                    Component prefix,
                    Component suffix,
-                   RuleState nameTagVisibility,
-                   RuleState collisionRule,
+                   Visibility nameTagVisibility,
+                   Collisions collisionRule,
                    LegacyColor color,
-                   TriState allowFriendlyFire,
-                   TriState seeFriendlyInvisible) {
+                   boolean allowFriendlyFire,
+                   boolean seeFriendlyInvisible) {
 
     public Team {
         Preconditions.checkNotNull(name, "Team name can not be null");
@@ -40,76 +37,63 @@ public record Team(String name,
         Preconditions.checkNotNull(nameTagVisibility, "Name tag visibility can not be null");
         Preconditions.checkNotNull(collisionRule, "Collision rule can not be null");
         Preconditions.checkNotNull(color, "Team color can not be null");
-        Preconditions.checkNotNull(allowFriendlyFire, "Friendly fire rule can not be null");
-        Preconditions.checkNotNull(seeFriendlyInvisible, "Friendly invisible rule can not be null");
     }
 
     public Team(String name, Component displayName, LegacyColor color) {
-        this(name, displayName, Component.empty(), Component.empty(), RuleState.getDefault(), RuleState.getDefault(), color, TriState.NOT_SET, TriState.NOT_SET);
+        this(name, displayName, Component.empty(), Component.empty(), Visibility.ALWAYS, Collisions.ALWAYS, color, false, false);
     }
 
     /**
-     * Represents a state for name tag visibility and collision rules of teams.
+     * Represents a state for name tag visibility of teams.
      */
-    public enum RuleState {
+    public enum Visibility {
 
         /**
          * Always enabled.
          */
-        ALWAYS("always"),
+        ALWAYS,
 
         /**
          * Disabled for players in other teams.
          */
-        HIDE_FOR_OTHER("hideForOtherTeams"),
+        HIDE_FOR_OTHER,
 
         /**
-         * Disabled only for the players in the team.
+         * Disabled only for the players in the same team.
          */
-        HIDE_FOR_OWN("hideForOwnTeam"),
+        HIDE_FOR_OWN,
 
         /**
          * Always disabled.
          */
-        NEVER("never");
+        NEVER
 
-        private final String state;
+    }
 
-        RuleState(String state) {
-            this.state = state;
-        }
-
-        /**
-         * Returns rule state from its string representation or
-         * empty if the provided string has no valid rule state.
-         *
-         * @param stateName string representation
-         * @return rule state
-         */
-        public static Optional<RuleState> fromStateName(String stateName) {
-            for (RuleState state : values()) {
-                if (state.state.equals(stateName)) return Optional.of(state);
-            }
-            return Optional.empty();
-        }
+    /**
+     * Represents a state for collisions in teams.
+     */
+    public enum Collisions {
 
         /**
-         * Returns the default rule state.
-         *
-         * @return default rule state
+         * Always enabled.
          */
-        public static RuleState getDefault() {
-            return ALWAYS;
-        }
+        ALWAYS,
 
         /**
-         * Returns the string representation of the rule state.
-         *
-         * @return string representation
+         * Disabled only for the players in the team.
          */
-        public String getStateName() {
-            return state;
-        }
+        PUSH_OTHER_TEAMS,
+
+        /**
+         * Disabled for players in other teams.
+         */
+        PUSH_OWN_TEAM,
+
+        /**
+         * Always disabled.
+         */
+        NEVER
 
     }
 

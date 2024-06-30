@@ -3,12 +3,14 @@ package org.machinemc.primallib.scoreboard;
 import com.google.common.base.Preconditions;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Unmodifiable;
 import org.machinemc.primallib.entity.EntityLike;
 import org.machinemc.primallib.util.AutoRegisteringService;
 import org.machinemc.primallib.version.MinecraftVersion;
 import org.machinemc.primallib.version.VersionDependant;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service for interacting with player teams.
@@ -100,6 +102,33 @@ public abstract class TeamService extends AutoRegisteringService<TeamService> {
     public void removeFromTeam(Player player, Team team, List<EntityLike> entities) {
         removeFromTeam(player, team, entities.toArray(new EntityLike[0]));
     }
+
+    /**
+     * Returns all teams added to a player.
+     *
+     * @param player player the get the teams from
+     * @return teams of the player
+     */
+    public abstract List<Team> getTeams(Player player);
+
+    /**
+     * Return team with given name added to a player or empty if
+     * there is none.
+     *
+     * @param player player
+     * @param name name of team
+     * @return team with given name added to the player
+     */
+    public abstract Optional<Team> getTeam(Player player, String name);
+
+    /**
+     * Returns list of team entries for given team for player.
+     *
+     * @param player player
+     * @param team team
+     * @return entries of the team for given player
+     */
+    public abstract @Unmodifiable List<EntityLike> getTeamEntries(Player player, Team team);
 
     @Override
     public Class<TeamService> getRegistrationClass() {

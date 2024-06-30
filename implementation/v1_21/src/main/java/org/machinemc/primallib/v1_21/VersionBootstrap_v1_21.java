@@ -13,6 +13,7 @@ import org.machinemc.primallib.v1_21.impl.metadata.MetadataServiceImpl;
 import org.machinemc.primallib.v1_21.impl.player.ConfigurationStateServiceImpl;
 import org.machinemc.primallib.v1_21.impl.player.PlayerActionServiceImpl;
 import org.machinemc.primallib.v1_21.impl.profile.PlayerInfoServiceImpl;
+import org.machinemc.primallib.v1_21.impl.scoreboard.TeamServiceImpl;
 import org.machinemc.primallib.v1_21.impl.util.MagicNumberServiceImpl;
 import org.machinemc.primallib.v1_21.listeners.bukkit.PlayerLoginListener;
 import org.machinemc.primallib.v1_21.listeners.packet.clientbound.*;
@@ -37,6 +38,7 @@ public class VersionBootstrap_v1_21 implements VersionBootstrap {
         services.add(new PlayerActionServiceImpl().register());
         services.add(new ConfigurationStateServiceImpl().register());
         services.add(new PlayerInfoServiceImpl().register());
+        services.add(new TeamServiceImpl().register());
         services.add(new MagicNumberServiceImpl().register());
 
         services.stream()
@@ -52,6 +54,7 @@ public class VersionBootstrap_v1_21 implements VersionBootstrap {
         listeners.add(new PlayerInfoUpdatePacketListener());
         listeners.add(new RegistryDataPacketListener());
         listeners.add(new ServerDataPacketListener());
+        listeners.add(new SetPlayerTeamPacketListener());
         listeners.add(new UpdateAdvancementsPacketListener());
         listeners.add(new UpdateTagsPacketListener());
 

@@ -15,6 +15,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.TagStringIO;
 import net.kyori.adventure.text.Component;
+import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistrySynchronization;
@@ -60,6 +61,7 @@ import org.machinemc.primallib.particle.ConfiguredParticle;
 import org.machinemc.primallib.profile.ChatSession;
 import org.machinemc.primallib.profile.GameProfile;
 import org.machinemc.primallib.profile.PlayerInfo;
+import org.machinemc.primallib.util.LegacyColor;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -175,6 +177,16 @@ public final class Converters {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
+    }
+
+    public static LegacyColor fromMinecraft(ChatFormatting color) {
+        if (color == null) return null;
+        return LegacyColor.byCode(color.code).orElseThrow();
+    }
+
+    public static ChatFormatting toMinecraft(LegacyColor color) {
+        if (color == null) return null;
+        return Preconditions.checkNotNull(ChatFormatting.getByCode(color.getCode()));
     }
 
     @SuppressWarnings("UnstableApiUsage")

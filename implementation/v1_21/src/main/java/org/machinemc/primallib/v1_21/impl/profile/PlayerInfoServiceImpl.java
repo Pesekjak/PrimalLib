@@ -27,7 +27,7 @@ public class PlayerInfoServiceImpl extends PlayerInfoService implements Listener
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
-        cachedPlayerInfos.put(event.getPlayer(), new HashMap<>());
+        cachedPlayerInfos.put(event.getPlayer(), new ConcurrentHashMap<>());
     }
 
     @EventHandler

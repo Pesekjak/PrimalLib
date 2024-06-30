@@ -1,7 +1,7 @@
 package org.machinemc.primallib.v1_21.impl.advancement;
 
+import com.google.common.collect.ImmutableList;
 import net.kyori.adventure.key.Key;
-import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.network.protocol.game.ClientboundSelectAdvancementsTabPacket;
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
 
 public class AdvancementServiceImpl extends AdvancementService implements Listener {
 
-    private final Map<Player, Map<ResourceLocation, AdvancementHolder>> cachedAdvancements = new ConcurrentHashMap<>();
+    private final Map<Player, Map<Key, Advancement>> cachedAdvancements = new ConcurrentHashMap<>();
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
-        cachedAdvancements.put(event.getPlayer(), new HashMap<>());
+        cachedAdvancements.put(event.getPlayer(), new ConcurrentHashMap<>());
     }
 
     @EventHandler
@@ -36,10 +36,10 @@ public class AdvancementServiceImpl extends AdvancementService implements Listen
     }
 
     public void setAdvancements(Player player, ClientboundUpdateAdvancementsPacket packet) {
-        Map<ResourceLocation, AdvancementHolder> map = cachedAdvancements.get(player);
+        Map<Key, Advancement> map = cachedAdvancements.get(player);
         if (packet.shouldReset()) map.clear();
-        packet.getAdded().forEach(advancement -> map.put(advancement.id(), advancement));
-        packet.getRemoved().forEach(map::remove);
+        packet.getAdded().forEach(advancement -> map.put(Converters.fromMinecraft(advancement.id()), Converters.fromMinecraft(advancement)));
+        packet.getRemoved().forEach(key -> map.remove(Converters.fromMinecraft(key)));
     }
 
     @Override
@@ -57,14 +57,12 @@ public class AdvancementServiceImpl extends AdvancementService implements Listen
 
     @Override
     public List<Advancement> getAdvancements(Player player) {
-        if (!cachedAdvancements.containsKey(player)) return Collections.emptyList();
-        return cachedAdvancements.get(player).values().stream().map(Converters::fromMinecraft).toList();
+        return ImmutableList.copyOf(cachedAdvancements.get(player).values());
     }
 
     @Override
     public Optional<Advancement> getAdvancement(Player player, Key key) {
-        if (!cachedAdvancements.containsKey(player)) return Optional.empty();
-        return Optional.ofNullable(cachedAdvancements.get(player).get(Converters.toMinecraft(key))).map(Converters::fromMinecraft);
+        return Optional.ofNullable(cachedAdvancements.get(player).get(key));
     }
 
     @Override
