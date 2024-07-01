@@ -90,6 +90,14 @@ public abstract class ObjectiveService extends AutoRegisteringService<ObjectiveS
     public abstract void displayObjective(Player player, Objective objective, DisplaySlot slot);
 
     /**
+     * Resets the display slot of the player.
+     *
+     * @param player player
+     * @param slot slot to reset
+     */
+    public abstract void resetObjectiveDisplay(Player player, DisplaySlot slot);
+
+    /**
      * Creates new objective for the player.
      *
      * @param player player

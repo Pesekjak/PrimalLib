@@ -17,6 +17,21 @@ import java.util.UUID;
 public interface EntityLike {
 
     /**
+     * Returns new entity like created from a string returned from {@link #getStringRepresentation()}.
+     *
+     * @param string entity like string representation
+     * @return entity like
+     */
+    static EntityLike entityLikeFromString(String string) {
+        if (string.contains("-")) {
+            try {
+                return EntityLike.of(-1, UUID.fromString(string), null);
+            } catch (Exception ignored) { }
+        }
+        return EntityLike.of(-1, null, string);
+    }
+
+    /**
      * Returns new entity like instance from Bukkit entity.
      *
      * @param entity entity

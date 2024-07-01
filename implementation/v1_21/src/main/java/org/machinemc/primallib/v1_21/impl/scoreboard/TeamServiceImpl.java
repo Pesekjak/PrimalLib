@@ -71,23 +71,14 @@ public class TeamServiceImpl extends TeamService implements Listener {
     private void addEntries(Player player, ClientboundSetPlayerTeamPacket packet) {
         List<EntityLike> entities = cachedEntries.get(player).computeIfAbsent(packet.getName(), name -> new CopyOnWriteArrayList<>());
         for (String entry : packet.getPlayers())
-            entities.add(entityLikeFromString(entry));
+            entities.add(EntityLike.entityLikeFromString(entry));
     }
 
     private void removeEntries(Player player, ClientboundSetPlayerTeamPacket packet) {
         List<EntityLike> entities = cachedEntries.get(player).get(packet.getName());
         if (entities == null) return;
         for (String entry : packet.getPlayers())
-            entities.remove(entityLikeFromString(entry));
-    }
-
-    private static EntityLike entityLikeFromString(String string) {
-        if (string.contains("-")) {
-            try {
-                return EntityLike.of(-1, UUID.fromString(string), null);
-            } catch (Exception ignored) { }
-        }
-        return EntityLike.of(-1, null, string);
+            entities.remove(EntityLike.entityLikeFromString(entry));
     }
 
     @EventHandler
