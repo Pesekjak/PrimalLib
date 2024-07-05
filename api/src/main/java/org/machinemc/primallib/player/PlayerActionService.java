@@ -2,12 +2,14 @@ package org.machinemc.primallib.player;
 
 import com.google.common.base.Preconditions;
 import io.papermc.paper.math.BlockPosition;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.ApiStatus;
 import org.machinemc.primallib.entity.EntityLike;
 import org.machinemc.primallib.util.AutoRegisteringService;
@@ -17,6 +19,7 @@ import org.machinemc.primallib.version.VersionDependant;
 import org.machinemc.primallib.world.BlockAction;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Service for additional interactions with players not available in the API that
@@ -176,6 +179,21 @@ public abstract class PlayerActionService extends AutoRegisteringService<PlayerA
      * @param properties properties
      */
     public abstract void setCrashProperties(Player player, Map<String, String> properties);
+
+    /**
+     * Opens named inventory to a player.
+     * <p>
+     * This is meant to be used for opening custom player inventories that do not support
+     * custom names by default, grindstone, cartography table, anvils, etc.
+     * <p>
+     * E.g. {@code service.openNamedInventory(player, Component.text("Foo"), p -> p.openGrindstone(null, true))}
+     *
+     * @param player player to open the inventory for
+     * @param title title of the inventory
+     * @param opener inventory opening function
+     * @return opened inventory
+     */
+    public abstract Inventory openNamedInventory(Player player, Component title, Consumer<Player> opener);
 
     @Override
     public Class<PlayerActionService> getRegistrationClass() {

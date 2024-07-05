@@ -52,6 +52,7 @@ public class VersionBootstrap_v1_21 implements VersionBootstrap {
 
         // Client-bound
         listeners.add(new LoginPacketListener());
+        listeners.add(new OpenScreenPacketListener());
         listeners.add(new PlayerInfoRemovePacketListener());
         listeners.add(new PlayerInfoUpdatePacketListener());
         listeners.add(new RegistryDataPacketListener());

@@ -2,6 +2,7 @@ package org.machinemc.primallib.v1_21.impl.player;
 
 import io.netty.buffer.Unpooled;
 import io.papermc.paper.math.BlockPosition;
+import net.kyori.adventure.text.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.ClientboundCustomReportDetailsPacket;
@@ -17,7 +18,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.sign.Side;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.machinemc.primallib.entity.EntityLike;
 import org.machinemc.primallib.player.PlayerActionService;
 import org.machinemc.primallib.player.SkinPart;
@@ -28,6 +31,8 @@ import org.machinemc.primallib.world.*;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 @SuppressWarnings("UnstableApiUsage")
 public class PlayerActionServiceImpl extends PlayerActionService {
@@ -161,6 +166,21 @@ public class PlayerActionServiceImpl extends PlayerActionService {
     @Override
     public void setCrashProperties(Player player, Map<String, String> properties) {
         PacketChannelHandlerImpl.sendPacket(player, new ClientboundCustomReportDetailsPacket(properties), false);
+    }
+
+    private final Map<Player, Component> nextInventoryTitle = new ConcurrentHashMap<>();
+
+    @Override
+    public Inventory openNamedInventory(Player player, Component title, Consumer<Player> opener) {
+        nextInventoryTitle.put(player, title);
+        opener.accept(player);
+        return player.getOpenInventory().getTopInventory();
+    }
+
+    public @Nullable Component getNextInventoryTitle(Player player) {
+        Component title = nextInventoryTitle.get(player);
+        if (title != null) nextInventoryTitle.remove(player);
+        return title;
     }
 
 }
